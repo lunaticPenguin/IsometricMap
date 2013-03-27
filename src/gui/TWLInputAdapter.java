@@ -29,7 +29,7 @@ package gui;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import de.matthiasmann.twl.GUI;
+//import de.matthiasmann.twl.GUI;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.util.InputAdapter;
@@ -46,6 +46,9 @@ import org.newdawn.slick.util.InputAdapter;
  *
  * @author Matthias Mann
  */
+public class TWLInputAdapter {}
+
+/*
 public class TWLInputAdapter extends InputAdapter {
 
     private final Input input;
@@ -162,7 +165,7 @@ public class TWLInputAdapter extends InputAdapter {
      * Call this method from {@code BasicGame.update}
      *
      * @see BasicGame#update(org.newdawn.slick.GameContainer, int)
-     */
+     *
     public void update() {
         gui.setSize();
         gui.handleTooltips();
@@ -176,8 +179,8 @@ public class TWLInputAdapter extends InputAdapter {
      * Call this method from {@code BasicGame.render}
      *
      * @see BasicGame#render(org.newdawn.slick.GameContainer, org.newdawn.slick.Graphics)
-     */
+     *
     public void render() {
         gui.draw();
     }
-}
+}*/

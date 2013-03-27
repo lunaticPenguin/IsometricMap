@@ -27,7 +27,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import de.matthiasmann.twl.Button;
+//import de.matthiasmann.twl.Button;
 
 import tools.Position;
 import tools.Vector2i;
@@ -51,7 +51,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 
     /* TWL TEST */
 	
-    private Button btn;
+    //private Button btn;
 
     @Override
 //    protected RootPane createRootPane() {
