@@ -178,8 +178,6 @@ public class Map extends TiledMapPlus {
 			}
 			++currentLine;
 		}
-		
-		System.out.println(nbTiles);
 	}
 	
 	

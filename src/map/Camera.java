@@ -19,7 +19,7 @@ public class Camera extends Vector2i {
 	/**
 	 * Displayed zone dimensions
 	 */
-	protected Vector2i zDim;
+	public Vector2i zDim;
 	
 	/**
 	 * Constructeur de caméra.
