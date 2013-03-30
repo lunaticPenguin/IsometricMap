@@ -1,6 +1,11 @@
 package resources;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Pattern;
+
+import org.newdawn.slick.util.Log;
 
 /**
  * Manager de ressources au sens large.
@@ -8,34 +13,73 @@ import java.util.HashMap;
  * 
  * @author Corentin Legros
  */
-public abstract class AbstractManager {
+public abstract class AbstractManager<T> {
 	
 	/**
-	 * Contient toutes les donnÈes relatives ‡ un manager (sons, musiques, images...etc)
+	 * Contient toutes les donn√©es relatives √† un manager (sons, musiques, images...etc)
 	 */
-	protected HashMap<String, ?> data;
+	protected HashMap<String, T> data;
 	
 	/**
-	 * Permet de charger les donnÈes selon le contenu des rÈpertoires
-	 * de donnÈes
+	 * Permet de charger les donn√©es selon le contenu des r√©pertoires
+	 * de donn√©es, de fa√ßon r√©cursive.
+	 * Attention, l'arborescence d√©termine les cl√©s d'acc√®s aux donn√©es.
 	 */
 	protected void loadData(String dataDirectoryPath) {
+		File specificDataDirectory = new File(dataDirectoryPath);
 		
-		// todo
+		File[] specificFiles = specificDataDirectory.listFiles();
+		
+		StringBuilder fileName = new StringBuilder();
+		StringBuilder sbObjectKey = new StringBuilder();
+		
+		for (int i = 0 ; i < specificFiles.length ; ++i) {
+			
+			fileName.setLength(0);
+			try {
+				fileName.append(specificFiles[i].getCanonicalPath());
+				
+				if (specificFiles[i].isDirectory()) { // si r√©pertoire -> r√©cursivit√©
+					this.loadData(specificFiles[i].getPath());
+				} else if (!specificFiles[i].isHidden() && specificFiles[i].isFile()) {
+					
+					sbObjectKey.setLength(0);
+					String tmpPath = specificFiles[i].getPath();
+					String[] tmpKeys = tmpPath.split(Pattern.quote(File.separator));
+					if (tmpKeys.length > 2) {
+						for (int j = 2 ; j < tmpKeys.length ; ++j) {
+							sbObjectKey.append(tmpKeys[j]);
+							if (j < tmpKeys.length - 1) {
+								sbObjectKey.append(".");
+							}
+						}
+					} else {
+						Log.warn("AbstractManager.load() : Unable to split path key (" + tmpPath + ")");
+					}
+					
+					data.put(sbObjectKey.toString(), this.loadObject(fileName.toString()));
+				}
+			} catch (IOException e) {
+				Log.warn("AbstractManager.load() : Unable to get file canonical path  (" + specificFiles[i].getPath() + ") : " + e.getMessage());
+			}
+		}
+		
+		return;
 	}
 	
 	/**
 	 * Permet de renvoyer la ressource correspondante
-	 * ‡ la clÈ spÈcifiÈe.
-	 * Chaque manager Ètant sensÈ contenant une ressource par dÈfaut,
-	 * si la ressource correspondante ‡ clÈ spÈcifiÈe n'existe pas
+	 * √† la cl√© sp√©cifi√©e.
+	 * Chaque manager √©tant sens√© contenant une ressource par d√©faut,
+	 * si la ressource correspondante √† cl√© sp√©cifi√©e n'existe pas
 	 * on essaye de renvoyer cette ressource. Sinon renvoit null.
 	 * 
 	 * @param String objectKey
 	 * @return 
+	 * @return 
 	 * @return Object|null
 	 */
-	public <T> Object get(String objectKey) {
+	public T get(final String objectKey) {
 		if (data.containsKey(objectKey)) {
 			return data.get(objectKey);
 		} else if (data.containsKey("default")) {
@@ -43,4 +87,13 @@ public abstract class AbstractManager {
 		}
 		return null;
 	}
+	
+	/**
+	 * Permet aux manager enfants de charger un objet de leur type g√©r√©
+	 * au parent, car le parent ne fait que du g√©n√©rique.
+	 * 
+	 * @param String dataObjectPath
+	 * @return
+	 */
+	abstract protected T loadObject(String dataObjectPath);
 }

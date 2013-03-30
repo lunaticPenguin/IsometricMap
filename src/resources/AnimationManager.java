@@ -6,12 +6,12 @@ import org.newdawn.slick.Animation;
 
 
 /**
- * Manager d'animations, selon les spritesheets déjà chargées
+ * Manager d'animations, selon les spritesheets dï¿½jï¿½ chargï¿½es
  * via le SpriteSheetManager.
  * 
  * @author Corentin Legros
  */
-public class AnimationManager extends AbstractManager {
+public class AnimationManager extends AbstractManager<Animation> {
 	
 	protected static AnimationManager instance;
 	
@@ -25,7 +25,12 @@ public class AnimationManager extends AbstractManager {
 	protected AnimationManager() {
 		data = new HashMap<String, Animation>();
 		
-		// ici, réutilisation des données chargées par SpriteSheetManager
-		// et mise en mémoire des différentes animations.
+		// ici, rï¿½utilisation des donnï¿½es chargï¿½es par SpriteSheetManager
+		// et mise en mï¿½moire des diffï¿½rentes animations.
+	}
+
+	
+	protected Animation loadObject(String dataObjectPath) {
+		return null;
 	}
 }

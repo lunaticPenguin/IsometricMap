@@ -10,7 +10,7 @@ import org.newdawn.slick.Sound;
  * 
  * @author Corentin Legros
  */
-public class SoundManager extends AbstractManager {
+public class SoundManager extends AbstractManager<Sound> {
 	
 	protected static SoundManager instance;
 	
@@ -25,5 +25,9 @@ public class SoundManager extends AbstractManager {
 		data = new HashMap<String, Sound>();
 		
 		this.loadData("sounds");
+	}
+	
+	protected Sound loadObject(String dataObjectPath) {
+		return null;
 	}
 }

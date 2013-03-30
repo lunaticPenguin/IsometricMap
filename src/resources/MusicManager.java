@@ -10,7 +10,7 @@ import org.newdawn.slick.Music;
  * 
  * @author Corentin Legros
  */
-public class MusicManager extends AbstractManager {
+public class MusicManager extends AbstractManager<Music> {
 	
 	protected static MusicManager instance;
 	
@@ -25,5 +25,11 @@ public class MusicManager extends AbstractManager {
 		data = new HashMap<String, Music>();
 		
 		this.loadData("musics");
+	}
+	
+	
+	protected Music loadObject(String dataObjectPath) {
+		
+		return null;
 	}
 }
