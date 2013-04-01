@@ -5,7 +5,7 @@ import tools.Position;
 
 /**
  * Classe représentant la position de la souris afin de gérer simplement les conversions de position orthogonale et isométrique
- * @author eleve
+ * @author Corentin Legros
  */
 public class MousePosition {
 	
