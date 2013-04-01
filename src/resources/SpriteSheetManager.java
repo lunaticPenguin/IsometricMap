@@ -1,6 +1,8 @@
 package resources;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -38,5 +40,13 @@ public class SpriteSheetManager extends AbstractManager<SpriteSheet> {
 			Log.error("SpriteSheetManager : Error during loading spritesheet (" + dataObjectPath + " ): " + e.getMessage());
 		}
 		return objSprite;
+	}
+	
+	public Collection<SpriteSheet> getAllSpriteSheets() {
+		return data.values();
+	}
+	
+	public Set<String> getAllKeys() {
+		return data.keySet();
 	}
 }
