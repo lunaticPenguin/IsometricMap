@@ -2,7 +2,6 @@ package map;
 
 import java.util.ArrayList;
 
-
 import main.MyGame;
 
 import org.newdawn.slick.Graphics;
@@ -15,14 +14,19 @@ import tools.Vector2i;
 
 public class Map extends TiledMapPlus {
 
+	
+	public static final int TILE_GROUND = 0x1;
+	public static final int TILE_AIR = 0x2;
+	public static final int TILE_WATER = 0x3;
+	
 	/**
 	 * Stockage des propriétés de la map
 	 * (lors de l'implémentation finale, supprimer les accès dégueu
 	 * et répétés (mDim) -> implémenter les getters
 	 */
-	public Vector2i mDim;
-	public Vector2i tDim;
-	public Vector2i mTDim;
+	public static Vector2i mDim;
+	public static Vector2i tDim;
+	public static Vector2i mTDim;
 	
 	/**
 	 * Map screen dimension
@@ -36,12 +40,11 @@ public class Map extends TiledMapPlus {
 	protected Vector2i pt_TR;
 	protected Vector2i pt_BR;
 	
-	
 	protected Graphics g;
 	protected int lateralOffset; // décalage latéral pour scrolling optimisé qui tremble
 	
 	
-	protected boolean blocked[][];
+	protected static int blocked[][];
 	
 	
 	public Map(String ref) throws SlickException {
@@ -145,7 +148,6 @@ public class Map extends TiledMapPlus {
 			drawLayers.add(layer);
 		}
 		
-		int nbTiles = 0;
 		int i = 0; // variables utilisée a chaque tour de boucle (déclaration en amont)
 		
 		/*
@@ -173,7 +175,6 @@ public class Map extends TiledMapPlus {
 					
 					currentLayer.render(renderX, renderY, renderXTile, renderYTile, 1, 0, 
 							lineByLine, tileWidth, tileHeight);
-					++nbTiles;
 				}
 			}
 			++currentLine;
@@ -254,23 +255,44 @@ public class Map extends TiledMapPlus {
 	}
 	
 	protected void loadBlockedTiles() {
-		blocked = new boolean[width][height];
+		blocked = new int[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++) {
 					int id = getTileId(x, y, layerIdx);
 					if (id != 0) {
-						String b = getTileProperty(id, "blocked", "");
-						if (b.equals("true")) {
-							blocked[x][y] = true;
+						
+						int value = 0;
+						if (getTileProperty(id, "ground_stop", "").equals("true")) {
+							value = 0x1;
 						}
+						if (getTileProperty(id, "air_stop", "").equals("true")) {
+							value &= 0x2;
+						}
+						if (getTileProperty(id, "water_stop", "").equals("true")) {
+							value &= 0x3;
+						}
+						System.out.println(value);
+						blocked[x][y] = value;
 					}
 				}
 			}
 		}
 	}
 	
+	
 	public boolean isTileBlocked(int x, int y) {
-		return blocked[x][y];
+		return isTileBlocked(x, y, TILE_GROUND);
+	}
+	
+	/**
+	 * 
+	 * @param int x
+	 * @param int y
+	 * @param int type_block (TILE_GROUND, TILE_WATER, TILE_AIR)
+	 * @return
+	 */
+	public boolean isTileBlocked(int x, int y, int blockingType) {
+		return (blocked[x][y] & blockingType) != 0;
 	}
 }
