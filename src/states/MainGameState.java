@@ -8,6 +8,10 @@
 
 package states;
 
+import entities.AbstractCreatureEntity;
+import entities.AbstractEntity;
+
+import entities.manager.CreatureManager;
 import gui.MapScene;
 import gui.Scene;
 
@@ -19,7 +23,6 @@ import map.Camera;
 import map.Map;
 import map.MousePosition;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -31,8 +34,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import tools.Position;
 import tools.Vector2i;
-import twlslick.BasicTWLGameState;
-import twlslick.RootPane;
 
 
 public class MainGameState extends BasicGameState {//BasicTWLGameState { //
@@ -46,7 +47,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private boolean isDebugging;
 	private ArrayList<Scene> scenes;
 	
-	
+	private AbstractCreatureEntity bonomeTest;
+	private CreatureManager objCreatureManager;
 	
 
     /* TWL TEST */
@@ -98,17 +100,23 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				cam,
 				-Integer.parseInt(map.getMapProperty("focusOriginTileX", "0")),
 				-Integer.parseInt(map.getMapProperty("focusOriginTileY", "0")),
-				map.mTDim.x,
-				map.mTDim.y);
+				Map.mTDim.x,
+				Map.mTDim.y);
 		
 		
 		cam.focusOn(originPos);
 		
-		mPos = new MousePosition(cam, map.tDim.x, map.tDim.y, map.mDim.x, map.mDim.y);
+		mPos = new MousePosition(cam, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
 		
 		// gestion des différentes scenes
 		scenes = new ArrayList<Scene>();
 		initScenes(container, game);
+		
+		objCreatureManager = CreatureManager.getInstance();
+		
+		bonomeTest = objCreatureManager.addEntity("jidiako");
+		bonomeTest.setS(Position.memoryToScreen(null, 0, 0, Map.mTDim.x, Map.mTDim.y));
+		bonomeTest.setIsDiplayed(true);
 	}
 
 	@Override
@@ -125,6 +133,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		renderScenes(g);
 		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
+		objCreatureManager.render(g, cam);
 	}
 
 	@Override
@@ -134,6 +143,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		cameraMoves();
 		mPos.setS(input.getMouseX(), input.getMouseY());
 		mPos.m.checkRanges();
+		
+		jidokiaTestMoves();
+		objCreatureManager.update(container, game, delta);
 	}
 	
 	protected void cameraMoves() {
@@ -179,30 +191,49 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	}
 	
 	
+	protected void jidokiaTestMoves() {
+		
+		bonomeTest.setIsMoving(false);
+		if (input.isKeyPressed(Input.KEY_Z)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTH);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_E)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHEAST);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_S)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTH);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_Q)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_WEST);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_D)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
+			bonomeTest.setIsMoving(true);
+		}
+	}
+	
+	
 	protected void renderMouseTile(Graphics g) {
 		
 		// on récupère les positions idéales de la souris depuis ses coordonnées isométriques
-		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, map.tDim.x, map.tDim.y, map.mDim.x, map.mDim.y);
-		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y, map.mTDim.x, map.mTDim.y);
-		
-		Color c = new Color(255,255,255);
+		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y, Map.mTDim.x, Map.mTDim.y);
 		
 		if (!map.isTileBlocked(mPos.m.x, mPos.m.y)) {
-			g.drawLine(mousePosP.x, mousePosP.y - map.mTDim.y, mousePosP.x + map.mTDim.x, mousePosP.y);
-			g.drawLine(mousePosP.x + map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y + map.mTDim.y);
-			g.drawLine(mousePosP.x, mousePosP.y + map.mTDim.y, mousePosP.x - map.mTDim.x, mousePosP.y);
-			g.drawLine(mousePosP.x - map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y - map.mTDim.y);
+			g.drawLine(mousePosP.x, mousePosP.y - Map.mTDim.y, mousePosP.x + Map.mTDim.x, mousePosP.y);
+			g.drawLine(mousePosP.x + Map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y + Map.mTDim.y);
+			g.drawLine(mousePosP.x, mousePosP.y + Map.mTDim.y, mousePosP.x - Map.mTDim.x, mousePosP.y);
+			g.drawLine(mousePosP.x - Map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y - Map.mTDim.y);
 			
-			g.drawString(mPos.m.toString(), mousePosP.x-map.mTDim.x, mousePosP.y-map.mTDim.y);
+			g.drawString(mPos.m.toString(), mousePosP.x-Map.mTDim.x, mousePosP.y-Map.mTDim.y);
 		} else {
+			g.drawLine(mousePosP.x, mousePosP.y - Map.mTDim.y, mousePosP.x + Map.mTDim.x, mousePosP.y);
+			g.drawLine(mousePosP.x + Map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y + Map.mTDim.y);
+			g.drawLine(mousePosP.x, mousePosP.y + Map.mTDim.y, mousePosP.x - Map.mTDim.x, mousePosP.y);
+			g.drawLine(mousePosP.x - Map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y - Map.mTDim.y);
 			
-			g.drawLine(mousePosP.x, mousePosP.y - map.mTDim.y, mousePosP.x + map.mTDim.x, mousePosP.y);
-			g.drawLine(mousePosP.x + map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y + map.mTDim.y);
-			g.drawLine(mousePosP.x, mousePosP.y + map.mTDim.y, mousePosP.x - map.mTDim.x, mousePosP.y);
-			g.drawLine(mousePosP.x - map.mTDim.x, mousePosP.y, mousePosP.x, mousePosP.y - map.mTDim.y);
-			
-			g.drawLine(mousePosP.x, mousePosP.y - map.mTDim.y, mousePosP.x, mousePosP.y + map.mTDim.y);
-			g.drawLine(mousePosP.x + map.mTDim.x, mousePosP.y, mousePosP.x - map.mTDim.x, mousePosP.y);
+			g.drawLine(mousePosP.x, mousePosP.y - Map.mTDim.y, mousePosP.x, mousePosP.y + Map.mTDim.y);
+			g.drawLine(mousePosP.x + Map.mTDim.x, mousePosP.y, mousePosP.x - Map.mTDim.x, mousePosP.y);
 		}
 	}
 	

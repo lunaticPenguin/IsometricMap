@@ -286,7 +286,7 @@ public class Map extends TiledMapPlus {
 	}
 	
 	/**
-	 * 
+	 * Chaque tile donne ou bloque l'accès aux "types d'unités" (air/eau/sol (jeu de mot trop ouf :D ))
 	 * @param int x
 	 * @param int y
 	 * @param int type_block (TILE_GROUND, TILE_WATER, TILE_AIR)

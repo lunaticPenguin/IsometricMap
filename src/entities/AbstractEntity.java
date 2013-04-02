@@ -201,8 +201,6 @@ public abstract class AbstractEntity {
 	 * @param cam
 	 */
 	public void draw(Graphics g, Camera cam) {
-		if (this.belongToRenderedAera(cam)) {
-			this.getCurrentAnimation().draw(cam.x + s.x, cam.y + s.y);
-		}
+		this.getCurrentAnimation().draw(cam.x + s.x, cam.y + s.y);
 	}
 }

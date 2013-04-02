@@ -3,7 +3,12 @@ package entities.manager;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import map.Camera;
+
+import org.newdawn.slick.Graphics;
+
 import entities.AbstractCreatureEntity;
+import entities.factory.CreatureFactory;
 
 public class CreatureManager extends AbstractManager<AbstractCreatureEntity> {
 	
@@ -17,8 +22,15 @@ public class CreatureManager extends AbstractManager<AbstractCreatureEntity> {
 	}
 	
 	protected CreatureManager() {
+		factory = CreatureFactory.getInstance();
 		data = new HashMap<String, ArrayList<AbstractCreatureEntity>>();
+		data.put("jidiako", new ArrayList<AbstractCreatureEntity>());
 	}
-	
-	
+
+	@Override
+	protected void renderEntity(Graphics g, Camera cam, AbstractCreatureEntity entity) {
+		if (entity.belongToRenderedAera(cam)) {
+			entity.draw(g, cam);
+		}
+	}
 }
