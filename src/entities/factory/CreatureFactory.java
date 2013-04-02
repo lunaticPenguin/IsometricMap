@@ -1,24 +1,37 @@
-package entities.manager;
+package entities.factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import entities.AbstractCreatureEntity;
+import entities.CreatureJidiako;
 
-public class CreatureManager extends AbstractManager<AbstractCreatureEntity> {
+public class CreatureFactory extends AbstractFactory<AbstractCreatureEntity> {
 	
-	protected static CreatureManager instance;
+	// Creatures types
+	public static final String CREATURE_JIDIAKO = "jidiako";
 	
-	public static CreatureManager getInstance() {
+	
+	protected static CreatureFactory instance;
+	
+	public static CreatureFactory getInstance() {
 		if (instance == null) {
-			instance = new CreatureManager();
+			instance = new CreatureFactory();
 		}
 		return instance;
 	}
 	
-	protected CreatureManager() {
-		data = new HashMap<String, ArrayList<AbstractCreatureEntity>>();
+	protected CreatureFactory() {
+		dataPool = new HashMap<String, ArrayList<AbstractCreatureEntity>>();
+		dataPool.put("jidiako", new ArrayList<AbstractCreatureEntity>());
 	}
 	
-	
+	protected AbstractCreatureEntity getSpecificEntity(String entityType) {
+		switch (entityType) {
+		case "jidiako":
+			return new CreatureJidiako();
+		}
+		
+		return null;
+	}
 }
