@@ -184,7 +184,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			Vector2i bla = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-			if (map.hasPath(2, 7, bla.x, bla.y, Map.TILE_GROUND)) {
+			if (map.findPath(new Vector2i(2, 7), bla, Map.TILE_GROUND)) {
 				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + bla + " :)");
 			} else {
 				System.out.println("Il n'y a pas de chemin entre [2;7] et " + bla + " :(");
