@@ -433,12 +433,17 @@ public class Map extends TiledMapPlus {
 	 * 
 	 * @param Vector2i start position de départ
 	 * @param Vector2i end position d'arrivée
+	 * @param int mapType type de la map (<=> type du terrain)
+	 * 
+	 * @return boolean
 	 */
-	public void findPath(Vector2i start, Vector2i end) {
-		if (refPathFinder.computePath(start, end, TILE_GROUND) != null) {
+	public boolean findPath(Vector2i start, Vector2i end, int mapType) {
+		if (refPathFinder.computePath(start, end, mapType) != null) {
 			System.out.println("path research has been successful :) \\o/");
+			return true;
 		} else {
 			System.out.println("path research has been total failure T_T");
+			return false;
 		}
 	}
 }
