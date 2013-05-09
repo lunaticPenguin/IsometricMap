@@ -32,7 +32,7 @@ public class PathFinder {
 	}
 	
 	
-	public ArrayList<Node> computePath(Vector2i start, Vector2i end, int mapType) {
+	public ArrayList<Vector2i> computePath(Vector2i start, Vector2i end, int mapType) {
 		
 		/*
 		 * Liste ouverte : liste des noeuds étudiés
@@ -72,7 +72,7 @@ public class PathFinder {
 		startPoint = new Vector2i(start);
 		endPoint = new Vector2i(end);
 		
-		if (!refMap.hasPath(start.x, start.y, end.x, end.y, mapType)) {
+		if (!refMap.hasPath(startPoint, endPoint, mapType)) {
 			return null;
 		}
 		
@@ -92,11 +92,27 @@ public class PathFinder {
 			
 			if (currentPosition.getKey() == endPoint.x && currentPosition.getValue() == endPoint.y) {
 				System.out.println("Il semblerait que la fin ait été atteinte :)");
+				return getPath();
 			}
+			
+			
+			/*
+			 * -------DEBUG-------
+			 */
+			Set<Entry<SimpleEntry<Integer, Integer>, Node>> tmpEntrySet = closedList.entrySet();
+			Iterator<Entry<SimpleEntry<Integer, Integer>, Node>> tmpIt = tmpEntrySet.iterator();
+			Entry<SimpleEntry<Integer, Integer>, Node> tmpEntry = null;
+			
+			System.out.println("\t\tPath found : ");
+			while (tmpIt.hasNext()) {
+				tmpEntry = tmpIt.next();
+				System.out.println("\t\t\t" + tmpEntry.getKey().getKey() + ";" + tmpEntry.getKey().getValue());
+			}
+			
+			//System.out.println("(" +currentPosition.getKey()+ ";" +currentPosition.getValue()+ ")");
 		}
 		
-		// tmp
-		return new ArrayList<Node>();
+		return null;
 	}
 	
 	/*
@@ -119,10 +135,10 @@ public class PathFinder {
 				isCurrentNode = i == currentPosition.getKey() && j == currentPosition.getValue();
 				
 				// case testée existante et != noeud du centre
-				if (!isInMap && !isCurrentNode) {
+				if (isInMap && !isCurrentNode) {
 					
 					if (!refMap.isTileBlocked(currentPosition.getKey(), currentPosition.getValue(), mapType)) {
-						tmpEntry = new SimpleEntry<Integer, Integer>(currentPosition.getKey(), currentPosition.getValue());
+						tmpEntry = new SimpleEntry<Integer, Integer>(i, j);
 						
 						if (!closedList.containsKey(tmpEntry)) {
 							
@@ -139,7 +155,7 @@ public class PathFinder {
 									openedList.put(tmpEntry, tmpNode);
 								}
 								
-								// sinon on stocke le noeud comme étant déjà étudié
+								// sinon on stocke le noeud comme étant étudié
 							} else {
 								openedList.put(tmpEntry, tmpNode);
 							}
@@ -164,16 +180,15 @@ public class PathFinder {
 	}
 	
 	/*
-	 * Permet de déterminer quel noeud est le plus performant dans une liste
-	 * @param listToSearchIn
-	 * @return
+	 * Permet de déterminer quel noeud est le plus porche dans une liste spécifiée
+	 * @param HashMap<SimpleEntry<Integer, Integer>, Node> listToSearchIn
+	 * @return SimpleEntry<Integer, Integer>
 	 */
 	private SimpleEntry<Integer, Integer> findBestNodeOfList(HashMap<SimpleEntry<Integer, Integer>, Node> listToSearchIn) {
 		
 		int maxCost = 1000;
 		Entry<SimpleEntry<Integer, Integer>, Node> tmpEntry;
 		SimpleEntry<Integer, Integer> tmpPosition = null;
-		
 		
 		Set<Entry<SimpleEntry<Integer, Integer>, Node>> tmpSet = listToSearchIn.entrySet();
 		
@@ -201,5 +216,25 @@ public class PathFinder {
 		if (openedList.remove(position) == null) {
 			Log.warn("[A* algorithm] Unable to remove an old position (opened to closed list)");
 		}
+	}
+	
+	/*
+	 * Permet d'obtenir le chemin trouvé lors de l'appel à la méthode computePath
+	 * @return ArrayList<Vector2i>
+	 */
+	private ArrayList<Vector2i> getPath() {
+		
+		ArrayList<Vector2i> path = new ArrayList<Vector2i>();
+		
+		Node tmpNode = closedList.get(new SimpleEntry<Integer, Integer>(endPoint.x, endPoint.y));
+		SimpleEntry<Integer, Integer> parentNode = tmpNode.parent;
+		SimpleEntry<Integer, Integer> startNode = new SimpleEntry<Integer, Integer>(startPoint.x, startPoint.y);
+		
+		while (parentNode.getKey() != startNode.getKey() && parentNode.getValue() != startNode.getValue()) {
+			path.add(new Vector2i(parentNode.getKey(), parentNode.getValue()));
+			parentNode = closedList.get(tmpNode.parent).parent;
+		}
+		
+		return path;
 	}
 }
