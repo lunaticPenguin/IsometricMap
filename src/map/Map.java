@@ -10,6 +10,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMapPlus;
 
+import pathfinding.PathFinder;
+
 import tools.Position;
 import tools.Vector2i;
 
@@ -49,9 +51,10 @@ public class Map extends TiledMapPlus {
 	
 	protected static int blocked[][];
 	
+	// pathfinding attributes
 	protected HashMap<Integer, boolean[][]> adjacencyMatrix;
-	
 	protected HashMap<Integer, boolean[][]> transitiveClosureMatrix;
+	protected PathFinder refPathFinder;
 	
 	
 	public Map(String ref) throws SlickException {
@@ -101,6 +104,8 @@ public class Map extends TiledMapPlus {
 		
 		loadBlockedTiles();
 		computeTransitiveClosure();
+		
+		refPathFinder = new PathFinder(this);
 	}
 	
 	public void render(Camera cam) {
@@ -420,6 +425,20 @@ public class Map extends TiledMapPlus {
 					adjacencyMatrix.get(mapType)[i][j] = false;
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Permet de rechercher un cehmin entre 2 positions
+	 * 
+	 * @param Vector2i start position de départ
+	 * @param Vector2i end position d'arrivée
+	 */
+	public void findPath(Vector2i start, Vector2i end) {
+		if (refPathFinder.computePath(start, end, TILE_GROUND) != null) {
+			System.out.println("path research has been successful :) \\o/");
+		} else {
+			System.out.println("path research has been total failure T_T");
 		}
 	}
 }
