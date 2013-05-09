@@ -180,6 +180,16 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isKeyPressed(Input.KEY_RIGHT)) {
 			cam.moveTo(Camera.RIGHT, 1.0f);
 		}
+		
+		// testalakon
+		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+			Vector2i bla = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, map.tDim.x, map.tDim.y, map.mDim.x, map.mDim.y);
+			if (map.hasPath(2, 7, bla.x, bla.y, Map.TILE_GROUND)) {
+				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + bla + " :)");
+			} else {
+				System.out.println("Il n'y a pas de chemin entre [2;7] et " + bla + " :(");
+			}
+		}
 	}
 	
 	protected void mainShortcuts() {

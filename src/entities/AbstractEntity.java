@@ -137,7 +137,7 @@ public abstract class AbstractEntity {
 	}
 	
 	public void updateMatrixPosition(Camera cam) {
-		this.m = Position.screenToMemory(cam, s.x, s.y, Map.mTDim.x, Map.mTDim.y, Map.mDim.x, Map.mDim.y);
+		this.m = Position.screenToMemory(cam, s.x, s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
 	}
 	
 	/**
