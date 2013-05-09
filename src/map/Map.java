@@ -365,6 +365,20 @@ public class Map extends TiledMapPlus {
 	 * Cette méthode utilise la technique de la fermeture transitive afin
 	 * d'éviter de rechercher des chemins inexistants.
 	 * 
+	 * @param Vector2i start start point
+	 * @param Vector2i end end point
+	 * @param int mapType type de map testée
+	 * @return boolean
+	 */
+	public boolean hasPath(Vector2i start, Vector2i end, int mapType) {
+		return hasPath(start.x, start.y, end.x, end.y, mapType);
+	}
+	
+	/**
+	 * Permet de tester si un chemin existe entre 2 positions (x;y) de la map.
+	 * Cette méthode utilise la technique de la fermeture transitive afin
+	 * d'éviter de rechercher des chemins inexistants.
+	 * 
 	 * @param int xStart 
 	 * @param int yStart 
 	 * @param int xEnd 
@@ -437,13 +451,7 @@ public class Map extends TiledMapPlus {
 	 * 
 	 * @return boolean
 	 */
-	public boolean findPath(Vector2i start, Vector2i end, int mapType) {
-		if (refPathFinder.computePath(start, end, mapType) != null) {
-			System.out.println("path research has been successful :) \\o/");
-			return true;
-		} else {
-			System.out.println("path research has been total failure T_T");
-			return false;
-		}
+	public ArrayList<Vector2i> findPath(Vector2i start, Vector2i end, int mapType) {
+		return refPathFinder.computePath(start, end, mapType);
 	}
 }
