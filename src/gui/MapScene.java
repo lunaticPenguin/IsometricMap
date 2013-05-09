@@ -38,7 +38,7 @@ public class MapScene extends Scene {
 	
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		System.out.println("x["+x+"]; y["+y+"] " + clickCount);
+		//System.out.println("x["+x+"]; y["+y+"] " + clickCount);
 	}
 
 	@Override
