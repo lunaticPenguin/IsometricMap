@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMapPlus;
 
+import pathfinding.Path;
 import pathfinding.PathFinder;
 
 import tools.Position;
@@ -449,9 +450,9 @@ public class Map extends TiledMapPlus {
 	 * @param Vector2i end position d'arrivée
 	 * @param int mapType type de la map (<=> type du terrain)
 	 * 
-	 * @return ArrayList<Vector2i>
+	 * @return Path
 	 */
-	public ArrayList<Vector2i> findPath(Vector2i start, Vector2i end, int mapType) {
+	public Path findPath(Vector2i start, Vector2i end, int mapType) {
 		return refPathFinder.computePath(start, end, mapType);
 	}
 }
