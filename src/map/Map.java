@@ -402,7 +402,7 @@ public class Map extends TiledMapPlus {
 	 * @return
 	 */
 	private int convertOrthoToSquareExpOrtho(int x, int y) {
-		return x + (y + 1) * width;
+		return x + y * width;
 	}
 	
 	/**
@@ -449,7 +449,7 @@ public class Map extends TiledMapPlus {
 	 * @param Vector2i end position d'arrivée
 	 * @param int mapType type de la map (<=> type du terrain)
 	 * 
-	 * @return boolean
+	 * @return ArrayList<Vector2i>
 	 */
 	public ArrayList<Vector2i> findPath(Vector2i start, Vector2i end, int mapType) {
 		return refPathFinder.computePath(start, end, mapType);
