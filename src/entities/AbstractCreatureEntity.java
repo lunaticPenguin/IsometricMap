@@ -4,6 +4,9 @@ import map.Camera;
 
 import org.newdawn.slick.Graphics;
 
+import pathfinding.Path;
+import pathfinding.PathNode;
+
 public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
 	/**
 	 * Points d'attaque de l'entité
@@ -19,6 +22,16 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * Vitesse de déplacement
 	 */
 	protected float speedMove;
+	
+
+	protected int nextSX;
+	protected int nextSY;
+
+	protected int nextMX;
+	protected int nextMY;
+	
+	protected Path currentPath;
+	protected PathNode currentNode;
 	
 	/**
 	 * Si l'entité se déplace
