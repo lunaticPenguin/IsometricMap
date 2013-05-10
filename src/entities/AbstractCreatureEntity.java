@@ -1,5 +1,9 @@
 package entities;
 
+import map.Camera;
+
+import org.newdawn.slick.Graphics;
+
 public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
 	/**
 	 * Points d'attaque de l'entité
@@ -59,6 +63,19 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 				s.y -= Math.ceil(speedMove * 2);
 			break;
 			}
+		}
+	}
+	
+	/**
+	 * Permet d'afficher l'entité sur une zone de l'écran
+	 * @param g
+	 * @param cam
+	 */
+	public void draw(Graphics g, Camera cam) {
+		if (isMoving) {
+			this.getCurrentAnimation().draw(cam.x + s.x, cam.y + s.y);
+		} else {
+			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x, cam.y + s.y);
 		}
 	}
 }
