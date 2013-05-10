@@ -1,6 +1,7 @@
 package map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.MyGame;
 
@@ -9,15 +10,19 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMapPlus;
 
+import pathfinding.PathFinder;
+
 import tools.Position;
 import tools.Vector2i;
 
 public class Map extends TiledMapPlus {
 
 	
-	public static final int TILE_GROUND = 0x1;
-	public static final int TILE_AIR = 0x2;
-	public static final int TILE_WATER = 0x3;
+	public static final int TILE_GROUND = 0; // FE
+	public static final int TILE_AIR = 1; // FD
+	public static final int TILE_WATER = 2; // FB
+	
+	private HashMap<Integer, Integer> tileMasks;
 	
 	/**
 	 * Stockage des propriétés de la map
@@ -45,6 +50,11 @@ public class Map extends TiledMapPlus {
 	
 	
 	protected static int blocked[][];
+	
+	// pathfinding attributes
+	protected HashMap<Integer, boolean[][]> adjacencyMatrix;
+	protected HashMap<Integer, boolean[][]> transitiveClosureMatrix;
+	protected PathFinder refPathFinder;
 	
 	
 	public Map(String ref) throws SlickException {
@@ -74,7 +84,28 @@ public class Map extends TiledMapPlus {
 		pt_BR = new Vector2i();
 		
 		lateralOffset = mTDim.y;
+		
+		// chargement des masques de types de terrains
+		tileMasks = new HashMap<Integer, Integer>();
+		tileMasks.put(TILE_GROUND, 0xFE);
+		tileMasks.put(TILE_AIR, 0xFD);
+		tileMasks.put(TILE_WATER, 0xFB);
+		
+		// initialisation des matrices d'adjacences et des matrices
+		// de fermeture transitive
+		int tmpSize = mDim.x * mDim.y;
+		adjacencyMatrix = new HashMap<Integer, boolean[][]>();
+		transitiveClosureMatrix = new HashMap<Integer, boolean[][]>();
+		for (int i = 0 ; i <= 2 ; ++i) {
+			adjacencyMatrix.put(i, new boolean[tmpSize][tmpSize]);
+			fillBooleanSquaredMatrix(adjacencyMatrix.get(i), true);
+			transitiveClosureMatrix.put(i, new boolean[tmpSize][tmpSize]);
+		}
+		
 		loadBlockedTiles();
+		computeTransitiveClosure();
+		
+		refPathFinder = new PathFinder(this);
 	}
 	
 	public void render(Camera cam) {
@@ -256,23 +287,25 @@ public class Map extends TiledMapPlus {
 	
 	protected void loadBlockedTiles() {
 		blocked = new int[width][height];
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++) {
+		for (int x = 0 ; x < width ; x++) {
+			for (int y = 0 ; y < height ; y++) {
+				for (int layerIdx = 0 ; layerIdx < layers.size() ; layerIdx++) {
 					int id = getTileId(x, y, layerIdx);
 					if (id != 0) {
 						
 						int value = 0;
 						if (getTileProperty(id, "ground_stop", "").equals("true")) {
-							value = 0x1;
+							value = 0x01;
+							setTileBlocked(x, y, TILE_GROUND);
 						}
 						if (getTileProperty(id, "air_stop", "").equals("true")) {
-							value &= 0x2;
+							value |= 0x02;
+							setTileBlocked(x, y, TILE_AIR);
 						}
 						if (getTileProperty(id, "water_stop", "").equals("true")) {
-							value &= 0x3;
+							value |= 0x04;
+							setTileBlocked(x, y, TILE_WATER);
 						}
-						System.out.println(value);
 						blocked[x][y] = value;
 					}
 				}
@@ -281,6 +314,13 @@ public class Map extends TiledMapPlus {
 	}
 	
 	
+	/**
+	 * Permet de tester si une tile est bloquante pour le type de map "GROUND"
+	 * 
+	 * @param int x
+	 * @param int y
+	 * @return boolean
+	 */
 	public boolean isTileBlocked(int x, int y) {
 		return isTileBlocked(x, y, TILE_GROUND);
 	}
@@ -293,6 +333,125 @@ public class Map extends TiledMapPlus {
 	 * @return
 	 */
 	public boolean isTileBlocked(int x, int y, int blockingType) {
-		return (blocked[x][y] & blockingType) != 0;
+		return (blocked[x][y] | tileMasks.get(blockingType)) == 255;
+	}
+	
+	/**
+	 * Calcule la fermeture transitive de la map
+	 */
+	protected void computeTransitiveClosure() {
+		
+		TransitiveClosureThread tmpTCThreads[] = new TransitiveClosureThread[3];
+		
+		for (int mapIndex = 0 ; mapIndex <= 2 ; ++mapIndex) {
+			System.out.println("Loading submap #" + mapIndex + "...");
+			tmpTCThreads[mapIndex] = new TransitiveClosureThread(adjacencyMatrix.get(mapIndex), transitiveClosureMatrix.get(mapIndex));
+			tmpTCThreads[mapIndex].start();
+		}
+		
+		for (int mapIndex = 0 ; mapIndex <= 2 ; ++mapIndex) {
+			try {
+				tmpTCThreads[mapIndex].join();
+				System.out.println("Submap #" + mapIndex + " loaded.");
+			} catch (InterruptedException e) {
+				System.out.println("Unable to join TC computation [" + mapIndex + "]");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Permet de tester si un chemin existe entre 2 positions (x;y) de la map.
+	 * Cette méthode utilise la technique de la fermeture transitive afin
+	 * d'éviter de rechercher des chemins inexistants.
+	 * 
+	 * @param Vector2i start start point
+	 * @param Vector2i end end point
+	 * @param int mapType type de map testée
+	 * @return boolean
+	 */
+	public boolean hasPath(Vector2i start, Vector2i end, int mapType) {
+		return hasPath(start.x, start.y, end.x, end.y, mapType);
+	}
+	
+	/**
+	 * Permet de tester si un chemin existe entre 2 positions (x;y) de la map.
+	 * Cette méthode utilise la technique de la fermeture transitive afin
+	 * d'éviter de rechercher des chemins inexistants.
+	 * 
+	 * @param int xStart 
+	 * @param int yStart 
+	 * @param int xEnd 
+	 * @param int yEnd
+	 * @param int mapType type de map testée (GROUND,AIR,WATER...)
+	 */
+	public boolean hasPath(int xStart, int yStart, int xEnd, int yEnd, int mapType) {
+		
+		int start = convertOrthoToSquareExpOrtho(xStart, yStart);
+		int end = convertOrthoToSquareExpOrtho(xEnd, yEnd);
+		return transitiveClosureMatrix.get(mapType)[start][end];
+	}
+	
+	/**
+	 * Permet de convertir une position orthogonale (x;y) en un sommet
+	 * stocké dans une matrice carrée
+	 * (adjacence ou fermeture transitive, en l'occurence)
+	 * 
+	 * @param int x
+	 * @param int y
+	 * @return
+	 */
+	private int convertOrthoToSquareExpOrtho(int x, int y) {
+		return x + y * width;
+	}
+	
+	/**
+	 * Permet de remplir une matrice booléenne avec la valeur spécifiée
+	 * Utile pour une initialisation.
+	 * 
+	 * @param boolean[][] matrix matrice à initialiser
+	 * @param boolean value valeur à spécifier
+	 */
+	private void fillBooleanSquaredMatrix(boolean matrix[][], boolean value) {
+		for (int i = 0 ; i < matrix.length ; ++i) {
+			for (int j = 0 ; j < matrix.length ; ++j) {
+				matrix[i][j] = value;
+			}
+		}
+	}
+	
+	/**
+	 * Permet de spécifier qu'une tile est bloquée.
+	 * Cela met à jour la matrice d'adjacence
+	 * (en vue de calculer la fermeture transitive)
+	 * 
+	 * @param int x
+	 * @param int y
+	 * @param int mapType
+	 */
+	private void setTileBlocked(int x, int y, int mapType) {
+		
+		int tile = convertOrthoToSquareExpOrtho(x, y);
+		
+		for (int i = 0 ; i < adjacencyMatrix.get(mapType).length ; ++i) {
+			for (int j = 0 ; j < adjacencyMatrix.get(mapType).length ; ++j) {
+				if (i == tile || j == tile) {
+					adjacencyMatrix.get(mapType)[i][j] = false;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Permet de rechercher un cehmin entre 2 positions
+	 * 
+	 * @param Vector2i start position de départ
+	 * @param Vector2i end position d'arrivée
+	 * @param int mapType type de la map (<=> type du terrain)
+	 * 
+	 * @return ArrayList<Vector2i>
+	 */
+	public ArrayList<Vector2i> findPath(Vector2i start, Vector2i end, int mapType) {
+		return refPathFinder.computePath(start, end, mapType);
 	}
 }

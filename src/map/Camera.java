@@ -55,7 +55,7 @@ public class Camera extends Vector2i {
 				}
 				break;
 			case 3:// right
-				if (x > -(map.sDim.x / 2 + margin + map.tDim.x) + zDim.x) {
+				if (x > -(map.sDim.x / 2 + margin + Map.tDim.x) + zDim.x) {
 					x = x - move;
 				}
 				break;

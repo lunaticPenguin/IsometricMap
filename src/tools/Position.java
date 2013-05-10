@@ -88,8 +88,8 @@ public class Position {
 		pos.x = (int) Math.round((y * 2 + x) / tW);
 		pos.y = (int) Math.round((y * 2 - x) / tW) + 1;
 		
-		//pos.x = (pos.x < 0) ? 0 : ((pos.x > width) ? width - 1: pos.x);
-		//pos.y = (pos.y < 0) ? 0 : ((pos.y > height) ? height - 1: pos.y);
+		pos.x = (pos.x < 0) ? 0 : ((pos.x >= width) ? width - 1: pos.x);
+		pos.y = (pos.y < 0) ? 0 : ((pos.y >= height) ? height - 1: pos.y);
 
 		return pos;
 	}

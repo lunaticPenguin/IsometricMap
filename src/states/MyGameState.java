@@ -16,8 +16,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-//import org.newdawn.slick.state.StateBasedGame;
-import twlslick.TWLStateBasedGame;
+
+//import twlslick.TWLStateBasedGame;
 
 public class MyGameState extends StateBasedGame {//TWLStateBasedGame { //
 
