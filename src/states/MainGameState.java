@@ -183,15 +183,15 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			Vector2i bla = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-			ArrayList<Vector2i> tmpPath = map.findPath(new Vector2i(2, 7), bla, Map.TILE_GROUND);
+			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+			ArrayList<Vector2i> tmpPath = map.findPath(new Vector2i(2, 7), destPosition, Map.TILE_GROUND);
 			if (tmpPath != null) {
-				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + bla + " :)");
+				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + destPosition + " :)");
 				for (Vector2i tmpPos : tmpPath) {
 					System.out.println("\tpath position : " + tmpPos);
 				}
 			} else {
-				System.out.println("Il n'y a pas de chemin entre [2;7] et " + bla + " :(");
+				System.out.println("Il n'y a pas de chemin entre [2;7] et " + destPosition + " :(");
 			}
 		}
 	}

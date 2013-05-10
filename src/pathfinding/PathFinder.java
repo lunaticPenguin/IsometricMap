@@ -8,8 +8,6 @@ import java.util.Set;
 
 import java.util.AbstractMap.SimpleEntry;
 
-import org.newdawn.slick.util.Log;
-
 import tools.Vector2i;
 
 import map.Map;
@@ -37,23 +35,6 @@ public class PathFinder {
 		/*
 		 * Liste ouverte : liste des noeuds étudiés
 		 * Liste fermée : liste des noeuds solutions
-		 * 
-		 * -> Chaque point étudié est mis dans la liste ouverte et le meilleur de cette liste
-		 * passe dans la liste fermée, il va servir de base pour la recherche suivante
-		 * 
-		 * -> A chq itération il ne faut pas uniquement chercher celui qui a la meilleure qualité dans ses voisins, 
-		 * mais également dans toute la liste ouverte.
-		 * 
-		 * -> A chq itération, on va regarder parmi tous les noeuds qui ont été étudiés (et qui n'ont pas encore été choisis) 
-		 * celui qui a la meilleure qualité.
-		 * 
-		 * -> L'algorithme s'arrête quand la destination a été atteinte ou bien lorsque toutes les solutions mises de côté ont été
-		 * étudiées et qu'aucune ne s'est révélée bonne, c'est le cas où il n'y a pas de solution.
-		 * 
-		 * -> avant de se lancer dans l'étude de la qualité de chacun des noeuds adjacents, il ne faut prendre que ceux qui sont vraiment utilisables. 
-		 * Il faut aussi mettre de côté tous les noeuds déjà présents dans la liste ouverte ou dans la liste fermée. 
-		 * Et pour être plus précis, je dirais qu'il ne faut pas prendre un point s'il est déjà dans la liste ouverte, à moins qu'il ne soit meilleur, 
-		 * auquel cas on va mettre à jour la liste ouverte.
 		 * 
 		 * ----------------------------
 		 * 
@@ -85,33 +66,20 @@ public class PathFinder {
 		storeAdjacentNodes(currentPosition, mapType);
 		
 		// tant qu'on est pas à la fin du trajet voulu ET que la liste des potentiels sommets n'est pas vide
-		while (currentPosition.getKey() != endPoint.x && currentPosition.getValue() != endPoint.y && !openedList.isEmpty()) {
+		while (!(currentPosition.getKey() == endPoint.x && currentPosition.getValue() == endPoint.y) && !openedList.isEmpty()) {
 			currentPosition = findBestNodeOfList(openedList);
 			addToClosedList(currentPosition);
 			storeAdjacentNodes(currentPosition, mapType);
 			
 			if (currentPosition.getKey() == endPoint.x && currentPosition.getValue() == endPoint.y) {
-				System.out.println("Il semblerait que la fin ait été atteinte :)");
-				return getPath();
+				
+				ArrayList<Vector2i> path = getPath();
+				clearList();
+				return path;
 			}
-			
-			
-			/*
-			 * -------DEBUG-------
-			 */
-			Set<Entry<SimpleEntry<Integer, Integer>, Node>> tmpEntrySet = closedList.entrySet();
-			Iterator<Entry<SimpleEntry<Integer, Integer>, Node>> tmpIt = tmpEntrySet.iterator();
-			Entry<SimpleEntry<Integer, Integer>, Node> tmpEntry = null;
-			
-			System.out.println("\t\tPath found : ");
-			while (tmpIt.hasNext()) {
-				tmpEntry = tmpIt.next();
-				System.out.println("\t\t\t" + tmpEntry.getKey().getKey() + ";" + tmpEntry.getKey().getValue());
-			}
-			
-			//System.out.println("(" +currentPosition.getKey()+ ";" +currentPosition.getValue()+ ")");
 		}
 		
+		clearList();
 		return null;
 	}
 	
@@ -125,28 +93,32 @@ public class PathFinder {
 		SimpleEntry<Integer, Integer> tmpEntry = null;
 		Node tmpNode = null;
 		
-		boolean isInMap = false;
 		boolean isCurrentNode = false;
+		boolean isCellValid = false;
 		
-		for (int i = currentPosition.getKey() - 1 ; i < currentPosition.getKey() + 1 ; ++i) {
-			for (int j = currentPosition.getValue() - 1 ; j < currentPosition.getValue() + 1 ; ++j) {
+		for (int i = currentPosition.getKey() - 1 ; i <= currentPosition.getKey() + 1 ; ++i) {
+			for (int j = currentPosition.getValue() - 1 ; j <= currentPosition.getValue() + 1 ; ++j) {
 				
-				isInMap = i >= 0 && i < refMap.getWidth() && j >= 0 && j < refMap.getHeight();
-				isCurrentNode = i == currentPosition.getKey() && j == currentPosition.getValue();
+				isCurrentNode = (i == currentPosition.getKey() && j == currentPosition.getValue());
+				isCellValid = (i >= 0 && i < refMap.getWidth()) && (j >= 0 && j < refMap.getHeight());
 				
 				// case testée existante et != noeud du centre
-				if (isInMap && !isCurrentNode) {
+				if (isCellValid && !isCurrentNode) {
 					
-					if (!refMap.isTileBlocked(currentPosition.getKey(), currentPosition.getValue(), mapType)) {
+					if (!refMap.isTileBlocked(i, j, mapType)) {
+						
 						tmpEntry = new SimpleEntry<Integer, Integer>(i, j);
 						
 						if (!closedList.containsKey(tmpEntry)) {
 							
 							tmpNode = new Node();
 							tmpNode.costFromStartToNode = closedList.get(currentPosition).costFromStartToNode 
-									+ computeNodeDistance(currentPosition.getKey(), currentPosition.getValue(), i, j);
-							tmpNode.costFromNodeToEnd = computeNodeDistance(currentPosition.getKey(), currentPosition.getValue(), endPoint.x, endPoint.y);
+									+ computeNodeDistance(i, j, currentPosition.getKey(), currentPosition.getValue());
+							
+							tmpNode.costFromNodeToEnd = computeNodeDistance(i, j, endPoint.x, endPoint.y);
+							
 							tmpNode.costSum = tmpNode.costFromStartToNode + tmpNode.costFromNodeToEnd;
+							tmpNode.parent = currentPosition;
 							
 							// si liste ouverte contient déjà le noeud
 							if (openedList.containsKey(tmpEntry)) {
@@ -210,12 +182,8 @@ public class PathFinder {
 	 * @param SimpleEntry<Integer, Integer> position clé du noeud à passer
 	 */
 	private void addToClosedList(SimpleEntry<Integer, Integer> position) {
-		Node tmpNode = openedList.get(position);
-		closedList.put(position, tmpNode);
-		
-		if (openedList.remove(position) == null) {
-			Log.warn("[A* algorithm] Unable to remove an old position (opened to closed list)");
-		}
+		closedList.put(position, openedList.get(position));
+		openedList.remove(position);
 	}
 	
 	/*
@@ -225,16 +193,23 @@ public class PathFinder {
 	private ArrayList<Vector2i> getPath() {
 		
 		ArrayList<Vector2i> path = new ArrayList<Vector2i>();
+		path.add(new Vector2i(endPoint.x, endPoint.y));
 		
-		Node tmpNode = closedList.get(new SimpleEntry<Integer, Integer>(endPoint.x, endPoint.y));
-		SimpleEntry<Integer, Integer> parentNode = tmpNode.parent;
-		SimpleEntry<Integer, Integer> startNode = new SimpleEntry<Integer, Integer>(startPoint.x, startPoint.y);
+		SimpleEntry<Integer, Integer> entryEnd = new SimpleEntry<Integer, Integer>(endPoint.x, endPoint.y);
+		Node tmpNode = closedList.get(entryEnd);
+		SimpleEntry<Integer, Integer> entryParent = tmpNode.parent;
 		
-		while (parentNode.getKey() != startNode.getKey() && parentNode.getValue() != startNode.getValue()) {
-			path.add(new Vector2i(parentNode.getKey(), parentNode.getValue()));
-			parentNode = closedList.get(tmpNode.parent).parent;
+		while (entryParent.getKey() != 0 && entryParent.getValue() != 0) {
+			path.add(new Vector2i(entryParent.getKey(), entryParent.getValue()));
+			entryParent = tmpNode.parent;
+			tmpNode = closedList.get(tmpNode.parent);
 		}
 		
 		return path;
+	}
+	
+	private void clearList() {
+		openedList.clear();
+		closedList.clear();
 	}
 }
