@@ -121,10 +121,10 @@ public class Map extends TiledMapPlus {
 		
 		int margin = 150; // en pixels
 		
-		pt_TL = Position.screenToMemory(cam, 0, 0, tileWidth, tileHeight, width, height);
-		pt_BL = Position.screenToMemory(cam, 0, MyGame.Y_WINDOW + margin, tileWidth, tileHeight, width, height);
-		pt_TR = Position.screenToMemory(cam, MyGame.X_WINDOW, 0, tileWidth, tileHeight, width, height);
-		pt_BR = Position.screenToMemory(cam, MyGame.X_WINDOW, MyGame.Y_WINDOW + margin, tileWidth, tileHeight, width, height);
+		pt_TL = Position.screenToMemory(cam, 0, 0);
+		pt_BL = Position.screenToMemory(cam, 0, MyGame.Y_WINDOW + margin);
+		pt_TR = Position.screenToMemory(cam, MyGame.X_WINDOW, 0);
+		pt_BR = Position.screenToMemory(cam, MyGame.X_WINDOW, MyGame.Y_WINDOW + margin);
 		
 		int startRenderX = pt_TL.x; // tile de début de rendu X
 		int startRenderY = pt_TR.y; // tile de début de rendu Y

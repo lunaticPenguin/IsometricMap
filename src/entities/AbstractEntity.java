@@ -124,6 +124,11 @@ public abstract class AbstractEntity {
 		this.s.y = y;
 	}
 
+	public void setM(Vector2i m) {
+		this.m = m;
+		Position.screenToMemory(null, s, m.x, m.y);
+	}
+	
 	public Vector2i getM() {
 		return m;
 	}
@@ -141,7 +146,7 @@ public abstract class AbstractEntity {
 	}
 	
 	public void updateMatrixPosition(Camera cam) {
-		this.m = Position.screenToMemory(cam, s.x, s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		this.m = Position.screenToMemory(cam, s.x, s.y);
 	}
 	
 	/**

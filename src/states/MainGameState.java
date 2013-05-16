@@ -102,14 +102,13 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		Vector2i originPos = Position.memoryToScreen(
 				cam,
 				-Integer.parseInt(map.getMapProperty("focusOriginTileX", "0")),
-				-Integer.parseInt(map.getMapProperty("focusOriginTileY", "0")),
-				Map.mTDim.x,
-				Map.mTDim.y);
+				-Integer.parseInt(map.getMapProperty("focusOriginTileY", "0"))
+		);
 		
 		
 		cam.focusOn(originPos);
 		
-		mPos = new MousePosition(cam, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		mPos = new MousePosition(cam);
 		
 		// gestion des différentes scenes
 		scenes = new ArrayList<Scene>();
@@ -118,7 +117,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		objCreatureManager = CreatureManager.getInstance();
 		
 		bonomeTest = objCreatureManager.addEntity("jidiako");
-		bonomeTest.setS(Position.memoryToScreen(null, 0, 0, Map.mTDim.x, Map.mTDim.y));
+		bonomeTest.setM(new Vector2i(2, 7));
 		bonomeTest.setIsDiplayed(true);
 	}
 
@@ -185,16 +184,16 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-			Path tmpPath = map.findPath(new Vector2i(2, 7), destPosition, Map.TILE_GROUND);
+			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+			Path tmpPath = map.findPath(bonomeTest.getM(), destPosition, Map.TILE_GROUND);
 			if (tmpPath != null) {
-				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + destPosition + " :)");
+				System.out.println("Yuhuu il y a un chemin entre [" + bonomeTest.getM() + "] et " + destPosition + " :)");
 				for (PathNode tmpPos : tmpPath) {
 					System.out.println("\tpath position : " + tmpPos.getM());
-					objCreatureManager.manageUnitMoves();
+					objCreatureManager.manageUnitMoves(tmpPath);
 				}
 			} else {
-				System.out.println("Il n'y a pas de chemin entre [2;7] et " + destPosition + " :(");
+				System.out.println("Il n'y a pas de chemin entre [" + bonomeTest.getM() + "] et " + destPosition + " :(");
 			}
 		}
 	}
@@ -233,8 +232,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	protected void renderMouseTile(Graphics g) {
 		
 		// on récupère les positions idéales de la souris depuis ses coordonnées isométriques
-		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y, Map.mTDim.x, Map.mTDim.y);
+		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y);
 		
 		if (!map.isTileBlocked(mPos.m.x, mPos.m.y)) {
 			g.drawLine(mousePosP.x, mousePosP.y - Map.mTDim.y, mousePosP.x + Map.mTDim.x, mousePosP.y);

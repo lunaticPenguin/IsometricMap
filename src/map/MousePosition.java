@@ -28,18 +28,14 @@ public class MousePosition {
 	/**
 	 * Créé un gestionnaire de position de la souris
 	 * @param cam caméra pour l'offset
-	 * @param tileWidth
-	 * @param tileHeight
-	 * @param mapWidth
-	 * @param mapHeight
 	 */
-	public MousePosition(Camera cam, int tileWidth, int tileHeight, int mapWidth, int mapHeight) {
+	public MousePosition(Camera cam) {
 		s = new Vector2i();
 		m = new Vector2i();
 		
-		tileDim = new Vector2i(tileWidth, tileHeight);
-		tileMiDim = new Vector2i(tileWidth/2, tileHeight/2);
-		mapDim = new Vector2i(mapWidth, mapHeight);
+		tileDim = new Vector2i(Map.tDim.x, Map.tDim.y);
+		tileMiDim = new Vector2i(Map.mTDim.x, Map.mTDim.y);
+		mapDim = new Vector2i(Map.mDim.x, Map.mDim.y);
 
 		m.setXRange(0, mapDim.x);
 		m.setYRange(0, mapDim.y);
@@ -96,7 +92,7 @@ public class MousePosition {
 	 * /!\ Modify directly internal attributes according to a tile dimensions
 	 */
 	protected void computeS() {
-		Position.memoryToScreen(cam, s, m.x, m.y, tileMiDim.x, tileMiDim.y);
+		Position.memoryToScreen(cam, s, m.x, m.y);
 	}
 	
 	/**
@@ -104,6 +100,6 @@ public class MousePosition {
 	 * /!\ Modify directly internal attributes according to a tile dimensions.
 	 */
 	protected void computeM() {
-		Position.screenToMemory(cam, m, s.x, s.y, tileDim.x, tileDim.y, mapDim.x, mapDim.y);
+		Position.screenToMemory(cam, m, s.x, s.y);
 	}
 }
