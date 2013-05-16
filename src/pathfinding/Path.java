@@ -27,10 +27,20 @@ public class Path extends LinkedList<PathNode> {
 	 * @param node
 	 * @param cost
 	 */
-	public void addLast(PathNode node, int cost) {
+	public void addFirst(PathNode node, int cost) {
+		
 		if (!checkDoubleNodes.contains(node.getM())) {
+			
+			if (isEmpty()) {
+				node.setNextNode(null);
+			} else {
+				PathNode tmpNode = getFirst();
+				tmpNode.setPreviousNode(node);
+				node.setNextNode(tmpNode);
+			}
+			
 			this.cost += cost;
-			addLast(node);
+			addFirst(node);
 			checkDoubleNodes.add(node.getM());
 		}
 	}

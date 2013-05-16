@@ -1,6 +1,5 @@
 package pathfinding;
 
-import map.Map;
 import tools.Position;
 import tools.Vector2i;
 
@@ -11,6 +10,16 @@ public class PathNode {
 	
 	private Vector2i s;
 	private Vector2i m;
+	
+	/**
+	 * Noeud précèdent dans le path
+	 */
+	private PathNode previousNode;
+	
+	/**
+	 * Noeud suivant dans le path
+	 */
+	private PathNode nextNode;
 	
 	public PathNode(Vector2i pos, int posType) {
 		switch (posType) {
@@ -26,6 +35,8 @@ public class PathNode {
 			computeS();
 			break;
 		}
+		previousNode = null;
+		nextNode = null;
 	}
 	
 	/**
@@ -60,7 +71,7 @@ public class PathNode {
 	 * /!\ Modify directly internal attributes according to a tile dimensions
 	 */
 	protected void computeS() {
-		s = Position.memoryToScreen(null, s, m.x, m.y, Map.mTDim.x, Map.mTDim.y);
+		s = Position.memoryToScreen(null, s, m.x, m.y);
 	}
 	
 	/**
@@ -68,6 +79,34 @@ public class PathNode {
 	 * /!\ Modify directly internal attributes according to a tile dimensions.
 	 */
 	protected void computeM() {
-		m = Position.screenToMemory(null, m, s.x, s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		m = Position.screenToMemory(null, m, s.x, s.y);
+	}
+
+	/**
+	 * @return the previousNode
+	 */
+	public PathNode getPreviousNode() {
+		return previousNode;
+	}
+
+	/**
+	 * @param previousNode the previousNode to set
+	 */
+	public void setPreviousNode(PathNode previousNode) {
+		this.previousNode = previousNode;
+	}
+
+	/**
+	 * @return the nextNode
+	 */
+	public PathNode getNextNode() {
+		return nextNode;
+	}
+
+	/**
+	 * @param nextNode the nextNode to set
+	 */
+	public void setNextNode(PathNode nextNode) {
+		this.nextNode = nextNode;
 	}
 }
