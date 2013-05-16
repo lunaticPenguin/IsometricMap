@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import main.MyGame;
 import map.Camera;
-import map.Map;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
@@ -126,7 +125,7 @@ public abstract class AbstractEntity {
 
 	public void setM(Vector2i m) {
 		this.m = m;
-		Position.screenToMemory(null, s, m.x, m.y);
+		s = Position.memoryToScreen(null, m.x, m.y);
 	}
 	
 	public Vector2i getM() {
