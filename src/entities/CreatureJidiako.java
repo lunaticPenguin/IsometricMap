@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.state.StateBasedGame;
 
 import resources.AnimationManager;
 import tools.Vector2i;
@@ -57,7 +59,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		s.x = 0;
 		s.y = 0;
 		
-		speedMove = 1.5f;
+		speedMove = 0.05f;
 		
 		isDisplayed = false;
 		isMoving = false;
@@ -89,7 +91,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
+	public void update(GameContainer container, StateBasedGame game, int delta) {
+		super.update(container, game, delta);
 	}
 }

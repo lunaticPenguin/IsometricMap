@@ -73,16 +73,13 @@ public abstract class AbstractManager<T> {
 	
 	
 	/**
-	 * TODO
 	 * Permet de mettre à jour l'ensemble des entités en cours dans l'application
 	 * 
 	 * @param container
 	 * @param game
 	 * @param delta
 	 */
-	public void update(GameContainer container, StateBasedGame game, int delta) {
-		
-	}
+	public abstract void update(GameContainer container, StateBasedGame game, int delta);
 	
 	
 	/**

@@ -147,7 +147,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.setS(input.getMouseX(), input.getMouseY());
 		mPos.m.checkRanges();
 		
-		jidokiaTestMoves();
 		objCreatureManager.update(container, game, delta);
 	}
 	
@@ -192,6 +191,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + destPosition + " :)");
 				for (PathNode tmpPos : tmpPath) {
 					System.out.println("\tpath position : " + tmpPos.getM());
+					objCreatureManager.manageUnitMoves();
 				}
 			} else {
 				System.out.println("Il n'y a pas de chemin entre [2;7] et " + destPosition + " :(");

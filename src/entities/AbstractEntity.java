@@ -8,7 +8,9 @@ import map.Camera;
 import map.Map;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
 
 import tools.Position;
 import tools.Vector2i;
@@ -17,6 +19,8 @@ public abstract class AbstractEntity {
 	
 	/**
 	 * Les 8 différentes directions
+	 * /!\ les directions ne sont pas translatés à l'orientation isométrique
+	 * de la map (le Nord est le nord commun (<=> vers le haut))
 	 */
 	public static final int DIRECTION_NORTH = 0;
 	public static final int DIRECTION_NORTHEAST = 1;
@@ -193,7 +197,7 @@ public abstract class AbstractEntity {
 	 * 
 	 * @param delta
 	 */
-	abstract public void update(int delta);
+	abstract public void update(GameContainer container, StateBasedGame game, int delta);
 	
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran
