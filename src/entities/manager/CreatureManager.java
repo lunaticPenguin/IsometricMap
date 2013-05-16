@@ -79,7 +79,7 @@ public class CreatureManager extends AbstractManager<AbstractCreatureEntity> {
 			entityTypeIterator = pairEntityCollection.getValue().iterator();
 			while (entityTypeIterator.hasNext()) {
 				entityType = entityTypeIterator.next();
-				//entityType.setCurrentPath(pathToFollow);
+				entityType.setCurrentPath(pathToFollow);
 			}
 		}
 	}
