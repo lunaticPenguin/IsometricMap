@@ -104,7 +104,7 @@ public class Map extends TiledMapPlus {
 		}
 		
 		loadBlockedTiles();
-		computeTransitiveClosure();
+		//computeTransitiveClosure();
 		
 		refPathFinder = new PathFinder(this);
 	}
@@ -297,15 +297,15 @@ public class Map extends TiledMapPlus {
 						int value = 0;
 						if (getTileProperty(id, "ground_stop", "").equals("true")) {
 							value = 0x01;
-							setTileBlocked(x, y, TILE_GROUND);
+							//setTileBlocked(x, y, TILE_GROUND);
 						}
 						if (getTileProperty(id, "air_stop", "").equals("true")) {
 							value |= 0x02;
-							setTileBlocked(x, y, TILE_AIR);
+							//setTileBlocked(x, y, TILE_AIR);
 						}
 						if (getTileProperty(id, "water_stop", "").equals("true")) {
 							value |= 0x04;
-							setTileBlocked(x, y, TILE_WATER);
+							//setTileBlocked(x, y, TILE_WATER);
 						}
 						blocked[x][y] = value;
 					}
@@ -387,10 +387,12 @@ public class Map extends TiledMapPlus {
 	 * @param int mapType type de map testée (GROUND,AIR,WATER...)
 	 */
 	public boolean hasPath(int xStart, int yStart, int xEnd, int yEnd, int mapType) {
-		
+		return true;
+		/*
 		int start = convertOrthoToSquareExpOrtho(xStart, yStart);
 		int end = convertOrthoToSquareExpOrtho(xEnd, yEnd);
 		return transitiveClosureMatrix.get(mapType)[start][end];
+		*/
 	}
 	
 	/**
