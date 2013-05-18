@@ -5,6 +5,12 @@ import org.newdawn.slick.util.Log;
 import tools.Vector2i;
 
 public abstract class AbstractZoneDetection {
+	
+	public AbstractZoneDetection() {
+		s = new Vector2i();
+		zoneDim = new Vector2i();
+	}
+	
 	/**
 	 * Pixel position on screen
 	 */
@@ -56,7 +62,7 @@ public abstract class AbstractZoneDetection {
 	}
 	
 	/**
-	 * Permet de savoir si une collision n'a pas été implémentée
+	 * Méthode par défaut permettant de savoir si une collision n'a pas été implémentée
 	 * @param zone
 	 * @return boolean
 	 */

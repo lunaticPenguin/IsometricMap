@@ -13,7 +13,10 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 	public boolean isColliding(SquareDetectionZone otherZone) {
 		return (s.x > otherZone.getS().x && s.x < otherZone.getS().x + otherZone.getZoneDim().x)
 				&& (s.y > otherZone.getS().y && s.y < otherZone.getS().y + otherZone.getZoneDim().y)
-				|| otherZone.isColliding(this);
+				|| 
+				(otherZone.getS().x > s.x && otherZone.getS().x < s.x + zoneDim.x)
+				&& (otherZone.getS().y > s.y && otherZone.getS().y < s.y + zoneDim.y)
+				;
 	}
 	
 	/**
