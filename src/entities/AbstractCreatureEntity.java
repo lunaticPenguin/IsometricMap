@@ -96,6 +96,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		g.drawLine(cam.x + s.x + offsetX, cam.y + s.y + zoneDim.y + offsetY, cam.x + s.x + offsetX, cam.y + s.y + offsetY);
 		
 		
+		renderCollidingZone(g, cam);
+		
 		// tmp: to render the unit path
 		if (currentPath != null) {
 			
