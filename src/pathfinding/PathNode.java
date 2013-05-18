@@ -1,14 +1,15 @@
 package pathfinding;
 
+import collision.SquareDetectionZone;
+
 import tools.Position;
 import tools.Vector2i;
 
-public class PathNode {
+public class PathNode extends SquareDetectionZone {
 	
 	public static final int PIXEL_POSITION = 0;
 	public static final int ORTHOGONAL_POSITION = 1;
 	
-	private Vector2i s;
 	private Vector2i m;
 	
 	/**
@@ -22,6 +23,7 @@ public class PathNode {
 	private PathNode nextNode;
 	
 	public PathNode(Vector2i pos, int posType) {
+		super();
 		switch (posType) {
 		case PIXEL_POSITION:
 			s = pos;
@@ -37,6 +39,8 @@ public class PathNode {
 		}
 		previousNode = null;
 		nextNode = null;
+		zoneDim.x = 50;
+		zoneDim.y = 50;
 	}
 	
 	/**
@@ -71,7 +75,7 @@ public class PathNode {
 	 * /!\ Modify directly internal attributes according to a tile dimensions
 	 */
 	protected void computeS() {
-		s = Position.memoryToScreen(null, s, m.x, m.y);
+		s = Position.memoryToScreen(null, m.x, m.y);
 	}
 	
 	/**
@@ -79,7 +83,7 @@ public class PathNode {
 	 * /!\ Modify directly internal attributes according to a tile dimensions.
 	 */
 	protected void computeM() {
-		m = Position.screenToMemory(null, m, s.x, s.y);
+		m = Position.screenToMemory(null, s.x, s.y);
 	}
 
 	/**

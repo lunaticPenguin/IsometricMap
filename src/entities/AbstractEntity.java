@@ -11,10 +11,21 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
+import collision.SquareDetectionZone;
+
 import tools.Position;
 import tools.Vector2i;
 
-public abstract class AbstractEntity {
+public abstract class AbstractEntity extends SquareDetectionZone {
+	
+	/**
+	 * Offset pour centrer les unités par rapport au décalage imposé
+	 * par leur animations.
+	 * Chaque type d'unités doit le redéfinir.
+	 */
+	protected int offsetX;
+	protected int offsetY;
+	
 	
 	/**
 	 * Les 8 différentes directions
@@ -42,19 +53,9 @@ public abstract class AbstractEntity {
 	protected String state;
 	
 	/**
-	 * Pixel position on screen
-	 */
-	protected Vector2i s;
-	
-	/**
 	 * Matrix position in memory
 	 */
 	protected Vector2i m;
-	
-	/**
-	 * Rendered square dimension
-	 */
-	protected Vector2i dim;
 	
 	/**
 	 * entity life
@@ -109,20 +110,7 @@ public abstract class AbstractEntity {
 	public void setState(String state) {
 		this.state = state;
 	}
-
-	public Vector2i getS() {
-		return s;
-	}
-
-	public void setS(Vector2i s) {
-		this.s = s;
-	}
 	
-	public void setS(int x, int y) {
-		this.s.x = x;
-		this.s.y = y;
-	}
-
 	public void setM(Vector2i m) {
 		this.m = m;
 		s = Position.memoryToScreen(null, m.x, m.y);
@@ -130,14 +118,6 @@ public abstract class AbstractEntity {
 	
 	public Vector2i getM() {
 		return m;
-	}
-
-	public Vector2i getDim() {
-		return dim;
-	}
-
-	public void setDim(Vector2i dim) {
-		this.dim = dim;
 	}
 	
 	public void setIsDiplayed(boolean isDisplayed) {

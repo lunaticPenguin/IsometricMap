@@ -1,6 +1,9 @@
 package entities;
 
+import java.util.Iterator;
+
 import map.Camera;
+import map.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -8,7 +11,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import pathfinding.Path;
 import pathfinding.PathNode;
-import tools.Randomizer;
+
+import tools.Vector2i;
 
 public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
 	/**
@@ -26,15 +30,27 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 */
 	protected float speedMove;
 	
-
-	protected int nextSX;
-	protected int nextSY;
-
-	protected int nextMX;
-	protected int nextMY;
+	/**
+	 * Positions pixels
+	 * du prochain noeud de passage
+	 */
+	protected Vector2i nextNodeS;
+	
+	/**
+	 * Positions orthogonales
+	 * du prochain noeud de passage
+	 */
+	protected Vector2i nextNodeM;
 	
 	protected Path currentPath;
 	protected PathNode currentNode;
+	
+	public AbstractCreatureEntity() {
+		super();
+		nextNodeS = new Vector2i();
+		nextNodeM = new Vector2i();
+	}
+	
 	
 	/**
 	 * Si l'entité se déplace
@@ -48,38 +64,23 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta) {
+		
 		if (isMoving) {
+			
+			int offsetX = nextNodeS.x - s.x;
+			int offsetY = nextNodeS.y - s.y;
+			offsetY = offsetY != 0 ? offsetY : 1;
+			
+			double angle = Math.atan2(offsetY, offsetX) * 57.3;
+			angle = (angle < 0) ? angle + 360 : angle;
+			direction = ((int) Math.ceil(angle / 45) + 2) % 8; // 360 / 8 = 45
+			
+			int ratioMove = offsetX / offsetY;
+			
 			determineDirection();
-			switch (direction) {
-			case 0: // north
-				s.y -= Math.ceil(delta * speedMove * 1);
-				break;
-			case 1: // northeast
-				s.x += Math.ceil(delta * speedMove * 2);
-				s.y -= Math.ceil(delta * speedMove * 1);
-			break;
-			case 2: // east
-				s.x += Math.ceil(delta * speedMove * 2);
-			break;
-			case 3: // southeast
-				s.x += Math.ceil(delta * speedMove * 2);
-				s.y += Math.ceil(delta * speedMove * 1);
-			break;
-			case 4: // south
-				s.y += Math.ceil(delta * speedMove * 1);
-			break;
-			case 5: // southwest
-				s.x -= Math.ceil(delta * speedMove * 2);
-				s.y += Math.ceil(delta * speedMove * 1);
-			break;
-			case 6: // west
-				s.x -= Math.ceil(delta * speedMove * 2);
-			break;
-			case 7: // northwest
-				s.x -= Math.ceil(delta * speedMove * 2);
-				s.y -= Math.ceil(delta * speedMove * 1);
-			break;
-			}
+			
+			//s.x += delta * speedMove * 2 * ratioMove;
+			//s.y += delta * speedMove * ratioMove;
 		}
 	}
 	
@@ -89,10 +90,37 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param cam
 	 */
 	public void draw(Graphics g, Camera cam) {
+		g.drawLine(cam.x + s.x + offsetX, cam.y + s.y + offsetY, cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + offsetY);
+		g.drawLine(cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + offsetY, cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + zoneDim.y + offsetY);
+		g.drawLine(cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + zoneDim.y + offsetY, cam.x + s.x + offsetX, cam.y + s.y + zoneDim.y + offsetY);
+		g.drawLine(cam.x + s.x + offsetX, cam.y + s.y + zoneDim.y + offsetY, cam.x + s.x + offsetX, cam.y + s.y + offsetY);
+		
+		
+		// tmp: to render the unit path
+		if (currentPath != null) {
+			
+			Iterator<PathNode> tmpIt = currentPath.iterator();
+			PathNode tmpNode = null;
+			
+			while (tmpIt.hasNext()) {
+				tmpNode = tmpIt.next();
+				
+				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y, cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y);
+				g.drawLine(cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y);
+				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y, cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y);
+				g.drawLine(cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y);
+				g.drawLine(
+						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y,
+						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y
+				);
+
+			}
+		}
+		
 		if (isMoving) {
-			this.getCurrentAnimation().draw(cam.x + s.x, cam.y + s.y);
+			this.getCurrentAnimation().draw(cam.x + s.x + offsetX, cam.y + s.y + offsetY);
 		} else {
-			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x, cam.y + s.y);
+			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x + offsetX, cam.y + s.y + offsetY);
 		}
 	}
 	
@@ -105,155 +133,51 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 */
 	private void determineDirection() {
 		
-		if (s.x == nextSX && s.y == nextSY) {
-			
+		if (this.isColliding(currentNode)) {
+			System.out.println("HE IS COLLIDING! :)");
 			PathNode nextNode = currentNode.getNextNode();
 			if (nextNode == null) {
 				System.out.println("Arrivé à la fin :)");
 				currentPath = null;
 				isMoving = false;
 			} else {
+				m = currentNode.getM();
 				setCurrentNode(nextNode);
+				System.out.println("achieving node ("+m+"). Take a look for another node ("+nextNode.getM()+").");
+				//System.out.println("(" + s + " -> " + nextNodeS + " (" +nextNodeM+ ")) - " + direction);
 			}
 		}
-		
-		boolean boolOnLeft = s.x < nextSX;
-		boolean boolOnTop = s.y < nextSY;
+	}
 
-		boolean boolOnVAxis = s.x > nextSX - 5 && s.x < nextSX + 5;
-		boolean boolOnHAxis = s.y > nextSY - 5 && s.y < nextSY + 5;
-		String debugDest = "autre cas";
-		
-		int tmpRatio = 0;
-		int divider = 1;
-		
-		System.out.println(s + " -> (" + nextSX + ";" + nextSY + ") : ");
-		
-		 	if (boolOnVAxis && boolOnTop) { // middle top
-				direction = DIRECTION_SOUTH;
-				debugDest = "vers le bas";
-			} else if (boolOnVAxis && !boolOnTop) { // middle bottom
-				direction = DIRECTION_NORTH;
-				debugDest = "vers le haut";
-			} else if (boolOnHAxis && boolOnLeft) { // middle left
-				direction = DIRECTION_EAST;
-				debugDest = "vers la gauche";
-			} else if (boolOnHAxis && !boolOnLeft) { // middle right
-				direction = DIRECTION_WEST;
-				debugDest = "vers la droite";
-			}
-		 	
-			System.out.println(s + " -> (" + nextSX + ";" + nextSY + ") : " + debugDest);
-		 	
-		 	/* else if (boolOnLeft && boolOnTop) { // top left (OK)
-			
-			divider = nextSY - s.y;
-			divider = divider == 0 ? 1 : divider;
-			
-			tmpRatio = (nextSX - s.x)/divider;
-			if (tmpRatio < 0.25f) {
-				direction = DIRECTION_EAST;
-			} else if (tmpRatio > 1) {
-				direction = DIRECTION_SOUTH;
-			} else {
-				direction = DIRECTION_SOUTHEAST;
-			}
-		} else if (boolOnLeft && !boolOnTop) { // bottom left (OK)
-			
-			divider = s.y - nextSY;
-			divider = divider == 0 ? 1 : divider;
-			
-			tmpRatio = (nextSX - s.x)/divider;
-			if (tmpRatio < 0.25f) {
-				direction = DIRECTION_EAST;
-			} else if (tmpRatio > 1) {
-				direction = DIRECTION_NORTH;
-			} else {
-				direction = DIRECTION_NORTHEAST;
-			}
-		} else if (!boolOnLeft && boolOnTop) { // top right (OK /!\)
-			
-			divider = nextSY - s.y;
-			divider = divider == 0 ? 1 : divider;
-			
-			tmpRatio = (s.x - nextSX)/divider;
-			if (tmpRatio < 0.25f) {
-				direction = DIRECTION_WEST;
-			} else if (tmpRatio > 1) {
-				direction = DIRECTION_SOUTH;
-			} else {
-				direction = DIRECTION_SOUTHWEST;
-			}
-		} else if (!boolOnLeft && !boolOnTop) { // bottom right (OK)
-			
-			divider = s.y - nextSY;
-			divider = divider == 0 ? 1 : divider;
-			
-			tmpRatio = (s.x - nextSX)/divider;
-			if (tmpRatio < 0.25f) {
-				direction = DIRECTION_WEST;
-			} else if (tmpRatio > 1) {
-				direction = DIRECTION_NORTH;
-			} else {
-				direction = DIRECTION_NORTHWEST; // sinon en diagonale :)
-			}
-		}*/
+	
+
+
+	/**
+	 * @return the nextNodeS
+	 */
+	public Vector2i getNextNodeS() {
+		return nextNodeS;
 	}
 
 	/**
-	 * @return the nextSX
+	 * @param nextNodeS the nextNodeS to set
 	 */
-	public int getNextSX() {
-		return nextSX;
+	public void setNextNodeS(Vector2i nextNodeS) {
+		this.nextNodeS = nextNodeS;
 	}
 
 	/**
-	 * @param nextSX the nextSX to set
+	 * @return the nextNodeM
 	 */
-	public void setNextSX(int nextSX) {
-		this.nextSX = nextSX;
+	public Vector2i getNextNodeM() {
+		return nextNodeM;
 	}
 
 	/**
-	 * @return the nextSY
+	 * @param nextNodeM the nextNodeM to set
 	 */
-	public int getNextSY() {
-		return nextSY;
-	}
-
-	/**
-	 * @param nextSY the nextSY to set
-	 */
-	public void setNextSY(int nextSY) {
-		this.nextSY = nextSY;
-	}
-
-	/**
-	 * @return the nextMX
-	 */
-	public int getNextMX() {
-		return nextMX;
-	}
-
-	/**
-	 * @param nextMX the nextMX to set
-	 */
-	public void setNextMX(int nextMX) {
-		this.nextMX = nextMX;
-	}
-
-	/**
-	 * @return the nextMY
-	 */
-	public int getNextMY() {
-		return nextMY;
-	}
-
-	/**
-	 * @param nextMY the nextMY to set
-	 */
-	public void setNextMY(int nextMY) {
-		this.nextMY = nextMY;
+	public void setNextNodeM(Vector2i nextNodeM) {
+		this.nextNodeM = nextNodeM;
 	}
 
 	/**
@@ -286,8 +210,9 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		this.currentNode = currentNode;
 		
 		// ajout d'un peu d'alétoire pour pimenter la chose :)
-		nextSX = currentNode.getS().x + Randomizer.getInstance().generateRangedInt(-5, 5);
-		nextSY = currentNode.getS().y + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.x = currentNode.getS().x;// + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.y = currentNode.getS().y;// + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeM = currentNode.getM();
 	}
 	
 	

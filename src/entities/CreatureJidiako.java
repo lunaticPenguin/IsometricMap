@@ -15,7 +15,7 @@ import tools.Vector2i;
  * @author Corentin Legros
  */
 public class CreatureJidiako extends AbstractCreatureEntity {
-
+	
 	/**
 	 * Tableau d'animation en corrélation directe avec
 	 * l'attribut spritesStates
@@ -26,9 +26,16 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	
 	
 	public CreatureJidiako() {
+		super();
 		
 		s = new Vector2i();
 		m = new Vector2i();
+		
+		offsetX = -25;
+		offsetY = -40;
+		
+		zoneDim.x = 50;
+		zoneDim.y = 50;
 		
 		init();
 	}
