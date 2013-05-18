@@ -113,7 +113,7 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y,
 						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y
 				);
-
+				tmpNode.renderCollidingZone(g, cam);
 			}
 		}
 		

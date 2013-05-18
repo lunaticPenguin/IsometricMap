@@ -1,5 +1,6 @@
 package collision;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.util.Log;
 
 import tools.Vector2i;
@@ -70,4 +71,12 @@ public abstract class AbstractZoneDetection {
 		Log.warn("No collision type implemented");
 		return true;
 	}
+	
+	
+	/**
+	 * Permet d'afficher la zone de collision d'une entité sujette aux collisions
+	 * @param Graphics g
+	 * @param Vector2i offset
+	 */
+	public abstract void renderCollidingZone(Graphics g, Vector2i offset);
 }
