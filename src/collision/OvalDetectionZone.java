@@ -1,6 +1,7 @@
 package collision;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.util.Log;
 
 import tools.Vector2i;
 
@@ -25,5 +26,12 @@ public class OvalDetectionZone extends AbstractZoneDetection {
 			offset = new Vector2i();
 		}
 		g.drawOval(offset.x + s.x, offset.y + s.y, zoneDim.x, zoneDim.y);
+	}
+
+
+	@Override
+	public boolean isColliding(Vector2i point) {
+		Log.warn("NO VECTOR2I COLLISION DETECTION WITH OVAL SHAPE");
+		return false;
 	}
 }
