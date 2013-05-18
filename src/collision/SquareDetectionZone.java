@@ -34,6 +34,17 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 	}
 	
 	/**
+	 * Méthode de détecter la collision entre une rectangle et un point
+	 * 
+	 * @param zone
+	 * @return boolean
+	 */
+	public boolean isColliding(Vector2i point) {
+		return (point.x > s.x && point.x < s.x + zoneDim.x)
+				&& (point.y > s.y && point.y < s.y + zoneDim.y);
+	}
+	
+	/**
 	 * Permet d'afficher la zone de collision d'une entité rectangulaire
 	 * sujette aux collisions
 	 * 

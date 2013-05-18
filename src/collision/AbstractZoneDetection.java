@@ -63,14 +63,24 @@ public abstract class AbstractZoneDetection {
 	}
 	
 	/**
-	 * Méthode par défaut permettant de savoir si une collision n'a pas été implémentée
+	 * Méthode par défaut permettant de savoir si une détection de collision 
+	 * utilisant un objet de type AbstractZoneDetection n'a pas été implémentée
+	 * 
 	 * @param zone
 	 * @return boolean
 	 */
 	public boolean isColliding(AbstractZoneDetection zone) {
-		Log.warn("No collision type implemented");
-		return true;
+		Log.warn("No collision detection using AbstractZoneDetection type implemented");
+		return false;
 	}
+	
+	/**
+	 * Méthode de détecter la collision entre une forme et un point
+	 * 
+	 * @param zone
+	 * @return boolean
+	 */
+	public abstract boolean isColliding(Vector2i point);
 	
 	
 	/**
