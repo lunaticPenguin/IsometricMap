@@ -31,11 +31,13 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		s = new Vector2i();
 		m = new Vector2i();
 		
-		offsetX = -25;
-		offsetY = -40;
+		displayingOffset.x = -25;
+		displayingOffset.y = -40;
 		
-		zoneDim.x = 50;
-		zoneDim.y = 50;
+		zoneDim.x = 10;
+		zoneDim.y = 16;
+		zoneOffset.x = 20;
+		zoneOffset.y = 28;
 		
 		init();
 	}

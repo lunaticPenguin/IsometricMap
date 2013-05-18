@@ -18,14 +18,6 @@ import tools.Vector2i;
 
 public abstract class AbstractEntity extends SquareDetectionZone {
 	
-	/**
-	 * Offset pour centrer les unités par rapport au décalage imposé
-	 * par leur animations.
-	 * Chaque type d'unités doit le redéfinir.
-	 */
-	protected int offsetX;
-	protected int offsetY;
-	
 	
 	/**
 	 * Les 8 différentes directions

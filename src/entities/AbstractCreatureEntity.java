@@ -90,13 +90,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param cam
 	 */
 	public void draw(Graphics g, Camera cam) {
-		g.drawLine(cam.x + s.x + offsetX, cam.y + s.y + offsetY, cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + offsetY);
-		g.drawLine(cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + offsetY, cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + zoneDim.y + offsetY);
-		g.drawLine(cam.x + s.x + zoneDim.x + offsetX, cam.y + s.y + zoneDim.y + offsetY, cam.x + s.x + offsetX, cam.y + s.y + zoneDim.y + offsetY);
-		g.drawLine(cam.x + s.x + offsetX, cam.y + s.y + zoneDim.y + offsetY, cam.x + s.x + offsetX, cam.y + s.y + offsetY);
 		
-		
-		renderCollidingZone(g, cam);
+		this.renderCollidingZone(g, cam);
 		
 		// tmp: to render the unit path
 		if (currentPath != null) {
@@ -120,9 +115,9 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		}
 		
 		if (isMoving) {
-			this.getCurrentAnimation().draw(cam.x + s.x + offsetX, cam.y + s.y + offsetY);
+			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {
-			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x + offsetX, cam.y + s.y + offsetY);
+			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		}
 	}
 	
@@ -216,6 +211,4 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		nextNodeS.y = currentNode.getS().y;// + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeM = currentNode.getM();
 	}
-	
-	
 }

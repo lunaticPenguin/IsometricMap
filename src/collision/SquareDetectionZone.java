@@ -55,10 +55,20 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 		if (offset == null) {
 			offset = new Vector2i();
 		}
+		
 
-		g.drawLine(offset.x + s.x, offset.y + s.y, offset.x + s.x + zoneDim.x, offset.y + s.y);
-		g.drawLine(offset.x + s.x + zoneDim.x, offset.y + s.y, offset.x + s.x + zoneDim.x, offset.y + s.y + zoneDim.y);
-		g.drawLine(offset.x + s.x + zoneDim.x, offset.y + s.y + zoneDim.y, offset.x + s.x, offset.y + s.y + zoneDim.y);
-		g.drawLine(offset.x + s.x, offset.y + s.y + zoneDim.y, offset.x + s.x, offset.y + s.y);
+		Vector2i a = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x,
+				displayingOffset.y + offset.y + zoneOffset.y + s.y);
+		Vector2i b = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x + zoneDim.x,
+				displayingOffset.y + offset.y + zoneOffset.y + s.y);
+		Vector2i c = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x + zoneDim.x,
+				displayingOffset.y + offset.y + zoneOffset.y + s.y + zoneDim.y);
+		Vector2i d = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x,
+				displayingOffset.y + offset.y + zoneOffset.y + s.y + zoneDim.y);
+
+		g.drawLine( a.x, a.y, b.x, b.y);
+		g.drawLine( b.x, b.y, c.x, c.y);
+		g.drawLine( c.x, c.y, d.x, d.y);
+		g.drawLine( d.x, d.y, a.x, a.y);
 	}
 }

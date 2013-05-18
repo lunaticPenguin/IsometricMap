@@ -39,8 +39,12 @@ public class PathNode extends SquareDetectionZone {
 		}
 		previousNode = null;
 		nextNode = null;
-		zoneDim.x = 50;
-		zoneDim.y = 50;
+		
+		// spécification de la zone de collision
+		zoneOffset.x = -32;
+		zoneOffset.y = -16;
+		zoneDim.x = 64;
+		zoneDim.y = 32;
 	}
 	
 	/**
