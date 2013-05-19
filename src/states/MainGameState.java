@@ -216,14 +216,23 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isKeyPressed(Input.KEY_E)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHEAST);
 			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_D)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_X)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHEAST);
+			bonomeTest.setIsMoving(true);
 		} else if (input.isKeyPressed(Input.KEY_S)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTH);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_W)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHWEST);
 			bonomeTest.setIsMoving(true);
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_WEST);
 			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_D)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
+		} else if (input.isKeyPressed(Input.KEY_A)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHWEST);
 			bonomeTest.setIsMoving(true);
 		}
 	}
