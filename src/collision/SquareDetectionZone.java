@@ -19,13 +19,13 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 		int sX = displayingOffset.x + zoneOffset.x + s.x;
 		int sY = displayingOffset.y + zoneOffset.y + s.y;
 		
-		int oX = otherZone.displayingOffset.x + otherZone.zoneOffset.x + s.x;
-		int oY = otherZone.displayingOffset.y + otherZone.zoneOffset.y + s.y;
+		int oX = otherZone.displayingOffset.x + otherZone.zoneOffset.x + otherZone.s.x;
+		int oY = otherZone.displayingOffset.y + otherZone.zoneOffset.y + otherZone.s.y;
 		
-		return !(oX >= sX + zoneDim.x) // trop à droite
-				|| (oX + otherZone.zoneDim.x <= oX) // trop à gauche
+		return !((oX >= sX + zoneDim.x) // trop à droite
+				|| (oX + otherZone.zoneDim.x <= sX) // trop à gauche
 				|| (oY >= sY + zoneDim.y) // trop en bas
-				|| (oY + otherZone.zoneDim.y <= oY); // trop en haut
+				|| (oY + otherZone.zoneDim.y <= sY)); // trop en haut
 	}
 	
 	/**
