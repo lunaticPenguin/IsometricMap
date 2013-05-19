@@ -92,6 +92,20 @@ public abstract class AbstractZoneDetection {
 		this.s.x = x;
 		this.s.y = y;
 	}
+	
+	/**
+	 * @return the displayingOffset
+	 */
+	public Vector2i getDisplayingOffset() {
+		return displayingOffset;
+	}
+
+	/**
+	 * @param displayingOffset the displayingOffset to set
+	 */
+	public void setDisplayingOffset(Vector2i displayingOffset) {
+		this.displayingOffset = displayingOffset;
+	}
 
 	/**
 	 * @return the zoneDim
