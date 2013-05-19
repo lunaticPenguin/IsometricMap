@@ -15,12 +15,17 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 	 * @return boolean
 	 */
 	public boolean isColliding(SquareDetectionZone otherZone) {
-		return (s.x > otherZone.getS().x && s.x < otherZone.getS().x + otherZone.getZoneDim().x)
-				&& (s.y > otherZone.getS().y && s.y < otherZone.getS().y + otherZone.getZoneDim().y)
-				|| 
-				(otherZone.getS().x > s.x && otherZone.getS().x < s.x + zoneDim.x)
-				&& (otherZone.getS().y > s.y && otherZone.getS().y < s.y + zoneDim.y)
-				;
+		
+		int sX = displayingOffset.x + zoneOffset.x + s.x;
+		int sY = displayingOffset.y + zoneOffset.y + s.y;
+		
+		int oX = otherZone.displayingOffset.x + otherZone.zoneOffset.x + s.x;
+		int oY = otherZone.displayingOffset.y + otherZone.zoneOffset.y + s.y;
+		
+		return !(oX >= sX + zoneDim.x) // trop à droite
+				|| (oX + otherZone.zoneDim.x <= oX) // trop à gauche
+				|| (oY >= sY + zoneDim.y) // trop en bas
+				|| (oY + otherZone.zoneDim.y <= oY); // trop en haut
 	}
 	
 	/**
