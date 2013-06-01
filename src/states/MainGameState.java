@@ -31,7 +31,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import pathfinding.Path;
-import pathfinding.PathNode;
 
 //import de.matthiasmann.twl.Button;
 
@@ -117,7 +116,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		objCreatureManager = CreatureManager.getInstance();
 		
 		bonomeTest = objCreatureManager.addEntity("jidiako");
-		bonomeTest.setM(new Vector2i(6, 16));
+		bonomeTest.setM(new Vector2i(10, 1));
 		bonomeTest.setIsDiplayed(true);
 	}
 
