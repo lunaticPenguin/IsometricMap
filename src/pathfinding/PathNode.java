@@ -1,5 +1,7 @@
 package pathfinding;
 
+import org.newdawn.slick.geom.Vector2f;
+
 import collision.SquareDetectionZone;
 
 import tools.Position;
@@ -22,21 +24,38 @@ public class PathNode extends SquareDetectionZone {
 	 */
 	private PathNode nextNode;
 	
-	public PathNode(Vector2i pos, int posType) {
+	/**
+	 * Pathnode constructor using pixels (screen) position.
+	 * @param pos
+	 */
+	public PathNode(Vector2f pos) {
 		super();
-		switch (posType) {
-		case PIXEL_POSITION:
-			s = pos;
-			m = new Vector2i();
-			computeM();
-			break;
-			
-		case ORTHOGONAL_POSITION:
-			m = pos;
-			s = new Vector2i();
-			computeS();
-			break;
-		}
+		
+		s = pos;
+		m = new Vector2i();
+		computeM();
+		
+		previousNode = null;
+		nextNode = null;
+		
+		// spécification de la zone de collision
+		zoneOffset.x = -32;
+		zoneOffset.y = -16;
+		zoneDim.x = 64;
+		zoneDim.y = 32;
+	}
+	
+	/**
+	 * Pathnode constructor using orthogonal position.
+	 * @param pos
+	 */
+	public PathNode(Vector2i pos) {
+		super();
+		
+		m = pos;
+		s = new Vector2f();
+		computeS();
+		
 		previousNode = null;
 		nextNode = null;
 		
@@ -50,13 +69,13 @@ public class PathNode extends SquareDetectionZone {
 	/**
 	 * @return the s
 	 */
-	public Vector2i getS() {
+	public Vector2f getS() {
 		return s;
 	}
 	/**
 	 * @param s the s to set
 	 */
-	public void setS(Vector2i s) {
+	public void setS(Vector2f s) {
 		this.s = s;
 		computeM();
 	}
@@ -79,7 +98,9 @@ public class PathNode extends SquareDetectionZone {
 	 * /!\ Modify directly internal attributes according to a tile dimensions
 	 */
 	protected void computeS() {
-		s = Position.memoryToScreen(null, m.x, m.y);
+		Vector2i tmp = Position.memoryToScreen(null, m.x, m.y);
+		s.x = tmp.x;
+		s.y = tmp.y;
 	}
 	
 	/**
@@ -87,7 +108,7 @@ public class PathNode extends SquareDetectionZone {
 	 * /!\ Modify directly internal attributes according to a tile dimensions.
 	 */
 	protected void computeM() {
-		m = Position.screenToMemory(null, s.x, s.y);
+		m = Position.screenToMemory(null, (int) s.x, (int) s.y);
 	}
 
 	/**

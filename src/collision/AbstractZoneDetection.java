@@ -1,6 +1,7 @@
 package collision;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.util.Log;
 
 import tools.Vector2i;
@@ -22,7 +23,7 @@ public abstract class AbstractZoneDetection {
 	/**
 	 * Pixel position on screen
 	 */
-	protected Vector2i s;
+	protected Vector2f s;
 	
 	/**
 	 * Rendered square dimension
@@ -36,7 +37,7 @@ public abstract class AbstractZoneDetection {
 	public AbstractZoneDetection() {
 		displayingOffset = new Vector2i();
 		zoneOffset = new Vector2i();
-		s = new Vector2i();
+		s = new Vector2f();
 		zoneDim = new Vector2i();
 	}
 	
@@ -71,7 +72,7 @@ public abstract class AbstractZoneDetection {
 	 * Permet d'obtenir la position en pixel de la zone
 	 * @return
 	 */
-	public Vector2i getS() {
+	public Vector2f getS() {
 		return s;
 	}
 	
@@ -79,7 +80,7 @@ public abstract class AbstractZoneDetection {
 	 * Permet de définir la position en pixel de la zone
 	 * @param Vector2i s
 	 */
-	public void setS(Vector2i s) {
+	public void setS(Vector2f s) {
 		this.s = s;
 	}
 	

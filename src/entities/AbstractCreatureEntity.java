@@ -45,6 +45,17 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	protected Path currentPath;
 	protected PathNode currentNode;
 	
+
+	private int offsetX;
+	private int offsetY;
+	private double ratioMoveX;
+	private double ratioMoveY;
+	private boolean boolNorth;
+	private boolean boolSouth;
+	private boolean boolWest;
+	private boolean boolEast;
+	
+	
 	public AbstractCreatureEntity() {
 		super();
 		nextNodeS = new Vector2i();
@@ -67,20 +78,10 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		
 		if (isMoving) {
 			
-			int offsetX = nextNodeS.x - s.x;
-			int offsetY = nextNodeS.y - s.y;
-			offsetY = offsetY != 0 ? offsetY : 1;
-			
-			double angle = Math.atan2(offsetY, offsetX) * 57.3;
-			angle = (angle < 0) ? angle + 360 : angle;
-			direction = ((int) Math.ceil(angle / 45) + 2) % 8; // 360 / 8 = 45
-			
-			int ratioMove = offsetX / offsetY;
-			
 			determineDirection();
 			
-			//s.x += delta * speedMove * 2 * ratioMove;
-			//s.y += delta * speedMove * ratioMove;
+			s.x += speedMove * ratioMoveX;
+			s.y += speedMove * ratioMoveY;
 		}
 	}
 	
@@ -106,12 +107,12 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 				g.drawLine(cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y);
 				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y, cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y);
 				g.drawLine(cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y);
-				g.drawLine(
-						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y,
-						cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y
-				);
-				tmpNode.renderCollidingZone(g, cam);
+				//tmpNode.renderCollidingZone(g, cam);
 			}
+			g.drawLine(
+				cam.x + s.x, cam.y + s.y,
+				cam.x + currentNode.getS().x, cam.y + currentNode.getS().y
+			);
 		}
 		
 		if (isMoving) {
@@ -131,17 +132,79 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	private void determineDirection() {
 		
 		if (this.isColliding(currentNode)) {
-			System.out.println("HE IS COLLIDING! :)");
+			
 			PathNode nextNode = currentNode.getNextNode();
 			if (nextNode == null) {
-				System.out.println("Arrivé à la fin :)");
 				currentPath = null;
 				isMoving = false;
 			} else {
+				
 				m = currentNode.getM();
 				setCurrentNode(nextNode);
+				
+				offsetX = nextNodeS.x -(int) s.x;
+				offsetY = nextNodeS.y - (int) s.y;
+				
+				offsetX = offsetX != 0 ? offsetX : 1;
+				offsetY = offsetY != 0 ? offsetY : 1;
+				
+				double distance = Math.sqrt(Math.pow((double)offsetX, 2) + Math.pow((double)offsetY, 2));
+				double N = (distance/speedMove);
+				ratioMoveX = offsetX/N;
+				ratioMoveY = offsetY/N;
+				
+				System.out.println("distance : " + distance + "ratio X :" + ratioMoveX + " - ratio Y" + ratioMoveY);
+				
+				boolNorth = offsetY + 5 < 0;
+				boolSouth = offsetY - 5 > 0;
+				boolWest = offsetX + 10 < 0;
+				boolEast = offsetX - 10 > 0;
+				
+				if (!boolNorth && !boolSouth) {
+					if (boolEast) {
+						direction = DIRECTION_EAST;
+					}
+					if (boolWest) {
+						direction = DIRECTION_WEST;
+					}
+				} else {
+					if (boolNorth && boolWest) {
+						ratioMoveX = -ratioMoveX;
+						ratioMoveY = -ratioMoveY;
+						direction = DIRECTION_NORTHWEST;
+					} else if (boolNorth && boolEast) {
+						ratioMoveX = -ratioMoveX;
+						direction = DIRECTION_NORTHEAST;
+					} else if (boolSouth && boolWest) {
+						ratioMoveY = -ratioMoveY;
+						direction = DIRECTION_SOUTHWEST;
+					} else if (boolSouth && boolEast) {
+						direction = DIRECTION_SOUTHEAST;
+					}
+				}
+				if (!boolEast && !boolWest) {
+					if (boolNorth) {
+						direction = DIRECTION_NORTH;
+					}
+					if (boolSouth) {
+						direction = DIRECTION_SOUTH;
+					}
+				} else {
+					if (boolNorth && boolWest) {
+						ratioMoveX = -ratioMoveX;
+						ratioMoveY = -ratioMoveY;
+						direction = DIRECTION_NORTHWEST;
+					} else if (boolNorth && boolEast) {
+						ratioMoveX = -ratioMoveX;
+						direction = DIRECTION_NORTHEAST;
+					} else if (boolSouth && boolWest) {
+						ratioMoveY = -ratioMoveY;
+						direction = DIRECTION_SOUTHWEST;
+					} else if (boolSouth && boolEast) {
+						direction = DIRECTION_SOUTHEAST;
+					}
+				}
 				System.out.println("achieving node ("+m+"). Take a look for another node ("+nextNode.getM()+").");
-				//System.out.println("(" + s + " -> " + nextNodeS + " (" +nextNodeM+ ")) - " + direction);
 			}
 		}
 	}
@@ -207,8 +270,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		this.currentNode = currentNode;
 		
 		// ajout d'un peu d'alétoire pour pimenter la chose :)
-		nextNodeS.x = currentNode.getS().x;// + Randomizer.getInstance().generateRangedInt(-5, 5);
-		nextNodeS.y = currentNode.getS().y;// + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.x = (int) currentNode.getS().x;// + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.y = (int) currentNode.getS().y;// + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeM = currentNode.getM();
 	}
 }

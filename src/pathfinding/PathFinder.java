@@ -200,7 +200,7 @@ public class PathFinder {
 		// tant qu'on est pas arrivé au noeud de départ
 		while (entryParent.getKey() != 0 && entryParent.getValue() != 0) {
 			
-			path.addFirst(new PathNode(new Vector2i(entryParent.getKey(), entryParent.getValue()), PathNode.ORTHOGONAL_POSITION), 1);
+			path.addFirst(new PathNode(new Vector2i(entryParent.getKey(), entryParent.getValue())), 1);
 			entryParent = tmpNode.parent;
 			tmpNode = closedList.get(tmpNode.parent);
 		}

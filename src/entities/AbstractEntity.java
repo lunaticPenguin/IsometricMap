@@ -105,7 +105,9 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	
 	public void setM(Vector2i m) {
 		this.m = m;
-		s = Position.memoryToScreen(null, m.x, m.y);
+		Vector2i tmp = Position.memoryToScreen(null, m.x, m.y);
+		s.x = tmp.x;
+		s.y = tmp.y;
 	}
 	
 	public Vector2i getM() {
@@ -117,7 +119,7 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	}
 	
 	public void updateMatrixPosition(Camera cam) {
-		this.m = Position.screenToMemory(cam, s.x, s.y);
+		this.m = Position.screenToMemory(cam, (int) s.x, (int) s.y);
 	}
 	
 	/**

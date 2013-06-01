@@ -16,11 +16,11 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 	 */
 	public boolean isColliding(SquareDetectionZone otherZone) {
 		
-		int sX = displayingOffset.x + zoneOffset.x + s.x;
-		int sY = displayingOffset.y + zoneOffset.y + s.y;
+		int sX = displayingOffset.x + zoneOffset.x + (int) s.x;
+		int sY = displayingOffset.y + zoneOffset.y + (int) s.y;
 		
-		int oX = otherZone.displayingOffset.x + otherZone.zoneOffset.x + otherZone.s.x;
-		int oY = otherZone.displayingOffset.y + otherZone.zoneOffset.y + otherZone.s.y;
+		int oX = otherZone.displayingOffset.x + otherZone.zoneOffset.x + (int) otherZone.s.x;
+		int oY = otherZone.displayingOffset.y + otherZone.zoneOffset.y + (int) otherZone.s.y;
 		
 		return !((oX >= sX + zoneDim.x) // trop à droite
 				|| (oX + otherZone.zoneDim.x <= sX) // trop à gauche
@@ -62,14 +62,14 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 		}
 		
 
-		Vector2i a = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x,
-				displayingOffset.y + offset.y + zoneOffset.y + s.y);
-		Vector2i b = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x + zoneDim.x,
-				displayingOffset.y + offset.y + zoneOffset.y + s.y);
-		Vector2i c = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x + zoneDim.x,
-				displayingOffset.y + offset.y + zoneOffset.y + s.y + zoneDim.y);
-		Vector2i d = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + s.x,
-				displayingOffset.y + offset.y + zoneOffset.y + s.y + zoneDim.y);
+		Vector2i a = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x,
+				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y);
+		Vector2i b = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x + zoneDim.x,
+				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y);
+		Vector2i c = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x + zoneDim.x,
+				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y + zoneDim.y);
+		Vector2i d = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x,
+				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y + zoneDim.y);
 
 		g.drawLine( a.x, a.y, b.x, b.y);
 		g.drawLine( b.x, b.y, c.x, c.y);

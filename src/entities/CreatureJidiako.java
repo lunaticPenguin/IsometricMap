@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import resources.AnimationManager;
@@ -28,7 +29,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	public CreatureJidiako() {
 		super();
 		
-		s = new Vector2i();
+		s = new Vector2f();
 		m = new Vector2i();
 		
 		displayingOffset.x = -25;
