@@ -49,6 +49,11 @@ public class PathFinder {
 		 * 
 		 */
 		
+		// si le point de départ est identique au point d'arrivée : pas besoin de bouger! :)
+		if (start.x == end.x && start.y == end.y) {
+			return null;
+		}
+		
 		startPoint = new Vector2i(start);
 		endPoint = new Vector2i(end);
 		

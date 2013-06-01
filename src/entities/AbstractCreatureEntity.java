@@ -1,9 +1,6 @@
 package entities;
 
-import java.util.Iterator;
-
 import map.Camera;
-import map.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import pathfinding.Path;
 import pathfinding.PathNode;
 
+import tools.Randomizer;
 import tools.Vector2i;
 
 public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
@@ -80,8 +78,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 			
 			determineDirection();
 			
-			s.x += speedMove * ratioMoveX;
-			s.y += speedMove * ratioMoveY;
+			s.x += delta * speedMove * ratioMoveX;
+			s.y += delta * speedMove * ratioMoveY;
 		}
 	}
 	
@@ -91,29 +89,6 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param cam
 	 */
 	public void draw(Graphics g, Camera cam) {
-		
-		this.renderCollidingZone(g, cam);
-		
-		// tmp: to render the unit path
-		if (currentPath != null) {
-			
-			Iterator<PathNode> tmpIt = currentPath.iterator();
-			PathNode tmpNode = null;
-			
-			while (tmpIt.hasNext()) {
-				tmpNode = tmpIt.next();
-				
-				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y, cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y);
-				g.drawLine(cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y);
-				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y, cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y);
-				g.drawLine(cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y);
-				//tmpNode.renderCollidingZone(g, cam);
-			}
-			g.drawLine(
-				cam.x + s.x, cam.y + s.y,
-				cam.x + currentNode.getS().x, cam.y + currentNode.getS().y
-			);
-		}
 		
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
@@ -148,12 +123,10 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 				offsetX = offsetX != 0 ? offsetX : 1;
 				offsetY = offsetY != 0 ? offsetY : 1;
 				
+				// calcul du ratio pour les déplacements
 				double distance = Math.sqrt(Math.pow((double)offsetX, 2) + Math.pow((double)offsetY, 2));
-				double N = (distance/speedMove);
-				ratioMoveX = offsetX/N;
-				ratioMoveY = offsetY/N;
-				
-				System.out.println("distance : " + distance + "ratio X :" + ratioMoveX + " - ratio Y" + ratioMoveY);
+				ratioMoveX = offsetX/distance;
+				ratioMoveY = offsetY/distance;
 				
 				boolNorth = offsetY + 5 < 0;
 				boolSouth = offsetY - 5 > 0;
@@ -204,7 +177,6 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 						direction = DIRECTION_SOUTHEAST;
 					}
 				}
-				System.out.println("achieving node ("+m+"). Take a look for another node ("+nextNode.getM()+").");
 			}
 		}
 	}
@@ -252,8 +224,10 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 */
 	public void setCurrentPath(Path currentPath) {
 		this.currentPath = currentPath;
-		setCurrentNode(currentPath.getFirst()); // maj du noeud courant
-		isMoving = true; // l'entité se met en route (hop hop hop! =D)
+		if (!currentPath.isEmpty() && currentPath.peekFirst() != currentPath.peekLast()) {
+			setCurrentNode(currentPath.getFirst()); // maj du noeud courant
+			isMoving = true; // l'entité se met en route (hop hop hop! =D)
+		}
 	}
 
 	/**
@@ -267,11 +241,12 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param currentNode the currentNode to set
 	 */
 	public void setCurrentNode(PathNode currentNode) {
+		
 		this.currentNode = currentNode;
 		
 		// ajout d'un peu d'alétoire pour pimenter la chose :)
-		nextNodeS.x = (int) currentNode.getS().x;// + Randomizer.getInstance().generateRangedInt(-5, 5);
-		nextNodeS.y = (int) currentNode.getS().y;// + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.x = (int) currentNode.getS().x + Randomizer.getInstance().generateRangedInt(-5, 5);
+		nextNodeS.y = (int) currentNode.getS().y + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeM = currentNode.getM();
 	}
 }
