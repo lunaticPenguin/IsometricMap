@@ -1,6 +1,5 @@
 package pathfinding;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -30,7 +29,7 @@ public class PathFinder {
 	}
 	
 	
-	public ArrayList<Vector2i> computePath(Vector2i start, Vector2i end, int mapType) {
+	public Path computePath(Vector2i start, Vector2i end, int mapType) {
 		
 		/*
 		 * Liste ouverte : liste des noeuds étudiés
@@ -49,6 +48,11 @@ public class PathFinder {
 		 * -> Sinon, on l'ajoute dans la liste ouverte et on calcule sa qualité.
 		 * 
 		 */
+		
+		// si le point de départ est identique au point d'arrivée : pas besoin de bouger! :)
+		if (start.x == end.x && start.y == end.y) {
+			return null;
+		}
 		
 		startPoint = new Vector2i(start);
 		endPoint = new Vector2i(end);
@@ -73,7 +77,7 @@ public class PathFinder {
 			
 			if (currentPosition.getKey() == endPoint.x && currentPosition.getValue() == endPoint.y) {
 				
-				ArrayList<Vector2i> path = getPath();
+				Path path = getPath();
 				clearList();
 				return path;
 			}
@@ -188,19 +192,20 @@ public class PathFinder {
 	
 	/*
 	 * Permet d'obtenir le chemin trouvé lors de l'appel à la méthode computePath
-	 * @return ArrayList<Vector2i>
+	 * @return Path
 	 */
-	private ArrayList<Vector2i> getPath() {
+	private Path getPath() {
 		
-		ArrayList<Vector2i> path = new ArrayList<Vector2i>();
-		path.add(new Vector2i(endPoint.x, endPoint.y));
+		Path path = new Path();
 		
 		SimpleEntry<Integer, Integer> entryEnd = new SimpleEntry<Integer, Integer>(endPoint.x, endPoint.y);
 		Node tmpNode = closedList.get(entryEnd);
-		SimpleEntry<Integer, Integer> entryParent = tmpNode.parent;
+		SimpleEntry<Integer, Integer> entryParent = entryEnd;
 		
+		// tant qu'on est pas arrivé au noeud de départ
 		while (entryParent.getKey() != 0 && entryParent.getValue() != 0) {
-			path.add(new Vector2i(entryParent.getKey(), entryParent.getValue()));
+			
+			path.addFirst(new PathNode(new Vector2i(entryParent.getKey(), entryParent.getValue())), 1);
 			entryParent = tmpNode.parent;
 			tmpNode = closedList.get(tmpNode.parent);
 		}

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.state.StateBasedGame;
 
 import resources.AnimationManager;
 import tools.Vector2i;
@@ -13,7 +16,7 @@ import tools.Vector2i;
  * @author Corentin Legros
  */
 public class CreatureJidiako extends AbstractCreatureEntity {
-
+	
 	/**
 	 * Tableau d'animation en corrélation directe avec
 	 * l'attribut spritesStates
@@ -24,9 +27,18 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	
 	
 	public CreatureJidiako() {
+		super();
 		
-		s = new Vector2i();
+		s = new Vector2f();
 		m = new Vector2i();
+		
+		displayingOffset.x = -25;
+		displayingOffset.y = -40;
+		
+		zoneDim.x = 10;
+		zoneDim.y = 16;
+		zoneOffset.x = 20;
+		zoneOffset.y = 28;
 		
 		init();
 	}
@@ -57,7 +69,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		s.x = 0;
 		s.y = 0;
 		
-		speedMove = 1.5f;
+		speedMove = 0.05f;
 		
 		isDisplayed = false;
 		isMoving = false;
@@ -89,7 +101,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
+	public void update(GameContainer container, StateBasedGame game, int delta) {
+		super.update(container, game, delta);
 	}
 }

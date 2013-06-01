@@ -5,18 +5,24 @@ import java.util.HashMap;
 
 import main.MyGame;
 import map.Camera;
-import map.Map;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
+
+import collision.SquareDetectionZone;
 
 import tools.Position;
 import tools.Vector2i;
 
-public abstract class AbstractEntity {
+public abstract class AbstractEntity extends SquareDetectionZone {
+	
 	
 	/**
 	 * Les 8 différentes directions
+	 * /!\ les directions ne sont pas translatés à l'orientation isométrique
+	 * de la map (le Nord est le nord commun (<=> vers le haut))
 	 */
 	public static final int DIRECTION_NORTH = 0;
 	public static final int DIRECTION_NORTHEAST = 1;
@@ -39,19 +45,9 @@ public abstract class AbstractEntity {
 	protected String state;
 	
 	/**
-	 * Pixel position on screen
-	 */
-	protected Vector2i s;
-	
-	/**
 	 * Matrix position in memory
 	 */
 	protected Vector2i m;
-	
-	/**
-	 * Rendered square dimension
-	 */
-	protected Vector2i dim;
 	
 	/**
 	 * entity life
@@ -106,30 +102,16 @@ public abstract class AbstractEntity {
 	public void setState(String state) {
 		this.state = state;
 	}
-
-	public Vector2i getS() {
-		return s;
-	}
-
-	public void setS(Vector2i s) {
-		this.s = s;
+	
+	public void setM(Vector2i m) {
+		this.m = m;
+		Vector2i tmp = Position.memoryToScreen(null, m.x, m.y);
+		s.x = tmp.x;
+		s.y = tmp.y;
 	}
 	
-	public void setS(int x, int y) {
-		this.s.x = x;
-		this.s.y = y;
-	}
-
 	public Vector2i getM() {
 		return m;
-	}
-
-	public Vector2i getDim() {
-		return dim;
-	}
-
-	public void setDim(Vector2i dim) {
-		this.dim = dim;
 	}
 	
 	public void setIsDiplayed(boolean isDisplayed) {
@@ -137,7 +119,7 @@ public abstract class AbstractEntity {
 	}
 	
 	public void updateMatrixPosition(Camera cam) {
-		this.m = Position.screenToMemory(cam, s.x, s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		this.m = Position.screenToMemory(cam, (int) s.x, (int) s.y);
 	}
 	
 	/**
@@ -193,7 +175,7 @@ public abstract class AbstractEntity {
 	 * 
 	 * @param delta
 	 */
-	abstract public void update(int delta);
+	abstract public void update(GameContainer container, StateBasedGame game, int delta);
 	
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran

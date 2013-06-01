@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMapPlus;
 
+import pathfinding.Path;
 import pathfinding.PathFinder;
 
 import tools.Position;
@@ -103,7 +104,7 @@ public class Map extends TiledMapPlus {
 		}
 		
 		loadBlockedTiles();
-		computeTransitiveClosure();
+		//computeTransitiveClosure();
 		
 		refPathFinder = new PathFinder(this);
 	}
@@ -120,10 +121,10 @@ public class Map extends TiledMapPlus {
 		
 		int margin = 150; // en pixels
 		
-		pt_TL = Position.screenToMemory(cam, 0, 0, tileWidth, tileHeight, width, height);
-		pt_BL = Position.screenToMemory(cam, 0, MyGame.Y_WINDOW + margin, tileWidth, tileHeight, width, height);
-		pt_TR = Position.screenToMemory(cam, MyGame.X_WINDOW, 0, tileWidth, tileHeight, width, height);
-		pt_BR = Position.screenToMemory(cam, MyGame.X_WINDOW, MyGame.Y_WINDOW + margin, tileWidth, tileHeight, width, height);
+		pt_TL = Position.screenToMemory(cam, 0, 0);
+		pt_BL = Position.screenToMemory(cam, 0, MyGame.Y_WINDOW + margin);
+		pt_TR = Position.screenToMemory(cam, MyGame.X_WINDOW, 0);
+		pt_BR = Position.screenToMemory(cam, MyGame.X_WINDOW, MyGame.Y_WINDOW + margin);
 		
 		int startRenderX = pt_TL.x; // tile de début de rendu X
 		int startRenderY = pt_TR.y; // tile de début de rendu Y
@@ -296,15 +297,15 @@ public class Map extends TiledMapPlus {
 						int value = 0;
 						if (getTileProperty(id, "ground_stop", "").equals("true")) {
 							value = 0x01;
-							setTileBlocked(x, y, TILE_GROUND);
+							//setTileBlocked(x, y, TILE_GROUND);
 						}
 						if (getTileProperty(id, "air_stop", "").equals("true")) {
 							value |= 0x02;
-							setTileBlocked(x, y, TILE_AIR);
+							//setTileBlocked(x, y, TILE_AIR);
 						}
 						if (getTileProperty(id, "water_stop", "").equals("true")) {
 							value |= 0x04;
-							setTileBlocked(x, y, TILE_WATER);
+							//setTileBlocked(x, y, TILE_WATER);
 						}
 						blocked[x][y] = value;
 					}
@@ -386,10 +387,12 @@ public class Map extends TiledMapPlus {
 	 * @param int mapType type de map testée (GROUND,AIR,WATER...)
 	 */
 	public boolean hasPath(int xStart, int yStart, int xEnd, int yEnd, int mapType) {
-		
+		return true;
+		/*
 		int start = convertOrthoToSquareExpOrtho(xStart, yStart);
 		int end = convertOrthoToSquareExpOrtho(xEnd, yEnd);
 		return transitiveClosureMatrix.get(mapType)[start][end];
+		*/
 	}
 	
 	/**
@@ -449,9 +452,9 @@ public class Map extends TiledMapPlus {
 	 * @param Vector2i end position d'arrivée
 	 * @param int mapType type de la map (<=> type du terrain)
 	 * 
-	 * @return ArrayList<Vector2i>
+	 * @return Path
 	 */
-	public ArrayList<Vector2i> findPath(Vector2i start, Vector2i end, int mapType) {
+	public Path findPath(Vector2i start, Vector2i end, int mapType) {
 		return refPathFinder.computePath(start, end, mapType);
 	}
 }

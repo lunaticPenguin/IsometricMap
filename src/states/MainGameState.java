@@ -30,6 +30,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import pathfinding.Path;
+
 //import de.matthiasmann.twl.Button;
 
 import tools.Position;
@@ -99,14 +101,13 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		Vector2i originPos = Position.memoryToScreen(
 				cam,
 				-Integer.parseInt(map.getMapProperty("focusOriginTileX", "0")),
-				-Integer.parseInt(map.getMapProperty("focusOriginTileY", "0")),
-				Map.mTDim.x,
-				Map.mTDim.y);
+				-Integer.parseInt(map.getMapProperty("focusOriginTileY", "0"))
+		);
 		
 		
 		cam.focusOn(originPos);
 		
-		mPos = new MousePosition(cam, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
+		mPos = new MousePosition(cam);
 		
 		// gestion des différentes scenes
 		scenes = new ArrayList<Scene>();
@@ -115,7 +116,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		objCreatureManager = CreatureManager.getInstance();
 		
 		bonomeTest = objCreatureManager.addEntity("jidiako");
-		bonomeTest.setS(Position.memoryToScreen(null, 0, 0, Map.mTDim.x, Map.mTDim.y));
+		bonomeTest.setM(new Vector2i(10, 1));
 		bonomeTest.setIsDiplayed(true);
 	}
 
@@ -144,7 +145,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.setS(input.getMouseX(), input.getMouseY());
 		mPos.m.checkRanges();
 		
-		jidokiaTestMoves();
 		objCreatureManager.update(container, game, delta);
 	}
 	
@@ -183,15 +183,10 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-			ArrayList<Vector2i> tmpPath = map.findPath(new Vector2i(2, 7), destPosition, Map.TILE_GROUND);
+			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+			Path tmpPath = map.findPath(bonomeTest.getM(), destPosition, Map.TILE_GROUND);
 			if (tmpPath != null) {
-				System.out.println("Yuhuu il y a un chemin entre [2;7] et " + destPosition + " :)");
-				for (Vector2i tmpPos : tmpPath) {
-					System.out.println("\tpath position : " + tmpPos);
-				}
-			} else {
-				System.out.println("Il n'y a pas de chemin entre [2;7] et " + destPosition + " :(");
+				objCreatureManager.manageUnitMoves(tmpPath);
 			}
 		}
 	}
@@ -214,14 +209,23 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isKeyPressed(Input.KEY_E)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHEAST);
 			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_D)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_X)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHEAST);
+			bonomeTest.setIsMoving(true);
 		} else if (input.isKeyPressed(Input.KEY_S)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTH);
+			bonomeTest.setIsMoving(true);
+		} else if (input.isKeyPressed(Input.KEY_W)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHWEST);
 			bonomeTest.setIsMoving(true);
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_WEST);
 			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_D)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
+		} else if (input.isKeyPressed(Input.KEY_A)) {
+			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHWEST);
 			bonomeTest.setIsMoving(true);
 		}
 	}
@@ -230,8 +234,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	protected void renderMouseTile(Graphics g) {
 		
 		// on récupère les positions idéales de la souris depuis ses coordonnées isométriques
-		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y, Map.tDim.x, Map.tDim.y, Map.mDim.x, Map.mDim.y);
-		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y, Map.mTDim.x, Map.mTDim.y);
+		Vector2i mousePosP = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+		Position.memoryToScreen(cam, mousePosP, mPos.m.x, mPos.m.y);
 		
 		if (!map.isTileBlocked(mPos.m.x, mPos.m.y)) {
 			g.drawLine(mousePosP.x, mousePosP.y - Map.mTDim.y, mousePosP.x + Map.mTDim.x, mousePosP.y);
