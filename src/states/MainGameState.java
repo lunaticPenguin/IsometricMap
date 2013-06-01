@@ -117,7 +117,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		objCreatureManager = CreatureManager.getInstance();
 		
 		bonomeTest = objCreatureManager.addEntity("jidiako");
-		bonomeTest.setM(new Vector2i(2, 7));
+		bonomeTest.setM(new Vector2i(6, 16));
 		bonomeTest.setIsDiplayed(true);
 	}
 
@@ -187,13 +187,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
 			Path tmpPath = map.findPath(bonomeTest.getM(), destPosition, Map.TILE_GROUND);
 			if (tmpPath != null) {
-				System.out.println("Yuhuu il y a un chemin entre [" + bonomeTest.getM() + "] et " + destPosition + " :)");
-				for (PathNode tmpPos : tmpPath) {
-					System.out.println("\tpath position : " + tmpPos.getM());
-					objCreatureManager.manageUnitMoves(tmpPath);
-				}
-			} else {
-				System.out.println("Il n'y a pas de chemin entre [" + bonomeTest.getM() + "] et " + destPosition + " :(");
+				objCreatureManager.manageUnitMoves(tmpPath);
 			}
 		}
 	}
