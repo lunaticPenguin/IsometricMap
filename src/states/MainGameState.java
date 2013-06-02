@@ -9,7 +9,6 @@
 package states;
 
 import entities.AbstractCreatureEntity;
-import entities.AbstractEntity;
 
 import entities.manager.CreatureManager;
 import gui.MapScene;
@@ -35,11 +34,15 @@ import pathfinding.Path;
 //import de.matthiasmann.twl.Button;
 
 import tools.Position;
+import tools.Randomizer;
 import tools.Vector2i;
 
 
 public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 
+	private final int NB_JIDIOKA_TEST = 5;
+	
+	
 	private Input input;
 	
 	private Map map;
@@ -49,7 +52,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private boolean isDebugging;
 	private ArrayList<Scene> scenes;
 	
-	private AbstractCreatureEntity bonomeTest;
+	private AbstractCreatureEntity bonomesTest[];
 	private CreatureManager objCreatureManager;
 	
 
@@ -114,10 +117,18 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		initScenes(container, game);
 		
 		objCreatureManager = CreatureManager.getInstance();
+		bonomesTest = new AbstractCreatureEntity[NB_JIDIOKA_TEST];
 		
-		bonomeTest = objCreatureManager.addEntity("jidiako");
-		bonomeTest.setM(new Vector2i(10, 1));
-		bonomeTest.setIsDiplayed(true);
+		for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
+			bonomesTest[i] = objCreatureManager.addEntity("jidiako");
+			bonomesTest[i].setM(
+				new Vector2i(
+					Randomizer.getInstance().generateRangedInt(0, 40),
+					Randomizer.getInstance().generateRangedInt(0, 40)
+				)
+			);
+			bonomesTest[i].setIsDiplayed(true);
+		}
 	}
 
 	@Override
@@ -184,9 +195,12 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
-			Path tmpPath = map.findPath(bonomeTest.getM(), destPosition, Map.TILE_GROUND);
-			if (tmpPath != null) {
-				objCreatureManager.manageUnitMoves(tmpPath);
+			Path tmpPath = null;
+			for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
+				tmpPath = map.findPath(bonomesTest[i].getM(), destPosition, Map.TILE_GROUND);
+				if (tmpPath != null) {
+					bonomesTest[i].setCurrentPath(tmpPath);
+				}
 			}
 		}
 	}
@@ -201,7 +215,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	
 	protected void jidokiaTestMoves() {
-		
+		/*
 		bonomeTest.setIsMoving(false);
 		if (input.isKeyPressed(Input.KEY_Z)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTH);
@@ -227,7 +241,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isKeyPressed(Input.KEY_A)) {
 			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHWEST);
 			bonomeTest.setIsMoving(true);
-		}
+		}*/
 	}
 	
 	
