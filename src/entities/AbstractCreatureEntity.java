@@ -223,8 +223,14 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param currentPath the currentPath to set
 	 */
 	public void setCurrentPath(Path currentPath) {
+		
+		if (currentPath == null || currentPath.isEmpty()) {
+			return;
+		}
 		this.currentPath = currentPath;
-		if (!currentPath.isEmpty() && currentPath.peekFirst() != currentPath.peekLast()) {
+		
+		// si la case de départ != de la case de fin
+		if (currentPath.peekFirst() != currentPath.peekLast()) {
 			setCurrentNode(currentPath.getFirst()); // maj du noeud courant
 			isMoving = true; // l'entité se met en route (hop hop hop! =D)
 		}

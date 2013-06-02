@@ -2,6 +2,7 @@ package pathfinding;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -16,6 +17,11 @@ public class PathFinder {
 	protected HashMap<SimpleEntry<Integer, Integer>, Node> openedList;
 	protected HashMap<SimpleEntry<Integer, Integer>, Node> closedList;
 	
+	/**
+	 * Cache to keep computed path in memory
+	 */
+	protected HashMap<String, Path> pathCache;
+	
 	protected Vector2i startPoint;
 	protected Vector2i endPoint;
 	
@@ -26,6 +32,8 @@ public class PathFinder {
 		
 		openedList = new HashMap<SimpleEntry<Integer, Integer>, Node>();
 		closedList = new HashMap<SimpleEntry<Integer, Integer>, Node>();
+		
+		pathCache = new HashMap<String, Path>();
 	}
 	
 	
@@ -54,6 +62,13 @@ public class PathFinder {
 			return null;
 		}
 		
+		// basically cache functionality
+		String objTmpKeyPathCache = start.toString() + end.toString();
+		if (pathCache.containsKey(objTmpKeyPathCache)) {
+			System.out.println("this path has already been computed! [" + objTmpKeyPathCache + "]");
+			return pathCache.get(objTmpKeyPathCache);
+		}
+		
 		startPoint = new Vector2i(start);
 		endPoint = new Vector2i(end);
 		
@@ -78,6 +93,18 @@ public class PathFinder {
 			if (currentPosition.getKey() == endPoint.x && currentPosition.getValue() == endPoint.y) {
 				
 				Path path = getPath();
+				
+				/*
+				 * Gestion du path inverse
+				 */
+				Path reversePath = new Path();
+				ListIterator<PathNode> it = path.listIterator(path.size());
+				while (it.hasPrevious()) {
+					reversePath.addFirst(it.previous());
+				}
+				
+				pathCache.put(start.toString() + end.toString(), path);
+				pathCache.put(end.toString() + start.toString(), reversePath);
 				clearList();
 				return path;
 			}
