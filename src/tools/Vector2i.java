@@ -111,4 +111,14 @@ public class Vector2i {
 	public Vector2i getYRange() {
 		return boolHasYRange ? new Vector2i(minY, maxY) : new Vector2i();
 	}
+	
+	/**
+	 * Permet de savoir si un point est égal à un autre
+	 */
+	public boolean equals(Vector2i otherVector) {
+		if (otherVector == null) {
+			return false;
+		}
+		return x == otherVector.x && y == otherVector.y;
+	}
 }
