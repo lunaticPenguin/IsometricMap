@@ -11,7 +11,7 @@ import entities.AbstractBuildingEntity;
 import entities.AbstractEntity;
 import entities.IAggressive;
 
-public class TowerSimple extends AbstractBuildingEntity implements IAggressive {
+public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
@@ -35,7 +35,7 @@ public class TowerSimple extends AbstractBuildingEntity implements IAggressive {
 
 	@Override
 	public HashMap<String, ArrayList<Animation>> getAnimationStates() {
-		return TowerSimple.animationsStates;
+		return TowerGuard.animationsStates;
 	}
 
 	@Override
