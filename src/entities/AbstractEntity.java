@@ -53,6 +53,16 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 * entity life
 	 */
 	protected int life;
+
+	/**
+	 * entity attack points
+	 */
+	protected float attack;
+	
+	/**
+	 * entity attack points
+	 */
+	protected int defend;
 	
 	/**
 	 * Si l'entité doit être affichée

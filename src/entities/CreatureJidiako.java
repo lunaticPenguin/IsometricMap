@@ -66,6 +66,8 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	public void init() {
 		
 		life = 100;
+		attack = 3;
+		defend = 1;
 		s.x = 0;
 		s.y = 0;
 		
