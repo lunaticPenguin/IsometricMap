@@ -19,9 +19,9 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
-	 * l'attribut spritesStates
+	 * l'attribut state
 	 * 
-	 * @see spritesStates
+	 * @see state
 	 */
 	protected static HashMap<String, ArrayList<Animation>> animationsStates;
 	

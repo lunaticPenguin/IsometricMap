@@ -7,8 +7,17 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class TowerSimple extends AbstractBuildingEntity {
-
+public class TowerSimple extends AbstractBuildingEntity implements IAggressive {
+	
+	/**
+	 * Tableau d'animation en corrélation directe avec
+	 * l'attribut state
+	 * 
+	 * @see state
+	 */
+	protected static HashMap<String, ArrayList<Animation>> animationsStates;
+	
+	
 	@Override
 	public void init() {
 		attack = 10;
@@ -17,14 +26,12 @@ public class TowerSimple extends AbstractBuildingEntity {
 
 	@Override
 	public void doAction() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public HashMap<String, ArrayList<Animation>> getAnimationStates() {
-		// TODO Auto-generated method stub
-		return null;
+		return TowerSimple.animationsStates;
 	}
 
 	@Override
@@ -36,6 +43,11 @@ public class TowerSimple extends AbstractBuildingEntity {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attack(AbstractEntity entityToAttack) {
 		
 	}
 	
