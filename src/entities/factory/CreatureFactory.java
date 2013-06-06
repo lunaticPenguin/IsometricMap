@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import entities.AbstractCreatureEntity;
-import entities.CreatureJidiako;
+import entities.types.creatures.CreatureJidiako;
 
 public class CreatureFactory extends AbstractFactory<AbstractCreatureEntity> {
 	

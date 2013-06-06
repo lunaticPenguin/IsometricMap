@@ -1,4 +1,4 @@
-package entities;
+package entities.types.buildings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,10 @@ import java.util.HashMap;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.state.StateBasedGame;
+
+import entities.AbstractBuildingEntity;
+import entities.AbstractEntity;
+import entities.IAggressive;
 
 public class TowerSimple extends AbstractBuildingEntity implements IAggressive {
 	
@@ -50,5 +54,4 @@ public class TowerSimple extends AbstractBuildingEntity implements IAggressive {
 	public void attack(AbstractEntity entityToAttack) {
 		
 	}
-	
 }
