@@ -6,6 +6,11 @@ import java.util.HashMap;
 import entities.AbstractCreatureEntity;
 import entities.types.creatures.CreatureJidiako;
 
+/**
+ * Se charge de gérer les unités creatures
+ * @author co
+ *
+ */
 public class CreatureFactory extends AbstractFactory<AbstractCreatureEntity> {
 	
 	// Creatures types
