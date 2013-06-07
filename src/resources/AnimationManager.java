@@ -47,7 +47,6 @@ public class AnimationManager extends AbstractManager<Animation> {
 					sbKey.append(key).append("_").append(i);
 					// new Animation(tmpSpS, x1, y1, x2, y2, horizontalScan, duration, autoUpdate)
 					data.put(sbKey.toString(), new Animation(tmpSpS, 0, i, 13, i, true, 20, true));
-					System.out.println(sbKey.toString());
 				}
 			} else if (key.contains("tower")) {
 				sbKey.setLength(0);

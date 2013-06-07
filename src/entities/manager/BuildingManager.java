@@ -29,7 +29,7 @@ public class BuildingManager extends AbstractManager<AbstractBuildingEntity> {
 	protected BuildingManager() {
 		factory = BuildingFactory.getInstance();
 		data = new HashMap<String, ArrayList<AbstractBuildingEntity>>();
-		data.put("jidiako", new ArrayList<AbstractBuildingEntity>());
+		data.put("towerguard", new ArrayList<AbstractBuildingEntity>());
 	}
 
 	@Override
