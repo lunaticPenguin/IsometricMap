@@ -3,6 +3,8 @@ package entities.manager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import map.Camera;
 
@@ -93,11 +95,19 @@ public abstract class AbstractManager<T> {
 	 */
 	public void render(Graphics g, Camera cam) {
 		
-		// todo: Parcourir la hashmap complète.
-		iterator = data.get("jidiako").iterator();
-		while (iterator.hasNext()) {
-			T entity = iterator.next();
-			this.renderEntity(g, cam, entity);
+		Set<Entry<String, ArrayList<T>>> typeEntrySet = data.entrySet();
+		Iterator<Entry<String, ArrayList<T>>> iteratorSet = typeEntrySet.iterator();
+		Entry<String, ArrayList<T>> typeListEntry = null;
+		ArrayList<T> entitiesList = null;
+		Iterator<T> entitiesIterator = null;
+		
+		while (iteratorSet.hasNext()) {
+			typeListEntry = iteratorSet.next();
+			entitiesList = typeListEntry.getValue();
+			entitiesIterator = entitiesList.iterator();
+			while (entitiesIterator.hasNext()) {
+				this.renderEntity(g, cam, entitiesIterator.next());
+			}
 		}
 	}
 	
