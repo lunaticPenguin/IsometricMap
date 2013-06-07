@@ -53,6 +53,16 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 * entity life
 	 */
 	protected int life;
+
+	/**
+	 * entity attack points
+	 */
+	protected float attack;
+	
+	/**
+	 * entity attack points
+	 */
+	protected int defend;
 	
 	/**
 	 * Si l'entité doit être affichée
@@ -183,6 +193,6 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 * @param cam
 	 */
 	public void draw(Graphics g, Camera cam) {
-		this.getCurrentAnimation().draw(cam.x + s.x, cam.y + s.y);
+		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 	}
 }

@@ -8,9 +8,12 @@
 
 package states;
 
+import entities.AbstractBuildingEntity;
 import entities.AbstractCreatureEntity;
 
+import entities.manager.BuildingManager;
 import entities.manager.CreatureManager;
+import entities.types.buildings.TowerGuard;
 import gui.MapScene;
 import gui.Scene;
 
@@ -41,6 +44,7 @@ import tools.Vector2i;
 public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 
 	private final int NB_JIDIOKA_TEST = 5;
+	private final int NB_TOWER_TEST = 10;
 	
 	
 	private Input input;
@@ -51,9 +55,13 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	private boolean isDebugging;
 	private ArrayList<Scene> scenes;
-	
+
 	private AbstractCreatureEntity bonomesTest[];
 	private CreatureManager objCreatureManager;
+	
+	private AbstractBuildingEntity towersTest[];
+	private BuildingManager objBuildingManager;
+	private int indextower = 0;
 	
 
     /* TWL TEST */
@@ -129,6 +137,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			);
 			bonomesTest[i].setIsDiplayed(true);
 		}
+		
+		objBuildingManager = BuildingManager.getInstance();
+		towersTest = new TowerGuard[NB_TOWER_TEST];
 	}
 
 	@Override
@@ -146,6 +157,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
 		objCreatureManager.render(g, cam);
+		objBuildingManager.render(g, cam);
 	}
 
 	@Override
@@ -191,6 +203,14 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isKeyPressed(Input.KEY_RIGHT)) {
 			cam.moveTo(Camera.RIGHT, 1.0f);
 		}
+	}
+	
+	protected void mainShortcuts() {
+		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+			System.exit(0);
+		} else if (input.isKeyPressed(Input.KEY_F1)) {
+			isDebugging = !isDebugging;
+		}
 		
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
@@ -202,48 +222,23 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 					bonomesTest[i].setCurrentPath(tmpPath);
 				}
 			}
+		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+			
+			if (indextower == NB_TOWER_TEST) {
+				indextower = 0;
+			}
+			
+			towersTest[indextower] = objBuildingManager.addEntity("towerguard");
+			towersTest[indextower].setM(destPosition);
+			towersTest[indextower].setIsDiplayed(true);
+			++indextower;
+			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
+				objBuildingManager.removeEntity("towerguard", towersTest[indextower]);
+				towersTest[indextower] = null;
+			}
 		}
 	}
-	
-	protected void mainShortcuts() {
-		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			System.exit(0);
-		} else if (input.isKeyPressed(Input.KEY_F1)) {
-			isDebugging = !isDebugging;
-		}
-	}
-	
-	
-	protected void jidokiaTestMoves() {
-		/*
-		bonomeTest.setIsMoving(false);
-		if (input.isKeyPressed(Input.KEY_Z)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTH);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_E)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHEAST);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_D)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_EAST);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_X)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHEAST);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_S)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTH);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_W)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_SOUTHWEST);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_Q)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_WEST);
-			bonomeTest.setIsMoving(true);
-		} else if (input.isKeyPressed(Input.KEY_A)) {
-			bonomeTest.setDirection(AbstractEntity.DIRECTION_NORTHWEST);
-			bonomeTest.setIsMoving(true);
-		}*/
-	}
-	
 	
 	protected void renderMouseTile(Graphics g) {
 		

@@ -1,4 +1,4 @@
-package entities;
+package entities.types.creatures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,10 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+
+import entities.AbstractCreatureEntity;
+import entities.AbstractEntity;
+import entities.IMoveable;
 
 import resources.AnimationManager;
 import tools.Vector2i;
@@ -19,9 +23,9 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
-	 * l'attribut spritesStates
+	 * l'attribut state
 	 * 
-	 * @see spritesStates
+	 * @see state
 	 */
 	protected static HashMap<String, ArrayList<Animation>> animationsStates;
 	
@@ -66,6 +70,8 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 	public void init() {
 		
 		life = 100;
+		attack = 3;
+		defend = 1;
 		s.x = 0;
 		s.y = 0;
 		
