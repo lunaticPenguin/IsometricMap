@@ -30,6 +30,7 @@ public class CreatureManager extends AbstractManager<AbstractCreatureEntity> {
 		factory = CreatureFactory.getInstance();
 		data = new HashMap<String, ArrayList<AbstractCreatureEntity>>();
 		data.put("jidiako", new ArrayList<AbstractCreatureEntity>());
+		data.put("boloss", new ArrayList<AbstractCreatureEntity>());
 	}
 
 	@Override

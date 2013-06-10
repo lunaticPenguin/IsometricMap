@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import entities.AbstractCreatureEntity;
+import entities.types.creatures.CreatureBoloss;
 import entities.types.creatures.CreatureJidiako;
 
 /**
@@ -29,12 +30,15 @@ public class CreatureFactory extends AbstractFactory<AbstractCreatureEntity> {
 	protected CreatureFactory() {
 		dataPool = new HashMap<String, ArrayList<AbstractCreatureEntity>>();
 		dataPool.put("jidiako", new ArrayList<AbstractCreatureEntity>());
+		dataPool.put("boloss", new ArrayList<AbstractCreatureEntity>());
 	}
 	
 	protected AbstractCreatureEntity getSpecificEntity(String entityType) {
 		switch (entityType) {
 		case "jidiako":
 			return new CreatureJidiako();
+		case "boloss":
+			return new CreatureBoloss();
 		}
 		
 		return null;

@@ -37,6 +37,8 @@ public class SpriteSheetManager extends AbstractManager<SpriteSheet> {
 		try {
 			if (dataObjectPath.contains("jidiako")) {
 				objSprite = new SpriteSheet(dataObjectPath, 50, 50);
+			} else if (dataObjectPath.contains("boloss")) {
+				objSprite = new SpriteSheet(dataObjectPath, 50, 50);
 			} else if (dataObjectPath.contains("guard")) {
 				objSprite = new SpriteSheet(dataObjectPath, 64, 112);
 			}
