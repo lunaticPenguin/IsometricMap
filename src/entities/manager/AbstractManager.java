@@ -49,7 +49,7 @@ public abstract class AbstractManager<T> {
 			data.get(entityType).add(entity);
 			return entity;
 		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given.");
+			Log.warn("AbstractManager.addEntity() : Wrong type given : " + entityType);
 		}
 		return null;
 	}
