@@ -13,9 +13,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 import entities.AbstractEntity;
-import entities.factory.AbstractFactory;
-import entities.factory.CreatureFactory;
-import entities.factory.iFactory;
+import entities.factory.EntityFactory;
 
 public class EntityManager extends AbstractManager<AbstractEntity> {
 	
@@ -29,11 +27,11 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	}
 	
 	protected EntityManager() {
-		factories = new HashMap<String, iFactory<AbstractEntity>>();
-		factories.put("creature", CreatureFactory.getInstance());
+		factory = EntityFactory.getInstance();
 		
 		data = new HashMap<String, ArrayList<AbstractEntity>>();
-		data.put("jidiako", new ArrayList<AbstractEntity>());
+		data.put(EntityFactory.ENTITY_CREATUREJIDIAKO, new ArrayList<AbstractEntity>());
+		data.put(EntityFactory.ENTITY_TOWERGUARD, new ArrayList<AbstractEntity>());
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
-import entities.factory.iFactory;
+import entities.factory.AbstractFactory;
 
 /**
  * Classe générique de manager d'entités.
@@ -27,7 +27,7 @@ import entities.factory.iFactory;
  */
 public abstract class AbstractManager<T> {
 	
-	protected HashMap<String, iFactory<T>> factories;
+	protected AbstractFactory<T> factory;
 	
 	
 	protected Iterator<T> iterator;
@@ -45,17 +45,13 @@ public abstract class AbstractManager<T> {
 	public T addEntity(String entityType) {
 		
 		if (data.containsKey(entityType)) {
-			T entity = getSuitableFactory(entityType).getEntity(entityType);
+			T entity = factory.getEntity(entityType);
 			data.get(entityType).add(entity);
 			return entity;
 		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given.");
+			Log.warn("AbstractManager.addEntity() : Wrong type given : " + entityType);
 		}
 		return null;
-	}
-	
-	public iFactory<T> getSuitableFactory(final String entityType) {
-		return factories.get(entityType);
 	}
 	
 	/**
@@ -70,7 +66,7 @@ public abstract class AbstractManager<T> {
 			int indiceToRemove;
 			if ((indiceToRemove = data.get(entityType).indexOf(entity)) != -1) {
 				entity = data.get(entityType).remove(indiceToRemove);
-				getSuitableFactory(entityType).setEntityBack(entityType, entity);
+				factory.setEntityBack(entityType, entity);
 			}
 		} else {
 			Log.warn("AbstractManager.addEntity() : Wrong type given.");

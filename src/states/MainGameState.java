@@ -8,11 +8,11 @@
 
 package states;
 
-import entities.AbstractBuildingEntity;
 import entities.AbstractCreatureEntity;
+import entities.AbstractEntity;
 
-import entities.manager.BuildingManager;
-import entities.manager.CreatureManager;
+import entities.factory.EntityFactory;
+import entities.manager.EntityManager;
 import entities.types.buildings.TowerGuard;
 import gui.MapScene;
 import gui.Scene;
@@ -57,10 +57,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private ArrayList<Scene> scenes;
 
 	private AbstractCreatureEntity bonomesTest[];
-	private CreatureManager objCreatureManager;
+	private EntityManager objEntityManager;
 	
-	private AbstractBuildingEntity towersTest[];
-	private BuildingManager objBuildingManager;
+	private AbstractEntity towersTest[];
 	private int indextower = 0;
 	
 
@@ -124,11 +123,11 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		scenes = new ArrayList<Scene>();
 		initScenes(container, game);
 		
-		objCreatureManager = CreatureManager.getInstance();
+		objEntityManager = EntityManager.getInstance();
 		bonomesTest = new AbstractCreatureEntity[NB_JIDIOKA_TEST];
 		
 		for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
-			bonomesTest[i] = objCreatureManager.addEntity("jidiako");
+			bonomesTest[i] = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
 			bonomesTest[i].setM(
 				new Vector2i(
 					Randomizer.getInstance().generateRangedInt(0, 40),
@@ -137,8 +136,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			);
 			bonomesTest[i].setIsDiplayed(true);
 		}
-		
-		objBuildingManager = BuildingManager.getInstance();
 		towersTest = new TowerGuard[NB_TOWER_TEST];
 	}
 
@@ -156,8 +153,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		renderScenes(g);
 		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
-		objCreatureManager.render(g, cam);
-		objBuildingManager.render(g, cam);
+		objEntityManager.render(g, cam);
 	}
 
 	@Override
@@ -168,7 +164,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.setS(input.getMouseX(), input.getMouseY());
 		mPos.m.checkRanges();
 		
-		objCreatureManager.update(container, game, delta);
+		objEntityManager.update(container, game, delta);
 	}
 	
 	protected void cameraMoves() {
@@ -229,12 +225,12 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				indextower = 0;
 			}
 			
-			towersTest[indextower] = objBuildingManager.addEntity("towerguard");
+			towersTest[indextower] = objEntityManager.addEntity("towerguard");
 			towersTest[indextower].setM(destPosition);
 			towersTest[indextower].setIsDiplayed(true);
 			++indextower;
 			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
-				objBuildingManager.removeEntity("towerguard", towersTest[indextower]);
+				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
 				towersTest[indextower] = null;
 			}
 		}
