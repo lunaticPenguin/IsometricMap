@@ -1,10 +1,9 @@
 package entities.manager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import java.util.Map.Entry;
-import java.util.Set;
 
 import map.Camera;
 
@@ -29,9 +28,15 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	protected EntityManager() {
 		factory = EntityFactory.getInstance();
 		
-		data = new HashMap<String, ArrayList<AbstractEntity>>();
-		data.put(EntityFactory.ENTITY_CREATUREJIDIAKO, new ArrayList<AbstractEntity>());
-		data.put(EntityFactory.ENTITY_TOWERGUARD, new ArrayList<AbstractEntity>());
+		data = new HashMap<Integer, AbstractEntity>();
+		dataZOrder = new HashMap<Integer, HashMap<Integer, AbstractEntity>>();
+		
+		int max = map.Map.mDim.x;
+		for (int i = 0 ; i < max ; ++i) {
+			dataZOrder.put(i, new HashMap<Integer, AbstractEntity>());
+		}
+		
+		dataZOrderReverse = new HashMap<Integer, Integer>();
 	}
 
 	@Override
@@ -43,20 +48,20 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
-		Set<Entry<String, ArrayList<AbstractEntity>>> entitiesSet = data.entrySet();
-		Iterator<Entry<String, ArrayList<AbstractEntity>>> entitiesIterator = entitiesSet.iterator();
 		
-		Entry<String, ArrayList<AbstractEntity>> pairEntityCollection = null;
-		Iterator<AbstractEntity> entityTypeIterator = null;
-		AbstractEntity entityType = null;
+		Iterator<Entry<Integer, AbstractEntity>> dataEntryIterator = data.entrySet().iterator();
+		Entry<Integer, AbstractEntity> dataIterator;
+		AbstractEntity entity = null;
 		
-		while (entitiesIterator.hasNext()) {
-			pairEntityCollection = entitiesIterator.next();
-			entityTypeIterator = pairEntityCollection.getValue().iterator();
-			while (entityTypeIterator.hasNext()) {
-				entityType = entityTypeIterator.next();
-				entityType.update(container, game, delta);
-			}
+		int newOrder = 0;
+		while (dataEntryIterator.hasNext()) {
+			dataIterator = dataEntryIterator.next();
+			
+			entity = dataIterator.getValue();
+			entity.update(container, game, delta);
+			
+			newOrder = (int) entity.getS().y / map.Map.mTDim.y;
+			setEntityNewOrder(entity, newOrder);
 		}
 	}
 }

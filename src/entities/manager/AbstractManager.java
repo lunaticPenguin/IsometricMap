@@ -1,8 +1,8 @@
 package entities.manager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -29,13 +29,32 @@ public abstract class AbstractManager<T> {
 	
 	protected AbstractFactory<T> factory;
 	
-	
 	protected Iterator<T> iterator;
+
+	/**
+	 * Contient les entités correspondantes selon le manager
+	 * 
+	 * KEY: hashCode
+	 * VALUE : TYPE T
+	 */
+	protected HashMap<Integer, T> data;
 	
 	/**
 	 * Contient les entités correspondantes selon le manager
+	 * 
+	 * KEY : Y index (z-order)
+	 * VALUE : MAP (KEY: hashCode, VALUE: TYPE T) des entités concernées par l'index
 	 */
-	protected HashMap<String, ArrayList<T>> data;
+	protected HashMap<Integer, HashMap<Integer, T>> dataZOrder;
+	
+	/**
+	 * Stocke les positions inverse :
+	 * on les retrouve via le hashCode des T
+	 * 
+	 * KEY: hashCode
+	 * VALUE: Y index
+	 */
+	protected HashMap<Integer, Integer> dataZOrderReverse;
 	
 	/**
 	 * Permet d'ajouter une entité et d'accéder à sa référence
@@ -43,15 +62,13 @@ public abstract class AbstractManager<T> {
 	 * @return T entity
 	 */
 	public T addEntity(String entityType) {
+		T entity = factory.getEntity(entityType);
+		int hashCode = entity.hashCode();
+		data.put(hashCode, entity);
 		
-		if (data.containsKey(entityType)) {
-			T entity = factory.getEntity(entityType);
-			data.get(entityType).add(entity);
-			return entity;
-		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given : " + entityType);
-		}
-		return null;
+		dataZOrder.get(0).put(hashCode, entity);
+		dataZOrderReverse.put(hashCode, 0);
+		return entity;
 	}
 	
 	/**
@@ -62,15 +79,43 @@ public abstract class AbstractManager<T> {
 	 * @param entity
 	 */
 	public void removeEntity(String entityType, T entity) {
-		if (data.containsKey(entityType)) {
-			int indiceToRemove;
-			if ((indiceToRemove = data.get(entityType).indexOf(entity)) != -1) {
-				entity = data.get(entityType).remove(indiceToRemove);
+
+		int hashCode = entity.hashCode();
+		
+		if (data.containsKey(hashCode)) {
+			if (data.containsKey(entity.hashCode())) {
+				int index = dataZOrderReverse.get(hashCode);
+				dataZOrder.get(index).remove(hashCode);
+				data.remove(hashCode);
 				factory.setEntityBack(entityType, entity);
+			} else {
+				Log.warn("AbstractManager.removeEntity() : No specified data : " + hashCode);
 			}
 		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given.");
+			Log.warn("AbstractManager.removeEntity() : Wrong type given.");
 		}
+	}
+	
+	/**
+	 * Permet de changer d'ordre une entité
+	 * @param entity
+	 * @param newOrder
+	 */
+	public void setEntityNewOrder(T entity, int newOrder) {
+		
+		int hashCode = entity.hashCode();
+		if (!data.containsKey(hashCode)) {
+			return;
+		}
+		
+		int lastOrder = dataZOrderReverse.get(entity.hashCode());
+		if (lastOrder == newOrder) {
+			return;
+		}
+		
+		dataZOrder.get(lastOrder).remove(entity.hashCode());
+		dataZOrder.get(newOrder).put(entity.hashCode(), entity);
+		dataZOrderReverse.put(hashCode, newOrder);
 	}
 	
 	
@@ -95,22 +140,33 @@ public abstract class AbstractManager<T> {
 	 */
 	public void render(Graphics g, Camera cam) {
 		
-		Set<Entry<String, ArrayList<T>>> typeEntrySet = data.entrySet();
-		Iterator<Entry<String, ArrayList<T>>> iteratorSet = typeEntrySet.iterator();
-		Entry<String, ArrayList<T>> typeListEntry = null;
-		ArrayList<T> entitiesList = null;
-		Iterator<T> entitiesIterator = null;
+		Set<Map.Entry<Integer, T>> dataEntrySet = data.entrySet();
+		Iterator<Entry<Integer, T>> dataEntryIterator = dataEntrySet.iterator();
+		Entry<Integer, T> dataIterator = null;
 		
-		while (iteratorSet.hasNext()) {
-			typeListEntry = iteratorSet.next();
-			entitiesList = typeListEntry.getValue();
-			entitiesIterator = entitiesList.iterator();
-			while (entitiesIterator.hasNext()) {
-				this.renderEntity(g, cam, entitiesIterator.next());
-			}
+		while (dataEntryIterator.hasNext()) {
+			dataIterator = dataEntryIterator.next();
+			this.renderEntity(g, cam, dataIterator.getValue());
 		}
 	}
 	
+	/**
+	 * Méthode permettant de rendre seulement les entités présents sur une ligne.
+	 * Permet du coup un affichage trié
+	 * 
+	 * @param g
+	 * @param cam
+	 * @param numRow
+	 */
+	public void renderSpecificRow(Graphics g, Camera cam, int numRow) {
+		Iterator<Entry<Integer, T>> dataEntryRowIterator = dataZOrder.get(numRow).entrySet().iterator();
+		Entry<Integer, T> dataIterator = null;
+		
+		while (dataEntryRowIterator.hasNext()) {
+			dataIterator = dataEntryRowIterator.next();
+			this.renderEntity(g, cam, dataIterator.getValue());
+		}
+	}
 	
 	protected abstract void renderEntity(Graphics g, Camera cam, T entity);
 }
