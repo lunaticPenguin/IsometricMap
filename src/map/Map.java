@@ -59,6 +59,7 @@ public class Map extends TiledMapPlus {
 	
 	
 	public Map(String ref) throws SlickException {
+		
 		super(ref);
 		/**
 		 * Map dimension
@@ -80,7 +81,7 @@ public class Map extends TiledMapPlus {
 
 		pt_TL = new Vector2i();
 		pt_BL = new Vector2i();
-
+		
 		pt_TR = new Vector2i();
 		pt_BR = new Vector2i();
 		
@@ -154,7 +155,7 @@ public class Map extends TiledMapPlus {
 		startRenderX = startRenderX < 0 ? 0 : startRenderX;
 		startRenderY = startRenderY < 0 ? 0 : startRenderY;
 		
-		optimizedRender(cam.x + additionalXCamOffset, cam.y + additionalYCamOffset, startRenderX, startRenderY, colCount, rowCount, null, false);
+		optimizedRender(cam, cam.x + additionalXCamOffset, cam.y + additionalYCamOffset, startRenderX, startRenderY, colCount, rowCount, null, false);
 		
 		g.drawString("render options ["+startRenderX+";"+startRenderY+"]["+colCount+";"+rowCount+"]", 400, 10);
 	}
@@ -173,7 +174,7 @@ public class Map extends TiledMapPlus {
 	 * @param layer null pour le rendu de tous les calques, sinon affiche seulement le calque spécifié (@see Map.getLayer())
 	 * @param lineByLine True if we should render line by line, i.e. giving us a chance to render something else between lines
 	 */
-	protected void optimizedRender(int x, int y, int sx, int sy, int width, int height, Layer layer, boolean lineByLine) {
+	protected void optimizedRender(Camera cam, int x, int y, int sx, int sy, int width, int height, Layer layer, boolean lineByLine) {
 		ArrayList<Layer> drawLayers = layers;
 		if (layer != null) {
 			drawLayers = new ArrayList<Layer>();
@@ -193,11 +194,14 @@ public class Map extends TiledMapPlus {
 		int renderXTile;
 		int renderYTile;
 		
+		int numLayers = drawLayers.size();
+		Layer currentLayer = null;
+		
 		while (currentLine < numLineToReach) {
 			
 			for (i = 0 ; i <= currentLine ; ++i) {
-				for (int layerIdx = 0; layerIdx < drawLayers.size(); layerIdx++) {
-					Layer currentLayer = (Layer) drawLayers.get(layerIdx);
+				for (int layerIdx = 0; layerIdx < numLayers ; layerIdx++) {
+					currentLayer = drawLayers.get(layerIdx);
 					
 					renderX = x - currentLine * mTDim.x + i * tileWidth;
 					renderY = y + currentLine * mTDim.y;
