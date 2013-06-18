@@ -6,6 +6,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
+import entities.manager.EntityManager;
+
 import pathfinding.Path;
 import pathfinding.PathNode;
 
@@ -80,6 +82,10 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 			
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
+			
+
+			int newOrder = (int) s.y / map.Map.tDim.y;
+			EntityManager.getInstance().setEntityNewOrder(this, newOrder);
 		}
 	}
 	

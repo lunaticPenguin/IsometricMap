@@ -10,6 +10,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMapPlus;
 
+import entities.manager.EntityManager;
+
 import pathfinding.Path;
 import pathfinding.PathFinder;
 
@@ -57,6 +59,7 @@ public class Map extends TiledMapPlus {
 	protected HashMap<Integer, boolean[][]> transitiveClosureMatrix;
 	protected PathFinder refPathFinder;
 	
+	protected EntityManager objEm;
 	
 	public Map(String ref) throws SlickException {
 		
@@ -108,6 +111,8 @@ public class Map extends TiledMapPlus {
 		//computeTransitiveClosure();
 		
 		refPathFinder = new PathFinder(this);
+		
+		objEm = EntityManager.getInstance();
 	}
 	
 	public void render(Camera cam) {
@@ -212,6 +217,10 @@ public class Map extends TiledMapPlus {
 					currentLayer.render(renderX, renderY, renderXTile, renderYTile, 1, 0, 
 							lineByLine, tileWidth, tileHeight);
 				}
+			}
+			
+			if (currentLine > 0) {
+				objEm.renderSpecificRow(g, cam, currentLine - 1);
 			}
 			++currentLine;
 		}

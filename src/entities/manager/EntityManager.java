@@ -59,9 +59,6 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 			
 			entity = dataIterator.getValue();
 			entity.update(container, game, delta);
-			
-			newOrder = (int) entity.getS().y / map.Map.mTDim.y;
-			setEntityNewOrder(entity, newOrder);
 		}
 	}
 }

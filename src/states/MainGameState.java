@@ -153,7 +153,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		renderScenes(g);
 		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
-		objEntityManager.render(g, cam);
 	}
 
 	@Override

@@ -98,8 +98,8 @@ public abstract class AbstractManager<T> {
 	
 	/**
 	 * Permet de changer d'ordre une entité
-	 * @param entity
-	 * @param newOrder
+	 * @param T entity
+	 * @param int newOrder
 	 */
 	public void setEntityNewOrder(T entity, int newOrder) {
 		
@@ -113,8 +113,8 @@ public abstract class AbstractManager<T> {
 			return;
 		}
 		
-		dataZOrder.get(lastOrder).remove(entity.hashCode());
-		dataZOrder.get(newOrder).put(entity.hashCode(), entity);
+		dataZOrder.get(lastOrder).remove(hashCode);
+		dataZOrder.get(newOrder).put(hashCode, entity);
 		dataZOrderReverse.put(hashCode, newOrder);
 	}
 	
@@ -128,39 +128,23 @@ public abstract class AbstractManager<T> {
 	 */
 	public abstract void update(GameContainer container, StateBasedGame game, int delta);
 	
-	
-	/**
-	 * TODO
-	 * Permet d'afficher l'ensemble des entités utilisées dans l'application
-	 * 
-	 * @param GameContainer container
-	 * @param StateBasedGame game
-	 * @param Graphics g
-	 * @param Camera cam
-	 */
-	public void render(Graphics g, Camera cam) {
-		
-		Set<Map.Entry<Integer, T>> dataEntrySet = data.entrySet();
-		Iterator<Entry<Integer, T>> dataEntryIterator = dataEntrySet.iterator();
-		Entry<Integer, T> dataIterator = null;
-		
-		while (dataEntryIterator.hasNext()) {
-			dataIterator = dataEntryIterator.next();
-			this.renderEntity(g, cam, dataIterator.getValue());
-		}
-	}
-	
 	/**
 	 * Méthode permettant de rendre seulement les entités présents sur une ligne.
 	 * Permet du coup un affichage trié
 	 * 
-	 * @param g
-	 * @param cam
-	 * @param numRow
+	 * @param Graphics g
+	 * @param Camera cam
+	 * @param int numRow
 	 */
 	public void renderSpecificRow(Graphics g, Camera cam, int numRow) {
+		
+		if (dataZOrder.get(numRow).isEmpty()) {
+			return;
+		}
+		
 		Iterator<Entry<Integer, T>> dataEntryRowIterator = dataZOrder.get(numRow).entrySet().iterator();
 		Entry<Integer, T> dataIterator = null;
+		
 		
 		while (dataEntryRowIterator.hasNext()) {
 			dataIterator = dataEntryRowIterator.next();
