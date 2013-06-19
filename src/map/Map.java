@@ -218,12 +218,9 @@ public class Map extends TiledMapPlus {
 							lineByLine, tileWidth, tileHeight);
 				}
 			}
-			
-			if (currentLine > 0) {
-				objEm.renderSpecificRow(g, cam, currentLine - 1);
-			}
 			++currentLine;
 		}
+		objEm.render(g, cam);
 	}
 	
 	

@@ -16,7 +16,8 @@ import collision.SquareDetectionZone;
 import tools.Position;
 import tools.Vector2i;
 
-public abstract class AbstractEntity extends SquareDetectionZone {
+public abstract class AbstractEntity extends SquareDetectionZone 
+implements Comparable<AbstractEntity> {
 	
 	
 	/**
@@ -194,5 +195,22 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 */
 	public void draw(Graphics g, Camera cam) {
 		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+	}
+	
+	/**
+	 * Permet de comparer les entités selon leur positions Y (screen).
+	 * 
+	 * @return int (-1|0|1)
+	 * 
+	 * {@inheritDoc}
+	 */
+	public int compareTo(AbstractEntity other) {
+		if (s.y < other.getS().y) {
+			return -1;
+		} else if (s.y == other.getS().y) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 }

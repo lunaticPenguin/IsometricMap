@@ -1,9 +1,8 @@
 package entities.manager;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-
-import java.util.Map.Entry;
 
 import map.Camera;
 
@@ -27,16 +26,7 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	
 	protected EntityManager() {
 		factory = EntityFactory.getInstance();
-		
-		data = new HashMap<Integer, AbstractEntity>();
-		dataZOrder = new HashMap<Integer, HashMap<Integer, AbstractEntity>>();
-		
-		int max = map.Map.mDim.x;
-		for (int i = 0 ; i < max ; ++i) {
-			dataZOrder.put(i, new HashMap<Integer, AbstractEntity>());
-		}
-		
-		dataZOrderReverse = new HashMap<Integer, Integer>();
+		data = new ArrayList<AbstractEntity>();
 	}
 
 	@Override
@@ -49,16 +39,10 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
-		Iterator<Entry<Integer, AbstractEntity>> dataEntryIterator = data.entrySet().iterator();
-		Entry<Integer, AbstractEntity> dataIterator;
-		AbstractEntity entity = null;
-		
-		int newOrder = 0;
-		while (dataEntryIterator.hasNext()) {
-			dataIterator = dataEntryIterator.next();
-			
-			entity = dataIterator.getValue();
-			entity.update(container, game, delta);
+		Iterator<AbstractEntity> dataIterator = data.iterator();
+		while (dataIterator.hasNext()) {
+			dataIterator.next().update(container, game, delta);
 		}
+		Collections.sort(data);
 	}
 }
