@@ -2,6 +2,7 @@ package entities.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.newdawn.slick.GameContainer;
@@ -38,18 +39,41 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
-		Iterator<AbstractEntity> dataIterator = data.iterator();
+		Iterator<AbstractEntity> dataIterator = dataHidden.iterator();
 		AbstractEntity entity;
 		boolean boolHasToSort = false;
+		
+		HashMap<Integer, AbstractEntity> alreadyCheckedEntities = new HashMap<Integer, AbstractEntity>();
+		
 		while (dataIterator.hasNext()) {
 			entity = dataIterator.next();
-			if (entity.update(container, game, delta) && !boolHasToSort) {
-				if (entity.belongToRenderedAera())
-				boolHasToSort = true;
+			if (entity.belongToRenderedAera()) {
+				alreadyCheckedEntities.put(entity.hashCode(), entity);
+				data.add(entity);
+				dataIterator.remove();
 			}
 		}
 		
-		if (boolHasToSort) {
+		dataIterator = data.iterator();
+		while (dataIterator.hasNext()) {
+			entity = dataIterator.next();
+			if (entity.update(container, game, delta)) {
+				boolHasToSort = boolHasToSort == false ? true : true;
+			}
+			
+			// si cette entité ne vient pas de la liste d'unités invisibles
+			if (!alreadyCheckedEntities.containsKey(entity.hashCode())) {
+				if (!entity.belongToRenderedAera()) {
+					dataHidden.add(entity);
+					dataIterator.remove();
+					boolHasToSort = true;
+				}
+			}
+		}
+		
+		System.out.println(data.size() + " units to display");
+		
+		if (boolHasToSort && !alreadyCheckedEntities.isEmpty()) {
 			Collections.sort(data);
 		}
 	}
