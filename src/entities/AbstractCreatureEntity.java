@@ -77,10 +77,10 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		if (isMoving) {
 			
 			determineDirection();
-			
+			float y = s.y;
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
-			return true;
+			return y != s.y; // il n'y a indication du tri que si modification du y
 		}
 		return false;
 	}
