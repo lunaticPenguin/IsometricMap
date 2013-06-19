@@ -186,7 +186,7 @@ implements Comparable<AbstractEntity> {
 	 * 
 	 * @param delta
 	 */
-	abstract public void update(GameContainer container, StateBasedGame game, int delta);
+	abstract public boolean update(GameContainer container, StateBasedGame game, int delta);
 	
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran

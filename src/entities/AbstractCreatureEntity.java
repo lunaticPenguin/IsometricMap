@@ -72,7 +72,7 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		this.isMoving = isMoving;
 	}
 	
-	public void update(GameContainer container, StateBasedGame game, int delta) {
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
 		
 		if (isMoving) {
 			
@@ -80,7 +80,9 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 			
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
+			return true;
 		}
+		return false;
 	}
 	
 	/**

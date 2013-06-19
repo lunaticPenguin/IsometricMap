@@ -40,9 +40,15 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
 		Iterator<AbstractEntity> dataIterator = data.iterator();
+		boolean boolHasToSort = false;
 		while (dataIterator.hasNext()) {
-			dataIterator.next().update(container, game, delta);
+			if (dataIterator.next().update(container, game, delta) && !boolHasToSort) {
+				boolHasToSort = true;
+			}
 		}
-		Collections.sort(data);
+		
+		if (boolHasToSort) {
+			Collections.sort(data);
+		}
 	}
 }
