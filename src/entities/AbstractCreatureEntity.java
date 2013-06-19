@@ -72,15 +72,17 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		this.isMoving = isMoving;
 	}
 	
-	public void update(GameContainer container, StateBasedGame game, int delta) {
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
 		
 		if (isMoving) {
 			
 			determineDirection();
-			
+			float y = s.y;
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
+			return y != s.y; // il n'y a indication du tri que si modification du y
 		}
+		return false;
 	}
 	
 	/**
@@ -88,8 +90,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param g
 	 * @param cam
 	 */
-	public void draw(Graphics g, Camera cam) {
-		
+	public void draw(Graphics g) {
+		Camera cam = Camera.getInstance();
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {

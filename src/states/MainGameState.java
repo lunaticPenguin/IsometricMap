@@ -106,8 +106,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		map = new Map("data/maps/nature.tmx");
 		
-		
-		cam = new Camera(MyGame.X_WINDOW, MyGame.Y_WINDOW, map);
+		cam = Camera.getInstance();
+		cam.init(MyGame.X_WINDOW, MyGame.Y_WINDOW, map);
 		Vector2i originPos = Position.memoryToScreen(
 				cam,
 				-Integer.parseInt(map.getMapProperty("focusOriginTileX", "0")),
@@ -142,7 +142,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		
-		map.dynamicRender(cam, g);
+		map.dynamicRender(g);
 
 		renderMouseTile(g);
 		
@@ -153,7 +153,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		renderScenes(g);
 		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
-		objEntityManager.render(g, cam);
 	}
 
 	@Override
