@@ -107,7 +107,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
-		super.update(container, game, delta);
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+		return super.update(container, game, delta);
 	}
 }

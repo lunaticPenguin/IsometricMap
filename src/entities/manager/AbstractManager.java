@@ -1,12 +1,8 @@
 package entities.manager;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import map.Camera;
+import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -25,7 +21,7 @@ import entities.factory.AbstractFactory;
  *
  * @param <T>
  */
-public abstract class AbstractManager<T> {
+public abstract class AbstractManager<T extends Comparable<? super T>> {
 	
 	protected AbstractFactory<T> factory;
 	
@@ -33,28 +29,9 @@ public abstract class AbstractManager<T> {
 
 	/**
 	 * Contient les entités correspondantes selon le manager
-	 * 
-	 * KEY: hashCode
-	 * VALUE : TYPE T
 	 */
-	protected HashMap<Integer, T> data;
-	
-	/**
-	 * Contient les entités correspondantes selon le manager
-	 * 
-	 * KEY : Y index (z-order)
-	 * VALUE : MAP (KEY: hashCode, VALUE: TYPE T) des entités concernées par l'index
-	 */
-	protected HashMap<Integer, HashMap<Integer, T>> dataZOrder;
-	
-	/**
-	 * Stocke les positions inverse :
-	 * on les retrouve via le hashCode des T
-	 * 
-	 * KEY: hashCode
-	 * VALUE: Y index
-	 */
-	protected HashMap<Integer, Integer> dataZOrderReverse;
+	protected List<T> data;
+	protected List<T> dataHidden;
 	
 	/**
 	 * Permet d'ajouter une entité et d'accéder à sa référence
@@ -63,11 +40,8 @@ public abstract class AbstractManager<T> {
 	 */
 	public T addEntity(String entityType) {
 		T entity = factory.getEntity(entityType);
-		int hashCode = entity.hashCode();
-		data.put(hashCode, entity);
-		
-		dataZOrder.get(0).put(hashCode, entity);
-		dataZOrderReverse.put(hashCode, 0);
+		data.add(entity);
+		Collections.sort(data);
 		return entity;
 	}
 	
@@ -79,43 +53,14 @@ public abstract class AbstractManager<T> {
 	 * @param entity
 	 */
 	public void removeEntity(String entityType, T entity) {
-
-		int hashCode = entity.hashCode();
-		
-		if (data.containsKey(hashCode)) {
-			if (data.containsKey(entity.hashCode())) {
-				int index = dataZOrderReverse.get(hashCode);
-				dataZOrder.get(index).remove(hashCode);
-				data.remove(hashCode);
-				factory.setEntityBack(entityType, entity);
-			} else {
-				Log.warn("AbstractManager.removeEntity() : No specified data : " + hashCode);
-			}
-		} else {
-			Log.warn("AbstractManager.removeEntity() : Wrong type given.");
-		}
-	}
 	
-	/**
-	 * Permet de changer d'ordre une entité
-	 * @param T entity
-	 * @param int newOrder
-	 */
-	public void setEntityNewOrder(T entity, int newOrder) {
-		
-		int hashCode = entity.hashCode();
-		if (!data.containsKey(hashCode)) {
-			return;
+		int indexToRemove = data.indexOf(entity);
+		if (indexToRemove != -1) {
+			data.remove(entity);
+			factory.setEntityBack(entityType, entity);
+		} else {
+			Log.warn("AbstractManager.removeEntity() : No specified data of : " + entityType + " type");
 		}
-		
-		int lastOrder = dataZOrderReverse.get(entity.hashCode());
-		if (lastOrder == newOrder) {
-			return;
-		}
-		
-		dataZOrder.get(lastOrder).remove(hashCode);
-		dataZOrder.get(newOrder).put(hashCode, entity);
-		dataZOrderReverse.put(hashCode, newOrder);
 	}
 	
 	
@@ -134,23 +79,14 @@ public abstract class AbstractManager<T> {
 	 * 
 	 * @param Graphics g
 	 * @param Camera cam
-	 * @param int numRow
 	 */
-	public void renderSpecificRow(Graphics g, Camera cam, int numRow) {
+	public void render(Graphics g) {
 		
-		if (dataZOrder.get(numRow).isEmpty()) {
-			return;
-		}
-		
-		Iterator<Entry<Integer, T>> dataEntryRowIterator = dataZOrder.get(numRow).entrySet().iterator();
-		Entry<Integer, T> dataIterator = null;
-		
-		
-		while (dataEntryRowIterator.hasNext()) {
-			dataIterator = dataEntryRowIterator.next();
-			this.renderEntity(g, cam, dataIterator.getValue());
+		Iterator<T> dataIterator = data.iterator();
+		while (dataIterator.hasNext()) {
+			this.renderEntity(g, dataIterator.next());
 		}
 	}
 	
-	protected abstract void renderEntity(Graphics g, Camera cam, T entity);
+	protected abstract void renderEntity(Graphics g, T entity);
 }

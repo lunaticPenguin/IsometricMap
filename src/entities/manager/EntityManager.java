@@ -1,11 +1,9 @@
 package entities.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import java.util.Map.Entry;
-
-import map.Camera;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -27,38 +25,56 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	
 	protected EntityManager() {
 		factory = EntityFactory.getInstance();
-		
-		data = new HashMap<Integer, AbstractEntity>();
-		dataZOrder = new HashMap<Integer, HashMap<Integer, AbstractEntity>>();
-		
-		int max = map.Map.mDim.x;
-		for (int i = 0 ; i < max ; ++i) {
-			dataZOrder.put(i, new HashMap<Integer, AbstractEntity>());
-		}
-		
-		dataZOrderReverse = new HashMap<Integer, Integer>();
+		data = new ArrayList<AbstractEntity>();
+		dataHidden = new ArrayList<AbstractEntity>();
 	}
 
 	@Override
-	protected void renderEntity(Graphics g, Camera cam, AbstractEntity entity) {
-		if (entity.belongToRenderedAera(cam)) {
-			entity.draw(g, cam);
+	protected void renderEntity(Graphics g, AbstractEntity entity) {
+		if (entity.belongToRenderedAera()) {
+			entity.draw(g);
 		}
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
-		Iterator<Entry<Integer, AbstractEntity>> dataEntryIterator = data.entrySet().iterator();
-		Entry<Integer, AbstractEntity> dataIterator;
-		AbstractEntity entity = null;
+		Iterator<AbstractEntity> dataIterator = dataHidden.iterator();
+		AbstractEntity entity;
+		boolean boolHasToSort = false;
 		
-		int newOrder = 0;
-		while (dataEntryIterator.hasNext()) {
-			dataIterator = dataEntryIterator.next();
+		HashMap<Integer, AbstractEntity> alreadyCheckedEntities = new HashMap<Integer, AbstractEntity>();
+		
+		while (dataIterator.hasNext()) {
+			entity = dataIterator.next();
+			if (entity.belongToRenderedAera()) {
+				alreadyCheckedEntities.put(entity.hashCode(), entity);
+				data.add(entity);
+				dataIterator.remove();
+			}
+		}
+		
+		dataIterator = data.iterator();
+		while (dataIterator.hasNext()) {
+			entity = dataIterator.next();
+			if (entity.update(container, game, delta)) {
+				boolHasToSort = boolHasToSort == false ? true : true;
+			}
 			
-			entity = dataIterator.getValue();
-			entity.update(container, game, delta);
+			// si cette entité ne vient pas de la liste d'unités invisibles
+			if (!alreadyCheckedEntities.containsKey(entity.hashCode())) {
+				if (!entity.belongToRenderedAera()) {
+					dataHidden.add(entity);
+					dataIterator.remove();
+					boolHasToSort = true;
+				}
+			}
+		}
+		
+		System.out.println(data.size() + " units to display");
+		
+		if (boolHasToSort && !alreadyCheckedEntities.isEmpty()) {
+			Collections.sort(data);
 		}
 	}
 }

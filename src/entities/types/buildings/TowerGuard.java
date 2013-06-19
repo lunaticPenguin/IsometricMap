@@ -87,9 +87,8 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
-		// TODO Auto-generated method stub
-		
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+		return false;
 	}
 
 	@Override

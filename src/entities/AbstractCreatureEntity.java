@@ -6,8 +6,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import entities.manager.EntityManager;
-
 import pathfinding.Path;
 import pathfinding.PathNode;
 
@@ -74,19 +72,17 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		this.isMoving = isMoving;
 	}
 	
-	public void update(GameContainer container, StateBasedGame game, int delta) {
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
 		
 		if (isMoving) {
 			
 			determineDirection();
-			
+			float y = s.y;
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
-			
-
-			int newOrder = (int) s.y / map.Map.tDim.y;
-			EntityManager.getInstance().setEntityNewOrder(this, newOrder);
+			return y != s.y; // il n'y a indication du tri que si modification du y
 		}
+		return false;
 	}
 	
 	/**
@@ -94,8 +90,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param g
 	 * @param cam
 	 */
-	public void draw(Graphics g, Camera cam) {
-		
+	public void draw(Graphics g) {
+		Camera cam = Camera.getInstance();
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {
