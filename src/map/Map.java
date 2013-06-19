@@ -119,7 +119,9 @@ public class Map extends TiledMapPlus {
 		renderIsometricMap(cam.x, cam.y, 0, 0, 50, 50, null, false);
 	}
 	
-	public void dynamicRender(Camera cam, Graphics g) {
+	public void dynamicRender(Graphics g) {
+		
+		Camera cam = Camera.getInstance();
 		
 		if (this.g == null) {
 			this.g = g;
@@ -160,7 +162,7 @@ public class Map extends TiledMapPlus {
 		startRenderX = startRenderX < 0 ? 0 : startRenderX;
 		startRenderY = startRenderY < 0 ? 0 : startRenderY;
 		
-		optimizedRender(cam, cam.x + additionalXCamOffset, cam.y + additionalYCamOffset, startRenderX, startRenderY, colCount, rowCount, null, false);
+		optimizedRender(cam.x + additionalXCamOffset, cam.y + additionalYCamOffset, startRenderX, startRenderY, colCount, rowCount, null, false);
 		
 		g.drawString("render options ["+startRenderX+";"+startRenderY+"]["+colCount+";"+rowCount+"]", 400, 10);
 	}
@@ -179,7 +181,7 @@ public class Map extends TiledMapPlus {
 	 * @param layer null pour le rendu de tous les calques, sinon affiche seulement le calque spécifié (@see Map.getLayer())
 	 * @param lineByLine True if we should render line by line, i.e. giving us a chance to render something else between lines
 	 */
-	protected void optimizedRender(Camera cam, int x, int y, int sx, int sy, int width, int height, Layer layer, boolean lineByLine) {
+	protected void optimizedRender(int x, int y, int sx, int sy, int width, int height, Layer layer, boolean lineByLine) {
 		ArrayList<Layer> drawLayers = layers;
 		if (layer != null) {
 			drawLayers = new ArrayList<Layer>();
@@ -220,7 +222,7 @@ public class Map extends TiledMapPlus {
 			}
 			++currentLine;
 		}
-		objEm.render(g, cam);
+		objEm.render(g);
 	}
 	
 	

@@ -90,8 +90,8 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * @param g
 	 * @param cam
 	 */
-	public void draw(Graphics g, Camera cam) {
-		
+	public void draw(Graphics g) {
+		Camera cam = Camera.getInstance();
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {

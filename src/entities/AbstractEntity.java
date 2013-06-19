@@ -80,7 +80,8 @@ implements Comparable<AbstractEntity> {
 	 * @param Camera cam permet de déterminer la zone affichée
 	 * @return boolean
 	 */
-	public boolean belongToRenderedAera(Camera cam) {
+	public boolean belongToRenderedAera() {
+		Camera cam = Camera.getInstance();
 		return isDisplayed && ((cam.x + s.x > 0) && (cam.x + s.x < MyGame.X_WINDOW)) && ((cam.y + s.y > 0) && (cam.y + s.y < MyGame.Y_WINDOW));
 	}
 	
@@ -193,7 +194,8 @@ implements Comparable<AbstractEntity> {
 	 * @param g
 	 * @param cam
 	 */
-	public void draw(Graphics g, Camera cam) {
+	public void draw(Graphics g) {
+		Camera cam = Camera.getInstance();
 		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 	}
 	

@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import map.Camera;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
@@ -31,11 +29,9 @@ public abstract class AbstractManager<T extends Comparable<? super T>> {
 
 	/**
 	 * Contient les entités correspondantes selon le manager
-	 * 
-	 * KEY: hashCode
-	 * VALUE : TYPE T
 	 */
 	protected List<T> data;
+	protected List<T> dataHidden;
 	
 	/**
 	 * Permet d'ajouter une entité et d'accéder à sa référence
@@ -84,13 +80,13 @@ public abstract class AbstractManager<T extends Comparable<? super T>> {
 	 * @param Graphics g
 	 * @param Camera cam
 	 */
-	public void render(Graphics g, Camera cam) {
+	public void render(Graphics g) {
 		
 		Iterator<T> dataIterator = data.iterator();
 		while (dataIterator.hasNext()) {
-			this.renderEntity(g, cam, dataIterator.next());
+			this.renderEntity(g, dataIterator.next());
 		}
 	}
 	
-	protected abstract void renderEntity(Graphics g, Camera cam, T entity);
+	protected abstract void renderEntity(Graphics g, T entity);
 }

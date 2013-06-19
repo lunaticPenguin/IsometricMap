@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import map.Camera;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
@@ -27,12 +25,13 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	protected EntityManager() {
 		factory = EntityFactory.getInstance();
 		data = new ArrayList<AbstractEntity>();
+		dataHidden = new ArrayList<AbstractEntity>();
 	}
 
 	@Override
-	protected void renderEntity(Graphics g, Camera cam, AbstractEntity entity) {
-		if (entity.belongToRenderedAera(cam)) {
-			entity.draw(g, cam);
+	protected void renderEntity(Graphics g, AbstractEntity entity) {
+		if (entity.belongToRenderedAera()) {
+			entity.draw(g);
 		}
 	}
 
@@ -40,9 +39,12 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	public void update(GameContainer container, StateBasedGame game, int delta) {
 		
 		Iterator<AbstractEntity> dataIterator = data.iterator();
+		AbstractEntity entity;
 		boolean boolHasToSort = false;
 		while (dataIterator.hasNext()) {
-			if (dataIterator.next().update(container, game, delta) && !boolHasToSort) {
+			entity = dataIterator.next();
+			if (entity.update(container, game, delta) && !boolHasToSort) {
+				if (entity.belongToRenderedAera())
 				boolHasToSort = true;
 			}
 		}
