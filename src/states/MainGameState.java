@@ -8,11 +8,11 @@
 
 package states;
 
-import entities.AbstractBuildingEntity;
 import entities.AbstractCreatureEntity;
+import entities.AbstractEntity;
 
-import entities.manager.BuildingManager;
-import entities.manager.CreatureManager;
+import entities.factory.EntityFactory;
+import entities.manager.EntityManager;
 import entities.types.buildings.TowerGuard;
 import gui.MapScene;
 import gui.Scene;

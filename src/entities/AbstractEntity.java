@@ -16,7 +16,8 @@ import collision.SquareDetectionZone;
 import tools.Position;
 import tools.Vector2i;
 
-public abstract class AbstractEntity extends SquareDetectionZone {
+public abstract class AbstractEntity extends SquareDetectionZone 
+implements Comparable<AbstractEntity> {
 	
 	
 	/**
@@ -79,7 +80,8 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 * @param Camera cam permet de déterminer la zone affichée
 	 * @return boolean
 	 */
-	public boolean belongToRenderedAera(Camera cam) {
+	public boolean belongToRenderedAera() {
+		Camera cam = Camera.getInstance();
 		return isDisplayed && ((cam.x + s.x > 0) && (cam.x + s.x < MyGame.X_WINDOW)) && ((cam.y + s.y > 0) && (cam.y + s.y < MyGame.Y_WINDOW));
 	}
 	
@@ -185,14 +187,32 @@ public abstract class AbstractEntity extends SquareDetectionZone {
 	 * 
 	 * @param delta
 	 */
-	abstract public void update(GameContainer container, StateBasedGame game, int delta);
+	abstract public boolean update(GameContainer container, StateBasedGame game, int delta);
 	
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran
 	 * @param g
 	 * @param cam
 	 */
-	public void draw(Graphics g, Camera cam) {
+	public void draw(Graphics g) {
+		Camera cam = Camera.getInstance();
 		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+	}
+	
+	/**
+	 * Permet de comparer les entités selon leur positions Y (screen).
+	 * 
+	 * @return int (-1|0|1)
+	 * 
+	 * {@inheritDoc}
+	 */
+	public int compareTo(AbstractEntity other) {
+		if (s.y < other.getS().y) {
+			return -1;
+		} else if (s.y == other.getS().y) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 }

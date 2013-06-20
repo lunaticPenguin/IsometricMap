@@ -11,6 +11,9 @@ public class Camera extends Vector2i {
 	
 	private static int MOVE_SPEED = 20;
 	
+	
+	protected static Camera instance;
+	
 	/**
 	 * Map (to test available moves)
 	 */
@@ -21,6 +24,14 @@ public class Camera extends Vector2i {
 	 */
 	public Vector2i zDim;
 	
+	
+	public static Camera getInstance() {
+		if (instance == null) {
+			instance = new Camera();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Constructeur de caméra.
 	 * La caméra est située au centre de la zone dans laquelle elle est spécifiée
@@ -29,7 +40,7 @@ public class Camera extends Vector2i {
 	 * @param height hauteur de la zone dans laquelle la caméra est active (<=> hauteur de la fenêtre)
 	 * @param Map map La map, afin d'obtenir ses caractéristiques au niveau dimensions
 	 */
-	public Camera(int width, int height, Map map) {
+	public void init(int width, int height, Map map) {
 		this.map = map;
 		zDim = new Vector2i(width, height);
 	}

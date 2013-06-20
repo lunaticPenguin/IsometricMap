@@ -1,12 +1,8 @@
 package entities.manager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import map.Camera;
+import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -25,17 +21,17 @@ import entities.factory.AbstractFactory;
  *
  * @param <T>
  */
-public abstract class AbstractManager<T> {
+public abstract class AbstractManager<T extends Comparable<? super T>> {
 	
 	protected AbstractFactory<T> factory;
 	
-	
 	protected Iterator<T> iterator;
-	
+
 	/**
 	 * Contient les entités correspondantes selon le manager
 	 */
-	protected HashMap<String, ArrayList<T>> data;
+	protected List<T> data;
+	protected List<T> dataHidden;
 	
 	/**
 	 * Permet d'ajouter une entité et d'accéder à sa référence
@@ -43,15 +39,10 @@ public abstract class AbstractManager<T> {
 	 * @return T entity
 	 */
 	public T addEntity(String entityType) {
-		
-		if (data.containsKey(entityType)) {
-			T entity = factory.getEntity(entityType);
-			data.get(entityType).add(entity);
-			return entity;
-		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given.");
-		}
-		return null;
+		T entity = factory.getEntity(entityType);
+		data.add(entity);
+		Collections.sort(data);
+		return entity;
 	}
 	
 	/**
@@ -62,14 +53,13 @@ public abstract class AbstractManager<T> {
 	 * @param entity
 	 */
 	public void removeEntity(String entityType, T entity) {
-		if (data.containsKey(entityType)) {
-			int indiceToRemove;
-			if ((indiceToRemove = data.get(entityType).indexOf(entity)) != -1) {
-				entity = data.get(entityType).remove(indiceToRemove);
-				factory.setEntityBack(entityType, entity);
-			}
+	
+		int indexToRemove = data.indexOf(entity);
+		if (indexToRemove != -1) {
+			data.remove(entity);
+			factory.setEntityBack(entityType, entity);
 		} else {
-			Log.warn("AbstractManager.addEntity() : Wrong type given.");
+			Log.warn("AbstractManager.removeEntity() : No specified data of : " + entityType + " type");
 		}
 	}
 	
@@ -83,34 +73,20 @@ public abstract class AbstractManager<T> {
 	 */
 	public abstract void update(GameContainer container, StateBasedGame game, int delta);
 	
-	
 	/**
-	 * TODO
-	 * Permet d'afficher l'ensemble des entités utilisées dans l'application
+	 * Méthode permettant de rendre seulement les entités présents sur une ligne.
+	 * Permet du coup un affichage trié
 	 * 
-	 * @param GameContainer container
-	 * @param StateBasedGame game
 	 * @param Graphics g
 	 * @param Camera cam
 	 */
-	public void render(Graphics g, Camera cam) {
+	public void render(Graphics g) {
 		
-		Set<Entry<String, ArrayList<T>>> typeEntrySet = data.entrySet();
-		Iterator<Entry<String, ArrayList<T>>> iteratorSet = typeEntrySet.iterator();
-		Entry<String, ArrayList<T>> typeListEntry = null;
-		ArrayList<T> entitiesList = null;
-		Iterator<T> entitiesIterator = null;
-		
-		while (iteratorSet.hasNext()) {
-			typeListEntry = iteratorSet.next();
-			entitiesList = typeListEntry.getValue();
-			entitiesIterator = entitiesList.iterator();
-			while (entitiesIterator.hasNext()) {
-				this.renderEntity(g, cam, entitiesIterator.next());
-			}
+		Iterator<T> dataIterator = data.iterator();
+		while (dataIterator.hasNext()) {
+			this.renderEntity(g, dataIterator.next());
 		}
 	}
 	
-	
-	protected abstract void renderEntity(Graphics g, Camera cam, T entity);
+	protected abstract void renderEntity(Graphics g, T entity);
 }
