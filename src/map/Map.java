@@ -426,24 +426,55 @@ public class Map extends TiledMapPlus {
 	
 	/**
 	 * Permet de spécifier qu'une tile est bloquée.
-	 * Cela met à jour la matrice d'adjacence
-	 * (en vue de calculer la fermeture transitive)
 	 * 
 	 * @param int x
 	 * @param int y
 	 * @param int mapType
 	 */
-	private void setTileBlocked(int x, int y, int mapType) {
+	public void setTileBlocked(int x, int y, int mapType) {
 		
-		int tile = convertOrthoToSquareExpOrtho(x, y);
-		
-		for (int i = 0 ; i < adjacencyMatrix.get(mapType).length ; ++i) {
-			for (int j = 0 ; j < adjacencyMatrix.get(mapType).length ; ++j) {
-				if (i == tile || j == tile) {
-					adjacencyMatrix.get(mapType)[i][j] = false;
-				}
-			}
+		int value = 0;
+		if (mapType == TILE_GROUND) {
+			value = 0x01;
 		}
+		if (mapType == TILE_AIR) {
+			value |= 0x02;
+		}
+		if (mapType == TILE_WATER) {
+			value |= 0x04;
+		}
+		blocked[x][y] = value;
+	}
+	
+	/**
+	 * Permet de spécifier qu'une tile est bloquée.
+	 * 
+	 * @param int x
+	 * @param int y
+	 * @param int mapType
+	 */
+	public void setTileBlocked(Vector2i position, int mapType) {
+		setTileBlocked(position.x, position.y, mapType);
+	}
+	
+	/**
+	 * Permet de spécifier qu'une tile est libre
+	 * @param x
+	 * @param y
+	 * @param mapType
+	 */
+	public void setTileReleased(int x, int y, int mapType) {
+		blocked[x][y] = 0;
+	}
+	
+	/**
+	 * Permet de spécifier qu'une tile est libre
+	 * @param x
+	 * @param y
+	 * @param mapType
+	 */
+	public void setTileReleased(Vector2i position, int mapType) {
+		setTileReleased(position.x, position.y, mapType);
 	}
 	
 	/**
