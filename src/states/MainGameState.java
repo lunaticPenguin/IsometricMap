@@ -220,18 +220,26 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
 			
+			if (map.isTileBlocked(destPosition.x, destPosition.y)) {
+				return;
+			}
+			
 			if (indextower == NB_TOWER_TEST) {
 				indextower = 0;
+			}
+			
+			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
+				map.setTileReleased(towersTest[indextower].getM(), Map.TILE_GROUND);
+				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
+				towersTest[indextower] = null;
 			}
 			
 			towersTest[indextower] = objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
 			towersTest[indextower].setM(destPosition);
 			towersTest[indextower].setIsDiplayed(true);
+			map.setTileBlocked(destPosition.x, destPosition.y, Map.TILE_GROUND);
+			
 			++indextower;
-			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
-				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
-				towersTest[indextower] = null;
-			}
 		}
 	}
 	
