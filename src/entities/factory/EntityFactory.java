@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import entities.AbstractEntity;
 import entities.types.buildings.TowerGuard;
+import entities.types.creatures.CreatureBoloss;
 import entities.types.creatures.CreatureJidiako;
 
 /**
@@ -16,6 +17,7 @@ public class EntityFactory extends AbstractFactory<AbstractEntity> {
 	
 	// Creatures types
 	public static final String ENTITY_CREATUREJIDIAKO = "jidiako";
+	public static final String ENTITY_CREATUREBOLOSS = "boloss";
 	public static final String ENTITY_TOWERGUARD = "towerguard";
 	
 	
@@ -31,6 +33,7 @@ public class EntityFactory extends AbstractFactory<AbstractEntity> {
 	protected EntityFactory() {
 		dataPool = new HashMap<String, ArrayList<AbstractEntity>>();
 		dataPool.put(ENTITY_CREATUREJIDIAKO, new ArrayList<AbstractEntity>());
+		dataPool.put(ENTITY_CREATUREBOLOSS, new ArrayList<AbstractEntity>());
 		dataPool.put(ENTITY_TOWERGUARD, new ArrayList<AbstractEntity>());
 	}
 	
@@ -40,6 +43,8 @@ public class EntityFactory extends AbstractFactory<AbstractEntity> {
 			return new TowerGuard();
 		case ENTITY_CREATUREJIDIAKO:
 			return new CreatureJidiako();
+		case ENTITY_CREATUREBOLOSS:
+			return new CreatureBoloss();
 		}
 		
 		return null;
