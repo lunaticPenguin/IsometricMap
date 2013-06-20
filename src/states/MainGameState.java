@@ -61,6 +61,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	private AbstractEntity towersTest[];
 	private int indextower = 0;
+	private int maxIndextower = 0;
 	
 
     /* TWL TEST */
@@ -164,6 +165,18 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.m.checkRanges();
 		
 		objEntityManager.update(container, game, delta);
+		
+		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
+		for (int i = 0 ; i < maxIndextower ; ++i) {
+			towersTest[i].setHighLight(false);
+			for (int j = 0 ; j < NB_JIDIOKA_TEST ; ++j) {
+				bonomesTest[j].setHighLight(false);
+				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
+					towersTest[i].setHighLight(true);
+					bonomesTest[j].setHighLight(true);
+				}
+			}
+		}
 	}
 	
 	protected void cameraMoves() {

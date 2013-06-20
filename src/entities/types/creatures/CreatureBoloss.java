@@ -72,6 +72,8 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 		life = 500;
 		attack = 3;
 		defend = 1;
+		actionRange = 3;
+		
 		s.x = 0;
 		s.y = 0;
 		

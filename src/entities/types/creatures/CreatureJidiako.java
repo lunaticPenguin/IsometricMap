@@ -72,6 +72,8 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		life = 100;
 		attack = 3;
 		defend = 1;
+		actionRange = 1;
+		
 		s.x = 0;
 		s.y = 0;
 		

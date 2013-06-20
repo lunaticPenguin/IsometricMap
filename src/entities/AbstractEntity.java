@@ -72,6 +72,18 @@ implements Comparable<AbstractEntity> {
 	protected boolean isDisplayed;
 	
 	/**
+	 * Rayon d'action de l'entité
+	 */
+	protected int actionRange;
+	
+	
+	protected boolean highlight = false;
+	
+	public void setHighLight(boolean highlight) {
+		this.highlight = highlight;
+	}
+	
+	/**
 	 * Permet de savoir si cette entité est traçable à l'écran.
 	 * Comprendre : "Savoir si l'entité a à être tracé à l'écran"
 	 * 
@@ -192,11 +204,14 @@ implements Comparable<AbstractEntity> {
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran
 	 * @param g
-	 * @param cam
 	 */
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
 		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+		
+		if (highlight) {
+			renderCollidingZone(g);
+		}
 	}
 	
 	/**
@@ -214,5 +229,28 @@ implements Comparable<AbstractEntity> {
 		} else {
 			return 1;
 		}
+	}
+	
+	/**
+	 * Permet d'obtenir le rayon d'action d'une entité
+	 * @return int
+	 */
+	public int getActionRange() {
+		return actionRange;
+	}
+	
+	/**
+	 * Pour savoir si 2 entités ennemies doivent interagir (proximité)
+	 * 
+	 * (utilise le concept d'intercection des cercles 
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public boolean isEntityInActionZone(AbstractEntity entity) {
+		
+		return (m.x - entity.getM().x) * (m.x - entity.getM().x)
+				+ (m.y - entity.getM().y) * (m.y - entity.getM().y)
+			< (actionRange + entity.getActionRange()) * (actionRange + entity.getActionRange());
 	}
 }

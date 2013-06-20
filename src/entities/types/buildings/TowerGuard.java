@@ -46,8 +46,10 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 	public void init() {
 		attack = 10;
 		defend = 15;
+		actionRange = 5;
+		
 		this.direction = DIRECTION_NORTH;
-		this.state = STATE_HEALTHY;
+		this.state = STATE_DESTROYED;
 		
 		AnimationManager objAnimationManager = AnimationManager.getInstance();
 		

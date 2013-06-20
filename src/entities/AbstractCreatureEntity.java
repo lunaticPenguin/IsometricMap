@@ -1,6 +1,7 @@
 package entities;
 
 import map.Camera;
+import map.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -92,10 +93,16 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 */
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
+		g.drawOval(cam.x + s.x - (actionRange * Map.tDim.x), cam.y + s.y - (actionRange * Map.tDim.y), actionRange * Map.tDim.x * 2, actionRange * Map.tDim.y * 2);
+		
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {
 			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+		}
+		
+		if (highlight) {
+			renderCollidingZone(g);
 		}
 	}
 	

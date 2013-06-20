@@ -52,6 +52,7 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 				data.add(entity);
 				dataIterator.remove();
 			}
+			entity.update(container, game, delta);
 		}
 		
 		dataIterator = data.iterator();

@@ -1,5 +1,7 @@
 package collision;
 
+import map.Camera;
+
 import org.newdawn.slick.Graphics;
 
 import tools.Vector2i;
@@ -56,20 +58,17 @@ public abstract class SquareDetectionZone extends AbstractZoneDetection {
 	 * @param Graphics g
 	 * @param Vector2i offset
 	 */
-	public void renderCollidingZone(Graphics g, Vector2i offset) {
-		if (offset == null) {
-			offset = new Vector2i();
-		}
+	public void renderCollidingZone(Graphics g) {
 		
-
-		Vector2i a = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x,
-				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y);
-		Vector2i b = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x + zoneDim.x,
-				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y);
-		Vector2i c = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x + zoneDim.x,
-				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y + zoneDim.y);
-		Vector2i d = new Vector2i(displayingOffset.x + offset.x + zoneOffset.x + (int) s.x,
-				displayingOffset.y + offset.y + zoneOffset.y + (int) s.y + zoneDim.y);
+		Camera cam = Camera.getInstance();
+		Vector2i a = new Vector2i(displayingOffset.x + cam.x + zoneOffset.x + (int) s.x,
+				displayingOffset.y + cam.y + zoneOffset.y + (int) s.y);
+		Vector2i b = new Vector2i(displayingOffset.x + cam.x + zoneOffset.x + (int) s.x + zoneDim.x,
+				displayingOffset.y + cam.y + zoneOffset.y + (int) s.y);
+		Vector2i c = new Vector2i(displayingOffset.x + cam.x + zoneOffset.x + (int) s.x + zoneDim.x,
+				displayingOffset.y + cam.y + zoneOffset.y + (int) s.y + zoneDim.y);
+		Vector2i d = new Vector2i(displayingOffset.x + cam.x + zoneOffset.x + (int) s.x,
+				displayingOffset.y + cam.y + zoneOffset.y + (int) s.y + zoneDim.y);
 
 		g.drawLine( a.x, a.y, b.x, b.y);
 		g.drawLine( b.x, b.y, c.x, c.y);
