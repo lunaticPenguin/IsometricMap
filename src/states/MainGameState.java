@@ -8,12 +8,14 @@
 
 package states;
 
-import entities.AbstractCreatureEntity;
 import entities.AbstractEntity;
 
 import entities.factory.EntityFactory;
 import entities.manager.EntityManager;
+import entities.manager.ProjectileManager;
 import entities.types.buildings.TowerGuard;
+import entities.types.creatures.AbstractCreatureEntity;
+import entities.types.projectiles.AbstractProjectile;
 import gui.MapScene;
 import gui.Scene;
 
@@ -58,6 +60,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 
 	private AbstractCreatureEntity bonomesTest[];
 	private EntityManager objEntityManager;
+	private ProjectileManager objProjectileManager;
 	
 	private AbstractEntity towersTest[];
 	private int indextower = 0;
@@ -124,6 +127,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		scenes = new ArrayList<Scene>();
 		initScenes(container, game);
 		
+		objProjectileManager = ProjectileManager.getInstance();
 		objEntityManager = EntityManager.getInstance();
 		bonomesTest = new AbstractCreatureEntity[NB_JIDIOKA_TEST];
 		
@@ -144,6 +148,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		
 		map.dynamicRender(g);
+		objProjectileManager.render(g);
 
 		renderMouseTile(g);
 		
@@ -165,6 +170,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.m.checkRanges();
 		
 		objEntityManager.update(container, game, delta);
+		AbstractProjectile tmpProjectile;
 		
 		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
 		for (int i = 0 ; i < maxIndextower ; ++i) {
@@ -174,9 +180,12 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
 					towersTest[i].setHighLight(true);
 					bonomesTest[j].setHighLight(true);
+					tmpProjectile = objProjectileManager.addEntity("cannonball");
+					tmpProjectile.init(towersTest[i], bonomesTest[j]);
 				}
 			}
 		}
+		objProjectileManager.update(container, game, delta);
 	}
 	
 	protected void cameraMoves() {
@@ -187,7 +196,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			if (mPos.s.y > 0 && mPos.s.y < marginSize) {
 		        cam.moveTo(Camera.UP, (marginSize - (float) mPos.s.y) / marginSize);
 		    }
-		
+			
 		    if (mPos.s.y > MyGame.Y_WINDOW - marginSize && mPos.s.y < MyGame.Y_WINDOW) {
 		        cam.moveTo(Camera.DOWN, ((float) mPos.s.y - (MyGame.Y_WINDOW - marginSize)) / marginSize);
 		    }
