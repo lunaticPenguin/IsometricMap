@@ -14,7 +14,7 @@ import collision.SquareDetectionZone;
 import entities.AbstractEntity;
 import entities.IOffensive;
 
-public abstract class AbstractProjectile extends SquareDetectionZone implements IOffensive {
+public abstract class AbstractProjectile extends SquareDetectionZone implements IOffensive, Comparable<AbstractProjectile> {
 	
 	/**
 	 * Permet de connaitre l'offset entre le pt start et stop
@@ -47,12 +47,12 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	
 	protected SpriteSheet sprite;
 	
+	protected boolean isDestroyed;
+	
 	/**
 	 * Méthode d'initialisation
 	 */
-	abstract protected void init();
-	
-	public AbstractProjectile(Vector2f screenPositionStart, Vector2f screenPositionStop) {
+	public void init(Vector2f screenPositionStart, Vector2f screenPositionStop) {
 		s.x = screenPositionStart.x;
 		s.y = screenPositionStart.y;
 		
@@ -71,14 +71,31 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 		ratioTrajectory.x = (float) (offset.x/distance);
 		ratioTrajectory.y = (float) (offset.y/distance);
 		
-		init();
+		isDestroyed = false;
 	}
 	
+	/**
+	 * Met à jour le projectile
+	 * 
+	 * @param container
+	 * @param game
+	 * @param delta
+	 * @return boolean is projectile NOT destroyed
+	 */
 	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+		
 		s.x += delta * speedMove * ratioTrajectory.x;
 		s.y += delta * speedMove * ratioTrajectory.y;
 		
-		return true;
+		if (!isDestroyed) {
+			if (isColliding(target)) {
+				attack(target);
+			} else if (isColliding(endZone)) {
+				isDestroyed = true;
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -88,6 +105,10 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
 		sprite.draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+		
+		if (isDestroyed) {
+			// todo : super effet de la mort qui tue!
+		}
 	}
 	
 	@Override
