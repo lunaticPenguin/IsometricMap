@@ -11,7 +11,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import resources.AnimationManager;
 import tools.Vector2i;
 
-import entities.AbstractBuildingEntity;
 import entities.AbstractEntity;
 import entities.IOffensive;
 

@@ -1,9 +1,13 @@
-package entities;
+package entities.types.buildings;
 
 import map.Camera;
 import map.Map;
 
 import org.newdawn.slick.Graphics;
+
+import entities.AbstractEntity;
+import entities.IOffensive;
+import entities.IStationary;
 
 public abstract class AbstractBuildingEntity extends AbstractEntity implements IStationary, IOffensive {
 	

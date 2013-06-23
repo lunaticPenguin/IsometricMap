@@ -1,4 +1,4 @@
-package entities;
+package entities.types.creatures;
 
 import map.Camera;
 import map.Map;
@@ -6,6 +6,10 @@ import map.Map;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
+
+import entities.AbstractEntity;
+import entities.IMoveable;
+import entities.IOffensive;
 
 import pathfinding.Path;
 import pathfinding.PathNode;
