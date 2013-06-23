@@ -31,13 +31,11 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 		s = new Vector2f();
 		m = new Vector2i();
 		
-		displayingOffset.x = -32;
+		displayingOffset.x = -40;
 		displayingOffset.y = -97;
 		
 		zoneDim.x = 64;
 		zoneDim.y = 112;
-		zoneOffset.x = 20;
-		zoneOffset.y = 28;
 		
 		init();
 	}
