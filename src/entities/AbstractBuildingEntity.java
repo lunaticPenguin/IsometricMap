@@ -16,4 +16,13 @@ public abstract class AbstractBuildingEntity extends AbstractEntity implements I
 		g.drawOval(cam.x + s.x - (actionRange * Map.tDim.x), cam.y + s.y - (actionRange * Map.tDim.y), actionRange * Map.tDim.x * 2, actionRange * Map.tDim.y * 2);
 		super.draw(g);
 	}
+	
+	@Override
+	public void attack(AbstractEntity entityToAttack) {
+		if (target != null) {
+			// ici : création de projectile
+			// + tir.
+			// C'est le projectile qui gère les dégâts
+		}
+	}
 }

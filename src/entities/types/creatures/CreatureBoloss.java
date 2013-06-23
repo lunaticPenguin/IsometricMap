@@ -64,7 +64,7 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 
 	@Override
 	public void attack(AbstractEntity entityToAttack) {
-		
+		super.attack(entityToAttack);
 	}
 
 	public void init() {

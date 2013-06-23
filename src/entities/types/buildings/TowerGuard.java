@@ -13,9 +13,9 @@ import tools.Vector2i;
 
 import entities.AbstractBuildingEntity;
 import entities.AbstractEntity;
-import entities.IAggressive;
+import entities.IOffensive;
 
-public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
+public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
@@ -91,8 +91,11 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 		return false;
 	}
 
-	@Override
+	/**
+	 * Code basique d'attaque pour une tour
+	 * @Override
+	 */
 	public void attack(AbstractEntity entityToAttack) {
-		
+		super.attack(entityToAttack);
 	}
 }

@@ -63,7 +63,7 @@ implements Comparable<AbstractEntity> {
 	/**
 	 * entity attack points
 	 */
-	protected int defend;
+	protected float defend;
 	
 	/**
 	 * Si l'entité doit être affichée
@@ -78,6 +78,8 @@ implements Comparable<AbstractEntity> {
 	
 	
 	protected boolean highlight = false;
+	
+	protected AbstractEntity target;
 	
 	public void setHighLight(boolean highlight) {
 		this.highlight = highlight;
@@ -252,5 +254,35 @@ implements Comparable<AbstractEntity> {
 		return (m.x - entity.getM().x) * (m.x - entity.getM().x)
 				+ (m.y - entity.getM().y) * (m.y - entity.getM().y)
 			< (actionRange + entity.getActionRange()) * (actionRange + entity.getActionRange());
+	}
+	
+	/**
+	 * Permet de spécifier un objet cible si aucune n'a déjà été attribuée.
+	 * 
+	 * @param AbstractEntity entity
+	 * @see setTarget(AbstractEntity) pour forcer la cible
+	 */
+	public void assignTarget(AbstractEntity entity) {
+		if (target == null) {
+			setTarget(entity);
+		}
+	}
+	
+	
+	/**
+	 * Permet de spécifier un objet "cible", c-a-d un objet sur lequel il 
+	 * faut effectuer une action
+	 * @param AbstractEntity entity
+	 */
+	public void setTarget(AbstractEntity entity) {
+		target = entity;
+	}
+	
+	/**
+	 * Permet de récupérer un objet "cible"
+	 * @return AbstractEntity target
+	 */
+	public AbstractEntity getTarget() {
+		return target;
 	}
 }

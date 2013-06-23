@@ -13,7 +13,7 @@ import pathfinding.PathNode;
 import tools.Randomizer;
 import tools.Vector2i;
 
-public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
+public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IOffensive {
 	/**
 	 * Points d'attaque de l'entité
 	 */
@@ -263,5 +263,15 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		nextNodeS.x = (int) currentNode.getS().x + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeS.y = (int) currentNode.getS().y + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeM = currentNode.getM();
+	}
+	
+	/**
+	 * Code d'attaque basique
+	 * {@inheritDoc}
+	 */
+	public void attack(AbstractEntity entity) {
+		if (target != null) {
+			target.defend(attackPoints);
+		}
 	}
 }
