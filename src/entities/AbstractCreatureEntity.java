@@ -1,6 +1,7 @@
 package entities;
 
 import map.Camera;
+import map.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,7 +13,7 @@ import pathfinding.PathNode;
 import tools.Randomizer;
 import tools.Vector2i;
 
-public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IAggressive {
+public abstract class AbstractCreatureEntity extends AbstractEntity implements IMoveable, IOffensive {
 	/**
 	 * Points d'attaque de l'entité
 	 */
@@ -92,10 +93,16 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 */
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
+		g.drawOval(cam.x + s.x - (actionRange * Map.tDim.x), cam.y + s.y - (actionRange * Map.tDim.y), actionRange * Map.tDim.x * 2, actionRange * Map.tDim.y * 2);
+		
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		} else {
 			this.getCurrentAnimation().getImage(0).draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+		}
+		
+		if (highlight) {
+			renderCollidingZone(g);
 		}
 	}
 	
@@ -256,5 +263,15 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		nextNodeS.x = (int) currentNode.getS().x + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeS.y = (int) currentNode.getS().y + Randomizer.getInstance().generateRangedInt(-5, 5);
 		nextNodeM = currentNode.getM();
+	}
+	
+	/**
+	 * Code d'attaque basique
+	 * {@inheritDoc}
+	 */
+	public void attack(AbstractEntity entity) {
+		if (target != null) {
+			target.defend(attackPoints);
+		}
 	}
 }

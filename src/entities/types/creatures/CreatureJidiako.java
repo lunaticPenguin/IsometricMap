@@ -64,7 +64,7 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 
 	@Override
 	public void attack(AbstractEntity entityToAttack) {
-		
+		super.attack(entityToAttack);
 	}
 
 	public void init() {
@@ -72,6 +72,8 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		life = 100;
 		attack = 3;
 		defend = 1;
+		actionRange = 1;
+		
 		s.x = 0;
 		s.y = 0;
 		

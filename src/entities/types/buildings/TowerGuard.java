@@ -13,9 +13,9 @@ import tools.Vector2i;
 
 import entities.AbstractBuildingEntity;
 import entities.AbstractEntity;
-import entities.IAggressive;
+import entities.IOffensive;
 
-public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
+public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
@@ -31,13 +31,11 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 		s = new Vector2f();
 		m = new Vector2i();
 		
-		displayingOffset.x = -32;
+		displayingOffset.x = -40;
 		displayingOffset.y = -97;
 		
 		zoneDim.x = 64;
 		zoneDim.y = 112;
-		zoneOffset.x = 20;
-		zoneOffset.y = 28;
 		
 		init();
 	}
@@ -46,8 +44,10 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 	public void init() {
 		attack = 10;
 		defend = 15;
+		actionRange = 5;
+		
 		this.direction = DIRECTION_NORTH;
-		this.state = STATE_HEALTHY;
+		this.state = STATE_DESTROYED;
 		
 		AnimationManager objAnimationManager = AnimationManager.getInstance();
 		
@@ -91,8 +91,11 @@ public class TowerGuard extends AbstractBuildingEntity implements IAggressive {
 		return false;
 	}
 
-	@Override
+	/**
+	 * Code basique d'attaque pour une tour
+	 * @Override
+	 */
 	public void attack(AbstractEntity entityToAttack) {
-		
+		super.attack(entityToAttack);
 	}
 }

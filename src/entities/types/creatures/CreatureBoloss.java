@@ -64,7 +64,7 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 
 	@Override
 	public void attack(AbstractEntity entityToAttack) {
-		
+		super.attack(entityToAttack);
 	}
 
 	public void init() {
@@ -72,6 +72,8 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 		life = 500;
 		attack = 3;
 		defend = 1;
+		actionRange = 3;
+		
 		s.x = 0;
 		s.y = 0;
 		
@@ -104,10 +106,9 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 	public void doAction() {
 		
 	}
-
-
+	
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
-		super.update(container, game, delta);
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+		return super.update(container, game, delta);
 	}
 }

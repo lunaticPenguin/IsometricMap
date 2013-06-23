@@ -61,6 +61,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	private AbstractEntity towersTest[];
 	private int indextower = 0;
+	private int maxIndextower = 0;
 	
 
     /* TWL TEST */
@@ -164,6 +165,18 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.m.checkRanges();
 		
 		objEntityManager.update(container, game, delta);
+		
+		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
+		for (int i = 0 ; i < maxIndextower ; ++i) {
+			towersTest[i].setHighLight(false);
+			for (int j = 0 ; j < NB_JIDIOKA_TEST ; ++j) {
+				bonomesTest[j].setHighLight(false);
+				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
+					towersTest[i].setHighLight(true);
+					bonomesTest[j].setHighLight(true);
+				}
+			}
+		}
 	}
 	
 	protected void cameraMoves() {
@@ -220,18 +233,26 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
 			
+			if (map.isTileBlocked(destPosition.x, destPosition.y)) {
+				return;
+			}
+			
 			if (indextower == NB_TOWER_TEST) {
 				indextower = 0;
+			}
+			
+			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
+				map.setTileReleased(towersTest[indextower].getM(), Map.TILE_GROUND);
+				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
+				towersTest[indextower] = null;
 			}
 			
 			towersTest[indextower] = objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
 			towersTest[indextower].setM(destPosition);
 			towersTest[indextower].setIsDiplayed(true);
+			map.setTileBlocked(destPosition.x, destPosition.y, Map.TILE_GROUND);
+			
 			++indextower;
-			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
-				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
-				towersTest[indextower] = null;
-			}
 		}
 	}
 	

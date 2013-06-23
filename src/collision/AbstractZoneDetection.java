@@ -148,5 +148,7 @@ public abstract class AbstractZoneDetection {
 	 * @param Graphics g
 	 * @param Vector2i offset
 	 */
-	public abstract void renderCollidingZone(Graphics g, Vector2i offset);
+	public void renderCollidingZone(Graphics g, Vector2i offset) {
+		Log.warn("renderCollidingZone() not implemented!");
+	}
 }

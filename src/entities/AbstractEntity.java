@@ -63,13 +63,27 @@ implements Comparable<AbstractEntity> {
 	/**
 	 * entity attack points
 	 */
-	protected int defend;
+	protected float defend;
 	
 	/**
 	 * Si l'entité doit être affichée
 	 * à l'écran
 	 */
 	protected boolean isDisplayed;
+	
+	/**
+	 * Rayon d'action de l'entité
+	 */
+	protected int actionRange;
+	
+	
+	protected boolean highlight = false;
+	
+	protected AbstractEntity target;
+	
+	public void setHighLight(boolean highlight) {
+		this.highlight = highlight;
+	}
 	
 	/**
 	 * Permet de savoir si cette entité est traçable à l'écran.
@@ -192,11 +206,14 @@ implements Comparable<AbstractEntity> {
 	/**
 	 * Permet d'afficher l'entité sur une zone de l'écran
 	 * @param g
-	 * @param cam
 	 */
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
 		this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
+		
+		if (highlight) {
+			renderCollidingZone(g);
+		}
 	}
 	
 	/**
@@ -214,5 +231,58 @@ implements Comparable<AbstractEntity> {
 		} else {
 			return 1;
 		}
+	}
+	
+	/**
+	 * Permet d'obtenir le rayon d'action d'une entité
+	 * @return int
+	 */
+	public int getActionRange() {
+		return actionRange;
+	}
+	
+	/**
+	 * Pour savoir si 2 entités ennemies doivent interagir (proximité)
+	 * 
+	 * (utilise le concept d'intercection des cercles 
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public boolean isEntityInActionZone(AbstractEntity entity) {
+		
+		return (m.x - entity.getM().x) * (m.x - entity.getM().x)
+				+ (m.y - entity.getM().y) * (m.y - entity.getM().y)
+			< (actionRange + entity.getActionRange()) * (actionRange + entity.getActionRange());
+	}
+	
+	/**
+	 * Permet de spécifier un objet cible si aucune n'a déjà été attribuée.
+	 * 
+	 * @param AbstractEntity entity
+	 * @see setTarget(AbstractEntity) pour forcer la cible
+	 */
+	public void assignTarget(AbstractEntity entity) {
+		if (target == null) {
+			setTarget(entity);
+		}
+	}
+	
+	
+	/**
+	 * Permet de spécifier un objet "cible", c-a-d un objet sur lequel il 
+	 * faut effectuer une action
+	 * @param AbstractEntity entity
+	 */
+	public void setTarget(AbstractEntity entity) {
+		target = entity;
+	}
+	
+	/**
+	 * Permet de récupérer un objet "cible"
+	 * @return AbstractEntity target
+	 */
+	public AbstractEntity getTarget() {
+		return target;
 	}
 }
