@@ -92,7 +92,6 @@ public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 	}
 
 	/**
-	 * Code basique d'attaque pour une tour
 	 * @Override
 	 */
 	public void attack(AbstractEntity entityToAttack) {

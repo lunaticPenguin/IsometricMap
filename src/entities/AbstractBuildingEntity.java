@@ -5,7 +5,7 @@ import map.Map;
 
 import org.newdawn.slick.Graphics;
 
-public abstract class AbstractBuildingEntity extends AbstractEntity implements IStationary {
+public abstract class AbstractBuildingEntity extends AbstractEntity implements IStationary, IOffensive {
 	
 	/**
 	 * Permet de surcharger l'affiche d'une entité (par exemple à des fins de debug)
@@ -17,7 +17,10 @@ public abstract class AbstractBuildingEntity extends AbstractEntity implements I
 		super.draw(g);
 	}
 	
-	@Override
+	/**
+	 * Code basique d'attaque pour une tour
+	 * @Override
+	 */
 	public void attack(AbstractEntity entityToAttack) {
 		if (target != null) {
 			// ici : création de projectile
