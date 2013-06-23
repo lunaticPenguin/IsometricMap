@@ -52,17 +52,21 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	/**
 	 * Méthode d'initialisation
 	 */
-	public void init(Vector2f screenPositionStart, Vector2f screenPositionStop) {
-		s.x = screenPositionStart.x;
-		s.y = screenPositionStart.y;
+	public void init(AbstractEntity sender, AbstractEntity receiver) {
+		
+
+		s = new Vector2f();
+		
+		s.x = sender.getS().x;
+		s.y = sender.getS().y;
 		
 		endZone = new SquareDetectionZone();
-		endZone.setS(screenPositionStop);
+		endZone.setS(receiver.getS());
 		endZone.setZoneDim(new Vector2i(100, 100));
 		endZone.setZoneOffset(-50, -50); // p-ê en positif, je sais plus trop!
 		
-		offset = new Vector2i((int) (screenPositionStop.x - screenPositionStart.x),
-			(int) (screenPositionStop.y - screenPositionStop.y));
+		offset = new Vector2i((int) (receiver.getS().x - sender.getS().x),
+			(int) (receiver.getS().y - sender.getS().y));
 		ratioTrajectory = new Vector2f();
 		
 		// calcul du ratio pour les déplacements
@@ -72,6 +76,8 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 		ratioTrajectory.y = (float) (offset.y/distance);
 		
 		isDestroyed = false;
+		
+		target = receiver;
 	}
 	
 	/**
