@@ -3,6 +3,8 @@ package resources;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.newdawn.slick.util.Log;
@@ -86,6 +88,18 @@ public abstract class AbstractManager<T> {
 			return data.get("default");
 		}
 		return null;
+	}
+	
+	/**
+	 * Méthode pour débugguer rapidement le contenu du manager
+	 */
+	public void logAllKeysToDebug() {
+		
+		Set<String> keysSet = data.keySet();
+		Iterator<String> keysIterator = keysSet.iterator();
+		while (keysIterator.hasNext()) {
+			Log.warn("manager entry " + keysIterator.next());
+		}
 	}
 	
 	/**

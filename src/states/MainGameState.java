@@ -180,7 +180,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
 					towersTest[i].setHighLight(true);
 					bonomesTest[j].setHighLight(true);
-					tmpProjectile = objProjectileManager.addEntity("cannonball");
+					tmpProjectile = objProjectileManager.addEntity("firecannonball");
 					tmpProjectile.init(towersTest[i], bonomesTest[j]);
 				}
 			}
