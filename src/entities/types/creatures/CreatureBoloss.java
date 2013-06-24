@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import entities.AbstractEntity;
@@ -32,7 +31,6 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 	public CreatureBoloss() {
 		super();
 		
-		s = new Vector2f();
 		m = new Vector2i();
 		
 		displayingOffset.x = -23;
