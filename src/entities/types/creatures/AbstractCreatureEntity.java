@@ -63,6 +63,9 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 		super();
 		nextNodeS = new Vector2i();
 		nextNodeM = new Vector2i();
+		
+		// point de tir commun
+		firePoint = new Vector2i(2, -15);
 	}
 	
 	

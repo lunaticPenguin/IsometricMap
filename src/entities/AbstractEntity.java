@@ -3,12 +3,12 @@ package entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import main.MyGame;
 import map.Camera;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import collision.SquareDetectionZone;
@@ -76,6 +76,10 @@ implements Comparable<AbstractEntity> {
 	 */
 	protected int actionRange;
 	
+	/**
+	 * Origine du point de tir (par rapport à la position s)
+	 */
+	protected Vector2i firePoint;
 	
 	protected boolean highlight = false;
 	
@@ -282,5 +286,12 @@ implements Comparable<AbstractEntity> {
 	 */
 	public AbstractEntity getTarget() {
 		return target;
+	}
+	
+	/**
+	 * Permet d'avoir les coordonnées du point
+	 */
+	public Vector2f getFirePoint() {
+		return new Vector2f(s.x + firePoint.x, s.y + firePoint.y);
 	}
 }

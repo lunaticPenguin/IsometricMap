@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import resources.AnimationManager;
@@ -27,11 +26,10 @@ public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 	public TowerGuard() {
 		super();
 		
-		s = new Vector2f();
 		m = new Vector2i();
-		
-		displayingOffset.x = -40;
-		displayingOffset.y = -97;
+		firePoint = new Vector2i(0, -90);
+		displayingOffset.x = -34;
+		displayingOffset.y = -95;
 		
 		zoneDim.x = 64;
 		zoneDim.y = 112;

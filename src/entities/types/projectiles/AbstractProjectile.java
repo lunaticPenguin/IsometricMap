@@ -54,13 +54,10 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	 */
 	public void init(AbstractEntity sender, AbstractEntity receiver) {
 		
-		s = new Vector2f();
+		s = sender.getFirePoint();
 		
-		s.x = sender.getS().x;
-		s.y = sender.getS().y;
-		
-		offset = new Vector2i((int) (receiver.getS().x - sender.getS().x),
-			(int) (receiver.getS().y - sender.getS().y));
+		offset = new Vector2i((int) (receiver.getS().x - s.x),
+			(int) (receiver.getS().y - s.y));
 		ratioTrajectory = new Vector2f();
 		
 		endLimit = new Vector2i();
