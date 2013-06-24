@@ -72,8 +72,6 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 			}
 		}
 		
-		System.out.println(data.size() + " units to display");
-		
 		if (boolHasToSort && !alreadyCheckedEntities.isEmpty()) {
 			Collections.sort(data);
 		}

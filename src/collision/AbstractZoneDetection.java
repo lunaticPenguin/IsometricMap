@@ -1,5 +1,8 @@
 package collision;
 
+import main.MyGame;
+import map.Camera;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.util.Log;
@@ -123,6 +126,14 @@ public abstract class AbstractZoneDetection {
 	}
 	
 	/**
+	 * @param zoneDim the zoneDim to set
+	 */
+	public void setZoneDim(int x, int y) {
+		zoneDim.x = x;
+		zoneDim.y = y;
+	}
+	
+	/**
 	 * Méthode par défaut permettant de savoir si une détection de collision 
 	 * utilisant un objet de type AbstractZoneDetection n'a pas été implémentée
 	 * 
@@ -150,5 +161,19 @@ public abstract class AbstractZoneDetection {
 	 */
 	public void renderCollidingZone(Graphics g, Vector2i offset) {
 		Log.warn("renderCollidingZone() not implemented!");
+	}
+	
+	/**
+	 * Permet de savoir si cette entité est traçable à l'écran.
+	 * Comprendre : "Savoir si l'entité a à être tracé à l'écran"
+	 * 
+	 * /!\ ne prend pas encore en compte la largeur et la hauteur de l'entité
+	 * 
+	 * @param Camera cam permet de déterminer la zone affichée
+	 * @return boolean
+	 */
+	public boolean belongToRenderedAera() {
+		Camera cam = Camera.getInstance();
+		return ((cam.x + s.x > 0) && (cam.x + s.x < MyGame.X_WINDOW)) && ((cam.y + s.y > 0) && (cam.y + s.y < MyGame.Y_WINDOW));
 	}
 }

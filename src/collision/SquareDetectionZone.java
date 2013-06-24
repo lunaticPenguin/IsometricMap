@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 
 import tools.Vector2i;
 
-public abstract class SquareDetectionZone extends AbstractZoneDetection {
+public class SquareDetectionZone extends AbstractZoneDetection {
 
 	
 	/**

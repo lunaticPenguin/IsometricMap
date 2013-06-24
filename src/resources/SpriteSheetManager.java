@@ -41,6 +41,8 @@ public class SpriteSheetManager extends AbstractManager<SpriteSheet> {
 				objSprite = new SpriteSheet(dataObjectPath, 50, 50);
 			} else if (dataObjectPath.contains("guard")) {
 				objSprite = new SpriteSheet(dataObjectPath, 64, 112);
+			} else if (dataObjectPath.contains("cannonball")) {
+				objSprite = new SpriteSheet(dataObjectPath, 10, 10);
 			}
 		} catch (SlickException e) {
 			Log.error("SpriteSheetManager : Error during loading spritesheet (" + dataObjectPath + " ): " + e.getMessage());

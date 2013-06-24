@@ -91,12 +91,10 @@ implements Comparable<AbstractEntity> {
 	 * 
 	 * /!\ ne prend pas encore en compte la largeur et la hauteur de l'entité
 	 * 
-	 * @param Camera cam permet de déterminer la zone affichée
 	 * @return boolean
 	 */
 	public boolean belongToRenderedAera() {
-		Camera cam = Camera.getInstance();
-		return isDisplayed && ((cam.x + s.x > 0) && (cam.x + s.x < MyGame.X_WINDOW)) && ((cam.y + s.y > 0) && (cam.y + s.y < MyGame.Y_WINDOW));
+		return isDisplayed && super.belongToRenderedAera();
 	}
 	
 	
