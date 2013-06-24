@@ -39,9 +39,9 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	protected int actionRange;
 	
 	/**
-	 * Zone de collision si unité manquée
+	 * Limite de collision si unité manquée
 	 */
-	protected SquareDetectionZone endZone;
+	protected Vector2i endLimit;
 	
 	protected AbstractEntity target;
 	
@@ -54,20 +54,27 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	 */
 	public void init(AbstractEntity sender, AbstractEntity receiver) {
 		
-
 		s = new Vector2f();
 		
 		s.x = sender.getS().x;
 		s.y = sender.getS().y;
 		
-		endZone = new SquareDetectionZone();
-		endZone.setS(receiver.getS());
-		endZone.setZoneDim(new Vector2i(100, 100));
-		endZone.setZoneOffset(-50, -50); // p-ê en positif, je sais plus trop!
-		
 		offset = new Vector2i((int) (receiver.getS().x - sender.getS().x),
 			(int) (receiver.getS().y - sender.getS().y));
 		ratioTrajectory = new Vector2f();
+		
+		endLimit = new Vector2i();
+		if (offset.x > 0) {
+			endLimit.x = (int) receiver.getS().x + receiver.getZoneDim().x;
+		} else {
+			endLimit.x = (int) receiver.getS().x - receiver.getZoneDim().x;
+		}
+		
+		if (offset.y > 0) {
+			endLimit.y = (int) receiver.getS().y + receiver.getZoneDim().y;
+		} else {
+			endLimit.y = (int) receiver.getS().y - receiver.getZoneDim().y;
+		}
 		
 		// calcul du ratio pour les déplacements
 		double distance = Math.sqrt(Math.pow((double)offset.x, 2) + Math.pow((double)offset.y, 2));
@@ -96,7 +103,7 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 		if (!isDestroyed) {
 			if (isColliding(target)) {
 				attack(target);
-			} else if (isColliding(endZone)) {
+			} else if (this.checkForOutPassingTarget()) {
 				isDestroyed = true;
 			}
 			return true;
@@ -120,5 +127,22 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	@Override
 	public void attack(AbstractEntity entityToAttack) {
 		
+	}
+	
+	/**
+	 * Permet de vérifier si le projectile a dépassé sa cible
+	 * @return
+	 */
+	private boolean checkForOutPassingTarget() {
+		if (ratioTrajectory.x <= 0 && ratioTrajectory.y <= 0) {
+			return s.x < endLimit.x || s.y < endLimit.y;
+		} else if (ratioTrajectory.x >= 0 && ratioTrajectory.y <= 0) {
+			return s.x > endLimit.x || s.y < endLimit.y;
+		} else if (ratioTrajectory.x <= 0 && ratioTrajectory.y >= 0) {
+			return s.x < endLimit.x || s.y > endLimit.y;
+		} else if (ratioTrajectory.x >= 0 && ratioTrajectory.y >= 0) {
+			return s.x > endLimit.x || s.y > endLimit.y;
+		}
+		return false;
 	}
 }

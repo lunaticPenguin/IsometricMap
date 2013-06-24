@@ -126,6 +126,14 @@ public abstract class AbstractZoneDetection {
 	}
 	
 	/**
+	 * @param zoneDim the zoneDim to set
+	 */
+	public void setZoneDim(int x, int y) {
+		zoneDim.x = x;
+		zoneDim.y = y;
+	}
+	
+	/**
 	 * Méthode par défaut permettant de savoir si une détection de collision 
 	 * utilisant un objet de type AbstractZoneDetection n'a pas été implémentée
 	 * 
