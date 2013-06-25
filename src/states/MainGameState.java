@@ -170,7 +170,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.m.checkRanges();
 		
 		objEntityManager.update(container, game, delta);
-		AbstractProjectile tmpProjectile;
 		
 		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
 		for (int i = 0 ; i < maxIndextower ; ++i) {
@@ -180,8 +179,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
 					towersTest[i].setHighLight(true);
 					bonomesTest[j].setHighLight(true);
-					tmpProjectile = objProjectileManager.addEntity("firecannonball");
-					tmpProjectile.init(towersTest[i], bonomesTest[j]);
+					towersTest[i].assignTarget(bonomesTest[j]);
 				}
 			}
 		}
