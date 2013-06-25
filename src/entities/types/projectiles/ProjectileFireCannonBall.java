@@ -16,6 +16,8 @@ public class ProjectileFireCannonBall extends AbstractProjectile {
 		zoneDim.x = 10;
 		zoneDim.y = 10;
 		
+		attack = 80;
+		
 		SpriteSheetManager objSpritesheetManager = SpriteSheetManager.getInstance();
 		sprite = objSpritesheetManager.get("projectile.firecannonball.default");
 	}

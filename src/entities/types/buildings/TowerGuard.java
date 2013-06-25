@@ -10,10 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import resources.AnimationManager;
 import tools.Vector2i;
 
-import entities.AbstractEntity;
-import entities.IOffensive;
-
-public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
+public class TowerGuard extends AbstractBuildingEntity {
 	
 	/**
 	 * Tableau d'animation en corrélation directe avec
@@ -39,9 +36,12 @@ public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 	
 	@Override
 	public void init() {
+		weaponType = "firecannonball";
 		attack = 10;
 		defend = 15;
 		actionRange = 5;
+		reloadDuration = 1000;
+		nextTimeForShot = System.currentTimeMillis() + reloadDuration;
 		
 		this.direction = DIRECTION_NORTH;
 		this.state = STATE_DESTROYED;
@@ -79,19 +79,11 @@ public class TowerGuard extends AbstractBuildingEntity implements IOffensive {
 
 	@Override
 	public void defend(int damagePoints) {
-		// TODO Auto-generated method stub
-		
+		life -= damagePoints;
 	}
 
 	@Override
 	public boolean update(GameContainer container, StateBasedGame game, int delta) {
-		return false;
-	}
-
-	/**
-	 * @Override
-	 */
-	public void attack(AbstractEntity entityToAttack) {
-		super.attack(entityToAttack);
+		return super.update(container, game, delta);
 	}
 }

@@ -89,6 +89,16 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 			s.x += delta * speedMove * ratioMoveX;
 			s.y += delta * speedMove * ratioMoveY;
 			return y != s.y; // il n'y a indication du tri que si modification du y
+		} else {
+			
+			// code de base pour attaque des créatures
+			if (target != null && System.currentTimeMillis() > nextTimeForShot) {
+				attack(target);
+				nextTimeForShot = System.currentTimeMillis() + reloadDuration;
+			}
+			if (target != null && target.isDead()) {
+				target = null; // tour disponible
+			}
 		}
 		return false;
 	}
@@ -277,8 +287,6 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	 * {@inheritDoc}
 	 */
 	public void attack(AbstractEntity entity) {
-		if (target != null) {
-			target.defend(attackPoints);
-		}
+		entity.defend(attackPoints);
 	}
 }

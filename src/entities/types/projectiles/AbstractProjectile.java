@@ -31,7 +31,7 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	/**
 	 * entity attack points
 	 */
-	protected float attack;
+	protected int attack;
 	
 	/**
 	 * Rayon d'action des dégâts lors de l'impact (<=> collision avec endZone)
@@ -123,7 +123,7 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 	
 	@Override
 	public void attack(AbstractEntity entityToAttack) {
-		
+		entityToAttack.defend(attack);
 	}
 	
 	/**
