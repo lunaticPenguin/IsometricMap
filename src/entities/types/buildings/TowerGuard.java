@@ -36,6 +36,9 @@ public class TowerGuard extends AbstractBuildingEntity {
 	
 	@Override
 	public void init() {
+		
+		life = 100;
+		
 		weaponType = "firecannonball";
 		attack = 10;
 		defend = 15;
