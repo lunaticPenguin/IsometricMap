@@ -8,7 +8,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 import entities.AbstractEntity;
-import entities.IOffensive;
 import entities.IStationary;
 import entities.manager.ProjectileManager;
 import entities.types.projectiles.AbstractProjectile;

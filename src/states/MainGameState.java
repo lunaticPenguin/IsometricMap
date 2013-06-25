@@ -15,7 +15,6 @@ import entities.manager.EntityManager;
 import entities.manager.ProjectileManager;
 import entities.types.buildings.TowerGuard;
 import entities.types.creatures.AbstractCreatureEntity;
-import entities.types.projectiles.AbstractProjectile;
 import gui.MapScene;
 import gui.Scene;
 
