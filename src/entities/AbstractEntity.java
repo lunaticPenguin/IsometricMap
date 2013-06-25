@@ -77,6 +77,16 @@ implements Comparable<AbstractEntity> {
 	protected int actionRange;
 	
 	/**
+	 * Durée de rechargement
+	 */
+	protected int reloadDuration;
+	
+	/**
+	 * Temps pour lequel l'unité pour à nouveau tirer
+	 */
+	protected long nextTimeForShot;
+	
+	/**
 	 * Origine du point de tir (par rapport à la position s)
 	 */
 	protected Vector2i firePoint;
@@ -84,6 +94,8 @@ implements Comparable<AbstractEntity> {
 	protected boolean highlight = false;
 	
 	protected AbstractEntity target;
+	
+	protected String weaponType;
 	
 	public void setHighLight(boolean highlight) {
 		this.highlight = highlight;
@@ -196,7 +208,9 @@ implements Comparable<AbstractEntity> {
 	 * @param damagePoints
 	 * @see IAggressive.attack()
 	 */
-	abstract public void defend(int damagePoints);
+	public void defend(int damagePoints) {
+		this.life -= damagePoints;
+	}
 	
 	
 	/**

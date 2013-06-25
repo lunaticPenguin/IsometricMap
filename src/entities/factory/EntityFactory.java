@@ -16,9 +16,9 @@ import entities.types.creatures.CreatureJidiako;
 public class EntityFactory extends AbstractFactory<AbstractEntity> {
 	
 	// Creatures types
-	public static final String ENTITY_CREATUREJIDIAKO = "jidiako";
-	public static final String ENTITY_CREATUREBOLOSS = "boloss";
-	public static final String ENTITY_TOWERGUARD = "towerguard";
+	public static final String ENTITY_CREATUREJIDIAKO = "CreatureJidiako";
+	public static final String ENTITY_CREATUREBOLOSS = "CreatureBoloss";
+	public static final String ENTITY_TOWERGUARD = "TowerGuard";
 	
 	
 	protected static EntityFactory instance;

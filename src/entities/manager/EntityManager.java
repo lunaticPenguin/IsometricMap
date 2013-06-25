@@ -47,7 +47,11 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 		
 		while (dataIterator.hasNext()) {
 			entity = dataIterator.next();
-			if (entity.belongToRenderedAera()) {
+			if (entity.isDead()) {
+				dataIterator.remove();
+				this.removeEntity(entity.getClass().getSimpleName(), entity);
+			} else
+				if (entity.belongToRenderedAera()) {
 				alreadyCheckedEntities.put(entity.hashCode(), entity);
 				data.add(entity);
 				dataIterator.remove();
@@ -62,8 +66,12 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 				boolHasToSort = boolHasToSort == false ? true : true;
 			}
 			
-			// si cette entité ne vient pas de la liste d'unités invisibles
-			if (!alreadyCheckedEntities.containsKey(entity.hashCode())) {
+			if (entity.isDead()) {
+				dataIterator.remove();
+				this.removeEntity(entity.getClass().getSimpleName(), entity);
+			} else 
+				if (!alreadyCheckedEntities.containsKey(entity.hashCode())) {
+				// si cette entité ne vient pas de la liste d'unités invisibles
 				if (!entity.belongToRenderedAera()) {
 					dataHidden.add(entity);
 					dataIterator.remove();

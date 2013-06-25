@@ -50,10 +50,6 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 		return CreatureBoloss.animationsStates;
 	}
 	
-	public void defend(int damagePoints) {
-		life -= damagePoints;
-	}
-	
 	@Override
 	public void moveTo(Vector2i matrixCell) {
 		
@@ -70,11 +66,13 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 		attack = 3;
 		defend = 1;
 		actionRange = 3;
+		reloadDuration = 2500;
+		nextTimeForShot = System.currentTimeMillis() + reloadDuration;
 		
 		s.x = 0;
 		s.y = 0;
 		
-		speedMove = 0.05f;
+		speedMove = 0.03f;
 		
 		isDisplayed = false;
 		isMoving = false;

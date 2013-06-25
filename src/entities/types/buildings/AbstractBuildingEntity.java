@@ -3,13 +3,16 @@ package entities.types.buildings;
 import map.Camera;
 import map.Map;
 
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
 
 import entities.AbstractEntity;
-import entities.IOffensive;
 import entities.IStationary;
+import entities.manager.ProjectileManager;
+import entities.types.projectiles.AbstractProjectile;
 
-public abstract class AbstractBuildingEntity extends AbstractEntity implements IStationary, IOffensive {
+public abstract class AbstractBuildingEntity extends AbstractEntity implements IStationary {
 	
 	/**
 	 * Permet de surcharger l'affiche d'une entité (par exemple à des fins de debug)
@@ -21,15 +24,17 @@ public abstract class AbstractBuildingEntity extends AbstractEntity implements I
 		super.draw(g);
 	}
 	
-	/**
-	 * Code basique d'attaque pour une tour
-	 * @Override
-	 */
-	public void attack(AbstractEntity entityToAttack) {
-		if (target != null) {
-			// ici : création de projectile
-			// + tir.
-			// C'est le projectile qui gère les dégâts
+	
+	@Override
+	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+		if (target != null && System.currentTimeMillis() > nextTimeForShot) {
+			AbstractProjectile tmpProjectile = ProjectileManager.getInstance().addEntity(weaponType);
+			tmpProjectile.init(this, target);
+			nextTimeForShot = System.currentTimeMillis() + reloadDuration;
 		}
+		if (target != null && target.isDead()) {
+			target = null; // tour disponible
+		}
+		return false;
 	}
 }
