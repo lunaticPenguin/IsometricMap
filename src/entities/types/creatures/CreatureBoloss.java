@@ -50,10 +50,6 @@ public class CreatureBoloss extends AbstractCreatureEntity {
 		return CreatureBoloss.animationsStates;
 	}
 	
-	public void defend(int damagePoints) {
-		life -= damagePoints;
-	}
-	
 	@Override
 	public void moveTo(Vector2i matrixCell) {
 		
