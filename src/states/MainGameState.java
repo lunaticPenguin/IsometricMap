@@ -8,6 +8,7 @@
 
 package states;
 
+import effects.EffectManager;
 import entities.AbstractEntity;
 
 import entities.factory.EntityFactory;
@@ -148,6 +149,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		map.dynamicRender(g);
 		objProjectileManager.render(g);
+		EffectManager.getInstance().render(g);
 
 		renderMouseTile(g);
 		
