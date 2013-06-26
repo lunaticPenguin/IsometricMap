@@ -100,6 +100,7 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 		if (!isDestroyed) {
 			if (isColliding(target)) {
 				attack(target);
+				isDestroyed = true;
 			} else if (this.checkForOutPassingTarget()) {
 				isDestroyed = true;
 			}
@@ -117,7 +118,7 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 		sprite.draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
 		
 		if (isDestroyed) {
-			// todo : super effet de la mort qui tue!
+			onCollision();
 		}
 	}
 	
@@ -141,5 +142,12 @@ public abstract class AbstractProjectile extends SquareDetectionZone implements 
 			return s.x > endLimit.x || s.y > endLimit.y;
 		}
 		return false;
+	}
+	
+	/**
+	 * Permet de définir un comportement lors d'une collision du projectile
+	 */
+	protected void onCollision() {
+		
 	}
 }

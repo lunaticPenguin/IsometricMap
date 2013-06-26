@@ -1,6 +1,9 @@
 package entities.types.projectiles;
 
+import effects.AbstractEffect;
+import effects.EffectManager;
 import entities.AbstractEntity;
+import entities.factory.EffectFactory;
 
 import resources.SpriteSheetManager;
 
@@ -25,5 +28,11 @@ public class ProjectileFireCannonBall extends AbstractProjectile {
 	@Override
 	public int compareTo(AbstractProjectile o) {
 		return 0;
+	}
+	
+	protected void onCollision() {
+		AbstractEffect tmpEffect = EffectManager.getInstance().addEntity(EffectFactory.EFFECT_NUKEBOMB);
+		tmpEffect.init(s);
+		tmpEffect.start();
 	}
 }
