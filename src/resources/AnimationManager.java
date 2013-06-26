@@ -55,6 +55,13 @@ public class AnimationManager extends AbstractManager<Animation> {
 				sbKey.append(key).append("_").append(0);
 				
 				data.put(sbKey.toString(), new Animation(tmpSpS, 0, 0, 0, 0, true, 20, true));
+			} else if (key.contains("nuke")) {
+				sbKey.setLength(0);
+				
+				tmpSpS = objSpSManager.get(key);
+				sbKey.append(key).append("_").append(0);
+				
+				data.put(sbKey.toString(), new Animation(tmpSpS, 0, 0, 23, 0, true, 40, true));
 			}
 		}
 	}
