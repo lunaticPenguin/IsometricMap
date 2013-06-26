@@ -27,13 +27,15 @@ public abstract class AbstractBuildingEntity extends AbstractEntity implements I
 	
 	@Override
 	public boolean update(GameContainer container, StateBasedGame game, int delta) {
+
+		if (target != null && target.isDead()) {
+			target = null; // tour disponible
+		}
+		
 		if (target != null && System.currentTimeMillis() > nextTimeForShot) {
 			AbstractProjectile tmpProjectile = ProjectileManager.getInstance().addEntity(weaponType);
 			tmpProjectile.init(this, target);
 			nextTimeForShot = System.currentTimeMillis() + reloadDuration;
-		}
-		if (target != null && target.isDead()) {
-			target = null; // tour disponible
 		}
 		return false;
 	}
