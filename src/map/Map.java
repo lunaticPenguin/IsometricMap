@@ -194,7 +194,7 @@ public class Map extends TiledMapPlus {
 		int renderXTile;
 		int renderYTile;
 		
-		while (currentLine < numLineToReach) {
+		while (currentLine <= numLineToReach) {
 			
 			for (i = 0 ; i <= currentLine ; ++i) {
 				
