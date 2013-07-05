@@ -34,7 +34,7 @@ public class MyGameState extends StateBasedGame {//TWLStateBasedGame { //
 		addState(new MainGameState());
 		
 
-		container.getGraphics().setBackground(new Color(51, 59, 230));
+		container.getGraphics().setBackground(new Color(58, 46, 36));
 	}
 
 	protected URL getThemeURL() {
