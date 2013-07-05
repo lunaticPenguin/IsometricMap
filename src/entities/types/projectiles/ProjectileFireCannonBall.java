@@ -5,6 +5,7 @@ import effects.EffectManager;
 import entities.AbstractEntity;
 import entities.factory.EffectFactory;
 
+import resources.SoundManager;
 import resources.SpriteSheetManager;
 
 public class ProjectileFireCannonBall extends AbstractProjectile {
@@ -23,6 +24,8 @@ public class ProjectileFireCannonBall extends AbstractProjectile {
 		
 		SpriteSheetManager objSpritesheetManager = SpriteSheetManager.getInstance();
 		sprite = objSpritesheetManager.get("projectile.firecannonball.default");
+		
+		SoundManager.getInstance().get("cannonball_fire.wav").play();
 	}
 
 	@Override
@@ -34,5 +37,6 @@ public class ProjectileFireCannonBall extends AbstractProjectile {
 		AbstractEffect tmpEffect = EffectManager.getInstance().addEntity(EffectFactory.EFFECT_NUKEBOMB);
 		tmpEffect.init(s);
 		tmpEffect.start();
+		SoundManager.getInstance().get("cannonball_impact.wav").play();
 	}
 }

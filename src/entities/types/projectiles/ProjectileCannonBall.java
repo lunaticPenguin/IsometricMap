@@ -2,6 +2,7 @@ package entities.types.projectiles;
 
 import entities.AbstractEntity;
 
+import resources.SoundManager;
 import resources.SpriteSheetManager;
 
 
@@ -21,6 +22,12 @@ public class ProjectileCannonBall extends AbstractProjectile {
 		
 		SpriteSheetManager objSpritesheetManager = SpriteSheetManager.getInstance();
 		sprite = objSpritesheetManager.get("projectile.cannonball.default");
+
+		SoundManager.getInstance().get("cannonball_fire.wav").play();
+	}
+	
+	protected void onCollision() {
+		SoundManager.getInstance().get("cannonball_impact.wav").play();
 	}
 
 	@Override

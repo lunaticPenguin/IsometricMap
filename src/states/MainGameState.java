@@ -27,6 +27,7 @@ import map.Camera;
 import map.Map;
 import map.MousePosition;
 
+import org.lwjgl.openal.AL;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -35,6 +36,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import pathfinding.Path;
+import resources.MusicManager;
+import resources.SoundManager;
 
 //import de.matthiasmann.twl.Button;
 
@@ -142,6 +145,13 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			bonomesTest[i].setIsDiplayed(true);
 		}
 		towersTest = new TowerGuard[NB_TOWER_TEST];
+
+		
+		/**
+		 * Chargement des managers de ressources (peut-être long)
+		 */
+		SoundManager.getInstance().get("gong.wav").play();
+		MusicManager.getInstance().playMusic("ambience_normal_1.ogg");
 	}
 
 	@Override
@@ -223,6 +233,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	protected void mainShortcuts() {
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+			AL.destroy();
 			System.exit(0);
 		} else if (input.isKeyPressed(Input.KEY_F1)) {
 			isDebugging = !isDebugging;
@@ -258,6 +269,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			towersTest[indextower] = objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
 			towersTest[indextower].setM(destPosition);
 			towersTest[indextower].setIsDiplayed(true);
+			SoundManager.getInstance().get("building_add_1.wav").play();
+			
 			map.setTileBlocked(destPosition.x, destPosition.y, Map.TILE_GROUND);
 			
 			++indextower;

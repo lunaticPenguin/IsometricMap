@@ -11,7 +11,7 @@ import tools.Vector2i;
 
 
 public abstract class AbstractEffect implements Comparable<AbstractEffect> {
-	protected Sound sound;
+	
 	protected Animation animation;
 
 	protected long duration;
