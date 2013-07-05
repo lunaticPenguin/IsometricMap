@@ -31,7 +31,7 @@ public class Position {
 	public static Vector2i memoryToScreen(Vector2i offset, Vector2i pos, int tileX, int tileY) {
 		
 		pos.x = (tileX - tileY) * Map.mTDim.x + Map.mTDim.x;
-		pos.y = (tileX + tileY) * Map.mTDim.y;
+		pos.y = (tileX + tileY) * Map.mTDim.y + Map.mTDim.y;
 		
 		if (offset != null) {
 			pos.x += offset.x;
@@ -72,11 +72,11 @@ public class Position {
 			y -= offset.y;
 		}
 		
-//		xt=(y*2+x)/w; 
-//		yt=(y*2-x)/w;
+		// on rétablit l'équilibre d'un point de vue du calcul
+		x -= Map.mTDim.x;
 		
 		pos.x = (int) Math.round((y * 2 + x) / Map.tDim.x);
-		pos.y = (int) Math.round((y * 2 - x) / Map.tDim.x) + 1;
+		pos.y = (int) Math.round((y * 2 - x) / Map.tDim.x);
 		
 		pos.x = (pos.x < 0) ? 0 : ((pos.x >= Map.mDim.x) ? Map.mDim.x - 1: pos.x);
 		pos.y = (pos.y < 0) ? 0 : ((pos.y >= Map.mDim.y) ? Map.mDim.y - 1: pos.y);
