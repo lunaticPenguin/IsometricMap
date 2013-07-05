@@ -163,8 +163,6 @@ public class Map extends TiledMapPlus {
 		startRenderY = startRenderY < 0 ? 0 : startRenderY;
 		
 		optimizedRender(cam.x + additionalXCamOffset, cam.y + additionalYCamOffset, startRenderX, startRenderY, colCount, rowCount, false);
-		
-		g.drawString("render options ["+startRenderX+";"+startRenderY+"]["+colCount+";"+rowCount+"]", 400, 10);
 	}
 	
 	/**

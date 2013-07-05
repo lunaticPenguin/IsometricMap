@@ -132,7 +132,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		bonomesTest = new AbstractCreatureEntity[NB_JIDIOKA_TEST];
 		
 		for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
-			bonomesTest[i] = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREBOLOSS);
+			bonomesTest[i] = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
 			bonomesTest[i].setM(
 				new Vector2i(
 					Randomizer.getInstance().generateRangedInt(0, 40),
