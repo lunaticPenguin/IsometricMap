@@ -395,19 +395,6 @@ public class Map extends TiledMapPlus {
 	}
 	
 	/**
-	 * Permet de convertir une position orthogonale (x;y) en un sommet
-	 * stocké dans une matrice carrée
-	 * (adjacence ou fermeture transitive, en l'occurence)
-	 * 
-	 * @param int x
-	 * @param int y
-	 * @return
-	 */
-	private int convertOrthoToSquareExpOrtho(int x, int y) {
-		return x + y * width;
-	}
-	
-	/**
 	 * Permet de remplir une matrice booléenne avec la valeur spécifiée
 	 * Utile pour une initialisation.
 	 * 
