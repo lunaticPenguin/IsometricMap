@@ -1,13 +1,12 @@
 package map;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import main.MyGame;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.tiled.Layer;
+
 import org.newdawn.slick.tiled.TiledMapPlus;
 
 import entities.manager.EntityManager;
@@ -143,6 +142,7 @@ public class Map extends TiledMapPlus {
 		rowCount = (rowCount > width) ? width : rowCount;
 		colCount = (colCount > height) ? height : colCount;
 		
+		// gestion du décalage de la map lors du déplacement (tremblements des tiles)
 		int additionalXCamOffset = 0;
 		int additionalYCamOffset = 0;
 		
@@ -152,13 +152,13 @@ public class Map extends TiledMapPlus {
 			
 			colCount -= startRenderX;
 		}
-		if( startRenderY > 0) {
+		if (startRenderY > 0) {
 			additionalXCamOffset -= mTDim.x * startRenderY;
 			additionalYCamOffset += mTDim.y * startRenderY;
 
 			rowCount -= startRenderY;
 		}
-
+		
 		startRenderX = startRenderX < 0 ? 0 : startRenderX;
 		startRenderY = startRenderY < 0 ? 0 : startRenderY;
 		
@@ -188,13 +188,13 @@ public class Map extends TiledMapPlus {
 		 * + facteur de multiplication pour position des tiles sur le screen
 		 */
 		int currentLine = 0; // nombre de tiles à afficher en diagonales
-		int numLineToReach = width + height;
+		int numLineToReach = (width > height ? width : height) * 2;
 		int renderX;
 		int renderY;
 		int renderXTile;
 		int renderYTile;
 		
-		while (currentLine < numLineToReach) {
+		while (currentLine <= numLineToReach) {
 			
 			for (i = 0 ; i <= currentLine ; ++i) {
 				
@@ -210,79 +210,6 @@ public class Map extends TiledMapPlus {
 			++currentLine;
 		}
 		objEm.render(g);
-	}
-	
-	
-	protected void renderIsometricMap(int x, int y, int sx, int sy, int width, int height, Layer layer, boolean lineByLine) {
-		ArrayList<Layer> drawLayers = layers;
-		if (layer != null) {
-			drawLayers = new ArrayList<Layer>();
-			drawLayers.add(layer);
-		}
-
-		int maxCount = width * height;
-		int allCount = 0;
-
-		boolean allProcessed = false;
-
-		int initialLineX = x;
-		int initialLineY = y;
-
-		int startLineTileX = 0;
-		int startLineTileY = 0;
-		
-		while (!allProcessed) {
-
-			int currentTileX = startLineTileX;
-			int currentTileY = startLineTileY;
-			int currentLineX = initialLineX;
-
-			int min = 0;
-			
-			if (height > width) {
-				if (startLineTileY < width - 1) {
-					min = startLineTileY;
-				} else if (width - currentTileX < height) {
-					min = width - currentTileX - 1;
-				} else {
-					min = width - 1;
-				}
-			} else {
-				if (startLineTileY < height - 1) {
-					min = startLineTileY;
-				} else if (width - currentTileX < height) {
-					min = width - currentTileX - 1;
-				} else {
-					min = height - 1;
-				}
-			}
-
-			for (int burner = 0; burner <= min; currentTileX++, currentTileY--, burner++) {
-				for (int layerIdx = 0; layerIdx < drawLayers.size(); layerIdx++) {
-					Layer currentLayer = (Layer) drawLayers.get(layerIdx);
-					currentLayer.render(currentLineX, initialLineY,
-							currentTileX, currentTileY, 1, 0, lineByLine,
-							tileWidth, tileHeight);
-				}
-				currentLineX += tileWidth;
-
-				allCount++;
-			}
-
-			if (startLineTileY < (height - 1)) {
-				startLineTileY += 1;
-				initialLineX -= tileWidth / 2;
-				initialLineY += tileHeight / 2;
-			} else {
-				startLineTileX += 1;
-				initialLineX += tileWidth / 2;
-				initialLineY += tileHeight / 2;
-			}
-
-			if (allCount >= maxCount) {
-				allProcessed = true;
-			}
-		}
 	}
 	
 	protected void loadBlockedTiles() {
@@ -392,19 +319,6 @@ public class Map extends TiledMapPlus {
 		int end = convertOrthoToSquareExpOrtho(xEnd, yEnd);
 		return transitiveClosureMatrix.get(mapType)[start][end];
 		*/
-	}
-	
-	/**
-	 * Permet de convertir une position orthogonale (x;y) en un sommet
-	 * stocké dans une matrice carrée
-	 * (adjacence ou fermeture transitive, en l'occurence)
-	 * 
-	 * @param int x
-	 * @param int y
-	 * @return
-	 */
-	private int convertOrthoToSquareExpOrtho(int x, int y) {
-		return x + y * width;
 	}
 	
 	/**
