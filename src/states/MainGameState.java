@@ -34,13 +34,11 @@ import resources.SoundManager;
 //import de.matthiasmann.twl.Button;
 
 import tools.Position;
-import tools.Randomizer;
 import tools.Vector2i;
+import waves.WaveHandler;
 
 
 public class MainGameState extends BasicGameState {//BasicTWLGameState { //
-
-	private final int NB_JIDIOKA_TEST = 5;
 	
 	private Input input;
 	
@@ -53,12 +51,15 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private EntityManager objEntityManager;
 	private ProjectileManager objProjectileManager;
 	
+	private AbstractBuildingEntity tower;
+	
 	private int delta;
 	
-	private int indextower = 0;
-	private int maxIndextower = 0;
-	
 	private StateBasedGame refGame;
+	
+	
+	private WaveHandler objWavesHandler;
+	
 
     /* TWL TEST */
 	
@@ -121,33 +122,24 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		objEntityManager = EntityManager.getInstance();
 		objProjectileManager = ProjectileManager.getInstance();
-		AbstractCreatureEntity tmpEntity;
 		
-		// positions temporaires
-		int x, y;
-		for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
-			tmpEntity = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
-			x = 0;
-			y = 0;
-			while (map.isTileBlocked(x, y, Map.TILE_GROUND)) {
-				x = Randomizer.getInstance().generateRangedInt(0, Map.mDim.x - 1);
-				y = Randomizer.getInstance().generateRangedInt(0, Map.mDim.y - 1);
-			}
-			tmpEntity.setM(new Vector2i(x, y));
-			tmpEntity.setIsDiplayed(true);
-		}
-//		
-//		AbstractBuildingEntity tower = (AbstractBuildingEntity) objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
-//		tower.setM(new Vector2i(17, 20));
-//		tower.setIsDiplayed(true);
-//		
-//		tmpEntity = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
-//		tmpEntity.setM(new Vector2i(17, 24));
-//		tmpEntity.setIsDiplayed(true);
+		
+		// tour principale (à défendre)
+		tower = (AbstractBuildingEntity) objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
+		tower.setM(new Vector2i(16, 16));
+		tower.setIsDiplayed(true);
+		map.setTileBlocked(tower.getM().x, tower.getM().y, Map.TILE_GROUND);
+		
+		objWavesHandler = WaveHandler.getInstance();
+		objWavesHandler.init(map, new Vector2i(tower.getM().x, tower.getM().y - 1));
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+		
+		if (tower.isDead()) {
+			System.out.println("tower is dead! :(");
+		}
 		
 		map.dynamicRender(g);
 
@@ -174,9 +166,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		// pour optimiser le rendu des entités et des projectiles,
 		// on effectue le render en même temps que le update,
 		// mais via la méthode MainGameState.render()
-		this.delta = delta; 
+		this.delta = delta;
 		
-		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
+		objWavesHandler.handle();
 	}
 	
 	protected void cameraMoves() {
@@ -220,16 +212,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			isDebugging = !isDebugging;
 		}
 		
-		// testalakon
-		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-//			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
-//			Path tmpPath = null;
-			
-//				tmpPath = map.findPath(bonomesTest[i].getM(), destPosition, Map.TILE_GROUND);
-//				if (tmpPath != null) {
-//					bonomesTest[i].setCurrentPath(tmpPath);
-//				}
-		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
 			
 			if (map.isTileBlocked(destPosition.x, destPosition.y)) {
@@ -242,8 +225,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			SoundManager.getInstance().get("building_add_1.wav").play();
 			
 			map.setTileBlocked(destPosition.x, destPosition.y, Map.TILE_GROUND);
-			
-			++indextower;
 		}
 	}
 	
