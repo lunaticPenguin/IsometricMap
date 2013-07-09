@@ -15,7 +15,6 @@ import entities.manager.EntityManager;
 import entities.manager.ProjectileManager;
 
 import entities.types.buildings.AbstractBuildingEntity;
-import entities.types.creatures.AbstractCreatureEntity;
 
 import main.MyGame;
 import map.Camera;
