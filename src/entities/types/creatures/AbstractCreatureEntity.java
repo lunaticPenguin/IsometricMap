@@ -97,7 +97,7 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 				nextTimeForShot = System.currentTimeMillis() + reloadDuration;
 			}
 			if (target != null && target.isDead()) {
-				target = null; // tour disponible
+				target = null;
 			}
 		}
 		return false;

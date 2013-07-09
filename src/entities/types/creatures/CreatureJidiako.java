@@ -79,6 +79,9 @@ public class CreatureJidiako extends AbstractCreatureEntity {
 		isDisplayed = false;
 		isMoving = false;
 		
+		reloadDuration = 2000;
+		nextTimeForShot = System.currentTimeMillis() + reloadDuration;
+		
 		this.direction = DIRECTION_SOUTHEAST;
 		this.state = STATE_WALKING;
 		
