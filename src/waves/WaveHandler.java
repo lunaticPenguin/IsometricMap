@@ -2,9 +2,8 @@ package waves;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.util.Log;
-
 import pathfinding.Path;
+import resources.MusicManager;
 
 import map.Map;
 import entities.factory.EntityFactory;
@@ -42,6 +41,8 @@ public class WaveHandler {
 	private EntityManager objEntityManager;
 	
 	private long timer;
+	
+	private boolean wavesStarted;
 	
 	private WaveHandler() {
 		
@@ -99,7 +100,8 @@ public class WaveHandler {
 		
 		objEntityManager = EntityManager.getInstance();
 		
-		timer = System.currentTimeMillis() + 5000;
+		timer = System.currentTimeMillis() + 10000;
+		wavesStarted = false;
 	}
 	
 	/**
@@ -120,6 +122,14 @@ public class WaveHandler {
 		if (System.currentTimeMillis() < timer) {
 			return;
 		}
+		if (!wavesStarted) {
+			if (Randomizer.getInstance().generateRangedInt(1, 2) == 1) {
+				MusicManager.getInstance().playMusic("ambience_attack_1.ogg", true);
+			} else {
+				MusicManager.getInstance().playMusic("ambience_attack_2.ogg", true);
+			}
+		}
+		wavesStarted = true;
 		
 		Wave currentWave = waves.get(intCurrentWave);
 			
@@ -136,7 +146,6 @@ public class WaveHandler {
 			Path tmpPath = null;
 		
 			tmpPath = map.findPath(tmpEntity.getM(), mainGoal, Map.TILE_GROUND);
-			System.out.println("Setting path from " + tmpEntity.getM() + " to " + mainGoal + " . result : " + ((tmpPath == null) ? " null" : "ok!"));
 			if (tmpPath != null) {
 				tmpEntity.setCurrentPath(tmpPath);
 			}
@@ -146,7 +155,6 @@ public class WaveHandler {
 			--intCurrentWave;
 		}
 		++intCurrentWave;
-		Log.info("Wave#" + intCurrentWave + " engaged!! :D");
 		
 		timer += currentWave.getDuration();
 	}
