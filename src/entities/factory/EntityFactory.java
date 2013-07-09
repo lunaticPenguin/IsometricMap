@@ -20,7 +20,6 @@ public class EntityFactory extends AbstractFactory<AbstractEntity> {
 	public static final String ENTITY_CREATUREBOLOSS = "CreatureBoloss";
 	public static final String ENTITY_TOWERGUARD = "TowerGuard";
 	
-	
 	protected static EntityFactory instance;
 	
 	public static EntityFactory getInstance() {
@@ -46,7 +45,6 @@ public class EntityFactory extends AbstractFactory<AbstractEntity> {
 		case ENTITY_CREATUREBOLOSS:
 			return new CreatureBoloss();
 		}
-		
 		return null;
 	}
 }

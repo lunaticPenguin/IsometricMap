@@ -39,7 +39,7 @@ public class TowerGuard extends AbstractBuildingEntity {
 		
 		life = 100;
 		
-		weaponType = "firecannonball";
+		weaponType = "ProjectileFireCannonBall";
 		attack = 10;
 		defend = 15;
 		actionRange = 5;

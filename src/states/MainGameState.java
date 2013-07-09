@@ -9,12 +9,12 @@
 package states;
 
 import effects.EffectManager;
-import entities.AbstractEntity;
 
 import entities.factory.EntityFactory;
 import entities.manager.EntityManager;
 import entities.manager.ProjectileManager;
-import entities.types.buildings.TowerGuard;
+
+import entities.types.buildings.AbstractBuildingEntity;
 import entities.types.creatures.AbstractCreatureEntity;
 import gui.MapScene;
 import gui.Scene;
@@ -35,7 +35,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import pathfinding.Path;
 import resources.MusicManager;
 import resources.SoundManager;
 
@@ -49,8 +48,6 @@ import tools.Vector2i;
 public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 
 	private final int NB_JIDIOKA_TEST = 5;
-	private final int NB_TOWER_TEST = 10;
-	
 	
 	private Input input;
 	
@@ -60,12 +57,12 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	private boolean isDebugging;
 	private ArrayList<Scene> scenes;
-
-	private AbstractCreatureEntity bonomesTest[];
+	
 	private EntityManager objEntityManager;
 	private ProjectileManager objProjectileManager;
 	
-	private AbstractEntity towersTest[];
+	private int delta;
+	
 	private int indextower = 0;
 	private int maxIndextower = 0;
 	
@@ -130,26 +127,38 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		scenes = new ArrayList<Scene>();
 		initScenes(container, game);
 		
-		objProjectileManager = ProjectileManager.getInstance();
 		objEntityManager = EntityManager.getInstance();
-		bonomesTest = new AbstractCreatureEntity[NB_JIDIOKA_TEST];
+		objProjectileManager = ProjectileManager.getInstance();
+		AbstractCreatureEntity tmpEntity;
 		
+		// positions temporaires
+		int x, y;
 		for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
-			bonomesTest[i] = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
-			bonomesTest[i].setM(
-				new Vector2i(
-					Randomizer.getInstance().generateRangedInt(0, 40),
-					Randomizer.getInstance().generateRangedInt(0, 40)
-				)
-			);
-			bonomesTest[i].setIsDiplayed(true);
+			tmpEntity = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
+			x = 0;
+			y = 0;
+			while (map.isTileBlocked(x, y, Map.TILE_GROUND)) {
+				x = Randomizer.getInstance().generateRangedInt(0, Map.mDim.x - 1);
+				y = Randomizer.getInstance().generateRangedInt(0, Map.mDim.y - 1);
+			}
+			tmpEntity.setM(new Vector2i(x, y));
+			tmpEntity.setIsDiplayed(true);
 		}
-		towersTest = new TowerGuard[NB_TOWER_TEST];
-
+//		
+//		AbstractBuildingEntity tower = (AbstractBuildingEntity) objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
+//		tower.setM(new Vector2i(17, 20));
+//		tower.setIsDiplayed(true);
+//		
+//		tmpEntity = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
+//		tmpEntity.setM(new Vector2i(17, 24));
+//		tmpEntity.setIsDiplayed(true);
 		
 		/**
 		 * Chargement des managers de ressources (peut-être long)
 		 */
+		SoundManager.getInstance();
+		MusicManager.getInstance();
+		
 		SoundManager.getInstance().get("gong.wav").play();
 		MusicManager.getInstance().playMusic("ambience_normal_1.ogg");
 	}
@@ -158,7 +167,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		
 		map.dynamicRender(g);
-		objProjectileManager.render(g);
+
+		objEntityManager.update(container, game, delta, g);
+		objProjectileManager.update(container, game, delta, g);
 		EffectManager.getInstance().render(g);
 
 		renderMouseTile(g);
@@ -180,21 +191,12 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		mPos.setS(input.getMouseX(), input.getMouseY());
 		mPos.m.checkRanges();
 		
-		objEntityManager.update(container, game, delta);
+		// pour optimiser le rendu des entités et des projectiles,
+		// on effectue le render en même temps que le update,
+		// mais via la méthode MainGameState.render()
+		this.delta = delta; 
 		
 		maxIndextower = indextower > maxIndextower ? indextower : maxIndextower;
-		for (int i = 0 ; i < maxIndextower ; ++i) {
-			towersTest[i].setHighLight(false);
-			for (int j = 0 ; j < NB_JIDIOKA_TEST ; ++j) {
-				bonomesTest[j].setHighLight(false);
-				if (towersTest[i].isEntityInActionZone(bonomesTest[j])) {
-					towersTest[i].setHighLight(true);
-					bonomesTest[j].setHighLight(true);
-					towersTest[i].assignTarget(bonomesTest[j]);
-				}
-			}
-		}
-		objProjectileManager.update(container, game, delta);
 	}
 	
 	protected void cameraMoves() {
@@ -241,14 +243,13 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		
 		// testalakon
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
-			Path tmpPath = null;
-			for (int i = 0 ; i < NB_JIDIOKA_TEST ; ++i) {
-				tmpPath = map.findPath(bonomesTest[i].getM(), destPosition, Map.TILE_GROUND);
-				if (tmpPath != null) {
-					bonomesTest[i].setCurrentPath(tmpPath);
-				}
-			}
+//			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
+//			Path tmpPath = null;
+			
+//				tmpPath = map.findPath(bonomesTest[i].getM(), destPosition, Map.TILE_GROUND);
+//				if (tmpPath != null) {
+//					bonomesTest[i].setCurrentPath(tmpPath);
+//				}
 		} else if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			Vector2i destPosition = Position.screenToMemory(cam, mPos.s.x, mPos.s.y);
 			
@@ -256,19 +257,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 				return;
 			}
 			
-			if (indextower == NB_TOWER_TEST) {
-				indextower = 0;
-			}
-			
-			if (indextower != NB_TOWER_TEST && towersTest[indextower] != null) {
-				map.setTileReleased(towersTest[indextower].getM(), Map.TILE_GROUND);
-				objEntityManager.removeEntity(EntityFactory.ENTITY_TOWERGUARD, towersTest[indextower]);
-				towersTest[indextower] = null;
-			}
-			
-			towersTest[indextower] = objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
-			towersTest[indextower].setM(destPosition);
-			towersTest[indextower].setIsDiplayed(true);
+			AbstractBuildingEntity tower = (AbstractBuildingEntity) objEntityManager.addEntity(EntityFactory.ENTITY_TOWERGUARD);
+			tower.setM(destPosition);
+			tower.setIsDiplayed(true);
 			SoundManager.getInstance().get("building_add_1.wav").play();
 			
 			map.setTileBlocked(destPosition.x, destPosition.y, Map.TILE_GROUND);

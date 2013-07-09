@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import entities.AbstractEntity;
 import entities.IStationary;
+
 import entities.manager.ProjectileManager;
 import entities.types.projectiles.AbstractProjectile;
 
@@ -33,7 +34,7 @@ public abstract class AbstractBuildingEntity extends AbstractEntity implements I
 		}
 		
 		if (target != null && System.currentTimeMillis() > nextTimeForShot) {
-			AbstractProjectile tmpProjectile = ProjectileManager.getInstance().addEntity(weaponType);
+			AbstractProjectile tmpProjectile = (AbstractProjectile) ProjectileManager.getInstance().addEntity(weaponType);
 			tmpProjectile.init(this, target);
 			nextTimeForShot = System.currentTimeMillis() + reloadDuration;
 		}

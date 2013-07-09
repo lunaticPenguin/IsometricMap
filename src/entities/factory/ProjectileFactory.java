@@ -15,8 +15,8 @@ import entities.types.projectiles.ProjectileFireCannonBall;
 public class ProjectileFactory extends AbstractFactory<AbstractProjectile> {
 	
 	// Creatures types
-	public static final String PROJECTILE_CANNONBALL = "cannonball";
-	public static final String PROJECTILE_FIRECANNONBALL = "firecannonball";
+	public static final String PROJECTILE_CANNONBALL = "ProjectileCannonBall";
+	public static final String PROJECTILE_FIRECANNONBALL = "ProjectileFireCannonBall";
 	
 	
 	
