@@ -4,7 +4,6 @@ import map.Camera;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Vector2f;
 
 import tools.Vector2i;

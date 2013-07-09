@@ -209,7 +209,6 @@ public class Map extends TiledMapPlus {
 			}
 			++currentLine;
 		}
-		objEm.render(g);
 	}
 	
 	protected void loadBlockedTiles() {

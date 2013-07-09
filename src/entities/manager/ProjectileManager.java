@@ -40,7 +40,7 @@ public class ProjectileManager extends AbstractManager<AbstractProjectile> {
 	}
 	
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
+	public void update(GameContainer container, StateBasedGame game, int delta, Graphics g) {
 		
 		Iterator<AbstractProjectile> dataIterator = data.iterator();
 		AbstractProjectile projectile;
@@ -52,7 +52,9 @@ public class ProjectileManager extends AbstractManager<AbstractProjectile> {
 			// si projectile détruit
 			if (!projectile.update(container, game, delta)) {
 				dataIterator.remove();
-				factory.setEntityBack("cannonball", projectile);
+				factory.setEntityBack(projectile.getClass().getSimpleName(), projectile);
+			} else {
+				this.renderEntity(g, projectile);
 			}
 		}
 	}
