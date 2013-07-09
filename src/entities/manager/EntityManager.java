@@ -14,6 +14,8 @@ import entities.factory.EntityFactory;
 
 public class EntityManager extends AbstractManager<AbstractEntity> {
 	
+	protected HashMap<String, HashMap<String, Integer>> enemiesMapping;
+	
 	protected static EntityManager instance;
 	
 	public static EntityManager getInstance() {
@@ -26,7 +28,30 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	protected EntityManager() {
 		factory = EntityFactory.getInstance();
 		data = new ArrayList<AbstractEntity>();
-		dataHidden = new ArrayList<AbstractEntity>();
+		
+		enemiesMapping = new HashMap<String, HashMap<String, Integer>>();
+		enemiesMapping.put("CreatureJidiako", new HashMap<String, Integer>());
+		enemiesMapping.get("CreatureJidiako").put("TowerGuard", 1);
+		enemiesMapping.get("CreatureJidiako").put("CreatureJidiako", 0);
+		
+		enemiesMapping.put("TowerGuard", new HashMap<String, Integer>());
+		enemiesMapping.get("TowerGuard").put("CreatureJidiako", 1);
+		enemiesMapping.get("TowerGuard").put("TowerGuard", 0);
+	}
+	
+	/**
+	 * Permet de savoir si 2 entités sont hostiles entre elles
+	 * @param entityA
+	 * @param entityB
+	 * @return
+	 */
+	protected boolean areEntitiesHostile(AbstractEntity entityA, AbstractEntity entityB) {
+		if (enemiesMapping.containsKey(entityA.getClass().getSimpleName())) {
+			if (enemiesMapping.get(entityA.getClass().getSimpleName()).containsKey(entityB.getClass().getSimpleName())) {
+				return enemiesMapping.get(entityA.getClass().getSimpleName()).get(entityB.getClass().getSimpleName()) == 1;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -37,51 +62,44 @@ public class EntityManager extends AbstractManager<AbstractEntity> {
 	}
 
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
-		
-		Iterator<AbstractEntity> dataIterator = dataHidden.iterator();
-		AbstractEntity entity;
+	public void update(GameContainer container, StateBasedGame game, int delta, Graphics g) {
+
+		AbstractEntity entity, secondEntity;
 		boolean boolHasToSort = false;
-		
-		HashMap<Integer, AbstractEntity> alreadyCheckedEntities = new HashMap<Integer, AbstractEntity>();
+
+		Iterator<AbstractEntity> dataIterator = data.iterator();
+		Iterator<AbstractEntity> dataSecondIterator;
 		
 		while (dataIterator.hasNext()) {
+			
 			entity = dataIterator.next();
-			if (entity.isDead()) {
-				dataIterator.remove();
-				this.removeEntity(entity.getClass().getSimpleName(), entity);
-			} else
-				if (entity.belongToRenderedAera()) {
-				alreadyCheckedEntities.put(entity.hashCode(), entity);
-				data.add(entity);
-				dataIterator.remove();
-			}
-			entity.update(container, game, delta);
-		}
-		
-		dataIterator = data.iterator();
-		while (dataIterator.hasNext()) {
-			entity = dataIterator.next();
+			dataSecondIterator = data.iterator();
+			
 			if (entity.update(container, game, delta)) {
 				boolHasToSort = boolHasToSort == false ? true : true;
 			}
 			
-			if (entity.isDead()) {
-				dataIterator.remove();
-				this.removeEntity(entity.getClass().getSimpleName(), entity);
-			} else 
-				if (!alreadyCheckedEntities.containsKey(entity.hashCode())) {
-				// si cette entité ne vient pas de la liste d'unités invisibles
-				if (!entity.belongToRenderedAera()) {
-					dataHidden.add(entity);
-					dataIterator.remove();
-					boolHasToSort = true;
+			while (dataSecondIterator.hasNext()) {
+				
+				secondEntity = dataSecondIterator.next();
+				
+				if (entity != secondEntity) {
+					if (entity.isEntityInActionZone(secondEntity)) {
+						if (areEntitiesHostile(entity, secondEntity)) {
+							entity.assignTarget(secondEntity);
+						}
+					}
 				}
 			}
+			
+			if (entity.isDead()) {
+				dataIterator.remove();
+				factory.setEntityBack(entity.getClass().getSimpleName(), entity);
+			} else {
+				this.renderEntity(g, entity);
+			}
 		}
-		
-		if (boolHasToSort && !alreadyCheckedEntities.isEmpty()) {
-			Collections.sort(data);
-		}
+		// tri des entités
+		Collections.sort(data);
 	}
 }

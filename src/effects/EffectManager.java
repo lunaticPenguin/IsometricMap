@@ -27,7 +27,7 @@ public class EffectManager extends AbstractManager<AbstractEffect> {
 	}
 	
 	@Override
-	public void update(GameContainer container, StateBasedGame game, int delta) {
+	public void update(GameContainer container, StateBasedGame game, int delta, Graphics g) {
 		
 	}
 	
@@ -41,7 +41,7 @@ public class EffectManager extends AbstractManager<AbstractEffect> {
 			if (tmpEffect.isFinished()) {
 				tmpEffect.stop();
 				dataIterator.remove();
-				removeEntity(tmpEffect.getClass().getSimpleName(), tmpEffect);
+				factory.setEntityBack(tmpEffect.getClass().getSimpleName(), tmpEffect);
 			} else {
 				this.renderEntity(g, tmpEffect);
 			}
