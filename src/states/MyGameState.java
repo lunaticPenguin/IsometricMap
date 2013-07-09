@@ -31,9 +31,10 @@ public class MyGameState extends StateBasedGame {//TWLStateBasedGame { //
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
+		
+		addState(new MenuState());
 		addState(new MainGameState());
 		
-
 		container.getGraphics().setBackground(new Color(58, 46, 36));
 	}
 
