@@ -209,6 +209,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 			refGame.enterState(MyGameState.STATE_MAIN_MENU);
 		} else if (input.isKeyPressed(Input.KEY_F1)) {
 			isDebugging = !isDebugging;
+			MyGame.setDebugging(isDebugging);
 		}
 		
 		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
