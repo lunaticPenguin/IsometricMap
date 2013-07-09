@@ -16,18 +16,12 @@ import entities.manager.ProjectileManager;
 
 import entities.types.buildings.AbstractBuildingEntity;
 import entities.types.creatures.AbstractCreatureEntity;
-import gui.MapScene;
-import gui.Scene;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import main.MyGame;
 import map.Camera;
 import map.Map;
 import map.MousePosition;
 
-import org.lwjgl.openal.AL;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -35,7 +29,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import resources.MusicManager;
 import resources.SoundManager;
 
 //import de.matthiasmann.twl.Button;
@@ -56,7 +49,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private MousePosition mPos;
 	
 	private boolean isDebugging;
-	private ArrayList<Scene> scenes;
 	
 	private EntityManager objEntityManager;
 	private ProjectileManager objProjectileManager;
@@ -66,6 +58,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	private int indextower = 0;
 	private int maxIndextower = 0;
 	
+	private StateBasedGame refGame;
 
     /* TWL TEST */
 	
@@ -104,6 +97,9 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
+		
+		refGame = game;
+		
 		isDebugging = false;
 		input = container.getInput();
 		input.enableKeyRepeat();
@@ -122,10 +118,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		cam.focusOn(originPos);
 		
 		mPos = new MousePosition(cam);
-		
-		// gestion des différentes scenes
-		scenes = new ArrayList<Scene>();
-		initScenes(container, game);
 		
 		objEntityManager = EntityManager.getInstance();
 		objProjectileManager = ProjectileManager.getInstance();
@@ -152,15 +144,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 //		tmpEntity = (AbstractCreatureEntity) objEntityManager.addEntity(EntityFactory.ENTITY_CREATUREJIDIAKO);
 //		tmpEntity.setM(new Vector2i(17, 24));
 //		tmpEntity.setIsDiplayed(true);
-		
-		/**
-		 * Chargement des managers de ressources (peut-être long)
-		 */
-		SoundManager.getInstance();
-		MusicManager.getInstance();
-		
-		SoundManager.getInstance().get("gong.wav").play();
-		MusicManager.getInstance().playMusic("ambience_normal_1.ogg");
 	}
 
 	@Override
@@ -177,9 +160,6 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		if (isDebugging) {
 			displayPositions(g);
 		}
-		
-		renderScenes(g);
-		
 		g.drawLine(0 + cam.x, 0 + cam.y, 0 + cam.x, 0 + cam.y);
 	}
 
@@ -235,8 +215,7 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 	
 	protected void mainShortcuts() {
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			AL.destroy();
-			System.exit(0);
+			refGame.enterState(MyGameState.STATE_MAIN_MENU);
 		} else if (input.isKeyPressed(Input.KEY_F1)) {
 			isDebugging = !isDebugging;
 		}
@@ -290,31 +269,8 @@ public class MainGameState extends BasicGameState {//BasicTWLGameState { //
 		}
 	}
 	
-	
 	protected void displayPositions(Graphics g) {
 		g.drawString("cam [" + cam.x + ";" + cam.y + "]", 10, 25);
 		g.drawString("mouse screen[" + mPos.s.x + ";" + mPos.s.y + "] | tile[" + mPos.m.x + ";" + mPos.m.y + "]", 10, 40);
-	}
-	
-	
-	protected void initScenes(GameContainer container, StateBasedGame game) {
-		scenes.add(new MapScene(new Vector2i(0,0), MyGame.X_WINDOW, MyGame.Y_WINDOW));
-		Scene tmp;
-		
-		Iterator<Scene> it = scenes.iterator();
-		while (it.hasNext()) {
-			tmp = it.next();
-			tmp.setInput(input);
-			tmp.init(container, game);
-			input.addListener(tmp);
-		}
-	}
-	
-	
-	protected void renderScenes(Graphics g) {
-		Iterator<Scene> it = scenes.iterator();
-		while(it.hasNext()) {
-			it.next().render(g);
-		}
 	}
 }
