@@ -21,8 +21,11 @@ public class MyGame {
 	ControllerContainer controller;
 	String strNameGame;
 	
+	private static boolean isDebugging;
+	
 	public MyGame(String strNameGame) {
 		this.strNameGame = strNameGame;
+		isDebugging = false;
 	}
 	
 	public int init() {
@@ -40,5 +43,14 @@ public class MyGame {
 			Log.error(e);
 		}
 		return 0;
+	}
+	
+	public static void setDebugging(boolean debugging) {
+		isDebugging = debugging;
+	}
+	
+	
+	public static boolean getDebugging() {
+		return isDebugging;
 	}
 }

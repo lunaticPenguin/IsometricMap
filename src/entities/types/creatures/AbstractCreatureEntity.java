@@ -1,5 +1,8 @@
 package entities.types.creatures;
 
+import java.util.Iterator;
+
+import main.MyGame;
 import map.Camera;
 import map.Map;
 
@@ -111,6 +114,25 @@ public abstract class AbstractCreatureEntity extends AbstractEntity implements I
 	public void draw(Graphics g) {
 		Camera cam = Camera.getInstance();
 		g.drawOval(cam.x + s.x - (actionRange * Map.tDim.x), cam.y + s.y - (actionRange * Map.tDim.y), actionRange * Map.tDim.x * 2, actionRange * Map.tDim.y * 2);
+		
+		Iterator<PathNode> tmpIt = currentPath.iterator();
+		PathNode tmpNode = null;
+		
+		
+		if (MyGame.getDebugging()) {
+			while (tmpIt.hasNext()) {
+				tmpNode = tmpIt.next();
+				
+				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y, cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y);
+				g.drawLine(cam.x + tmpNode.getS().x + Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y);
+				g.drawLine(cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y + Map.mTDim.y, cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y);
+				g.drawLine(cam.x + tmpNode.getS().x - Map.mTDim.x, cam.y + tmpNode.getS().y, cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y - Map.mTDim.y);
+				g.drawLine(
+					cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y,
+					cam.x + tmpNode.getS().x, cam.y + tmpNode.getS().y
+				);
+			}
+		}
 		
 		if (isMoving) {
 			this.getCurrentAnimation().draw(cam.x + s.x + displayingOffset.x, cam.y + s.y + displayingOffset.y);
